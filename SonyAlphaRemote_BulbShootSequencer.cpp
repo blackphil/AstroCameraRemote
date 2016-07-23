@@ -8,8 +8,6 @@
 #include "SonyAlphaRemote_Sequencer_StatePause.h"
 #include "SonyAlphaRemote_Sequencer_StateFinish.h"
 
-//#define DRY_RUN
-
 namespace SonyAlphaRemote {
 namespace Sequencer {
 

@@ -12,3 +12,5 @@
 - aktuelle Uhrzeit anzeigen
 - ssdp abfrage für kamera suche implementieren
 - post view image history
+- cancel BULB sequence
+- einstellungen in qsettings speichern

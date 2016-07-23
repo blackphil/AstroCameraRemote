@@ -1,5 +1,8 @@
 #include "SonyAlphaRemote_Sequencer_StateBulbShooting.h"
 
+//#define DRY_RUN
+
+
 namespace SonyAlphaRemote {
 namespace Sequencer {
 

@@ -182,7 +182,7 @@ void MainWindow::onPostView(const QString &url)
 
 void MainWindow::onPostView(const QString& url, int i, int numShots)
 {
-    ui->output->append(tr("have new image: %0 (%1/%2").arg(url).arg(i).arg(numShots));
+    ui->output->append(tr("have new image: %0 (%1/%2)").arg(url).arg(i).arg(numShots));
     ui->imageSubTitle->setText(tr("image %0/%1").arg(i).arg(numShots));
     sender->loadPostViewImage(url);
 }
@@ -207,7 +207,11 @@ void MainWindow::on_startBulbSequence_clicked()
     applyBulbSettings();
     int duration = bulbShootSequencer->calculateSequenceDuration();
 
-    ui->output->append(tr("calculated duration: %0").arg(QTime().addMSecs(duration).toString("HH:mm:ss:zzz")));
+    QTime dt = QTime(0,0,0,0).addMSecs(duration);
+    ui->output->append(
+                tr("calculated duration: %0h %1min %2sec %3msec")
+                .arg(dt.hour()).arg(dt.minute()).arg(dt.second()).arg(dt.msec()));
+
     ui->output->append(
                 tr("calculated finish time: %0")
                 .arg(QDateTime::currentDateTime()

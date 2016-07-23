@@ -4,7 +4,7 @@ namespace SonyAlphaRemote {
 namespace Sequencer {
 
 StateWaitForCamReady::StateWaitForCamReady(Sender* sender, int i, int numShots)
-    : StateBase(tr("wait for camera IDLE mode (%0/%1").arg(i).arg(numShots), "", NULL)
+    : StateBase(tr("wait for camera IDLE mode (%0/%1)").arg(i).arg(numShots), "", NULL)
     , sender(sender)
     , i(i)
     , numShots(numShots)
