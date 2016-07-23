@@ -68,6 +68,44 @@ void StatusPoller::poll()
     }
 }
 
+
+bool StatusPoller::getEnumeratedOption(
+        int index, const QString& type, QJsonArray status
+        , const QString& currentName, const QString& candidatesName
+        , QString& current, QStringList& candidates) const
+{
+    int statusCount = status.count();
+    if(statusCount <= index)
+        return false;
+
+    QJsonValueRef value = status[index];
+    if(value.isNull() || !value.isObject())
+        return false;
+
+    QJsonObject obj = value.toObject();
+    if(type != obj["type"].toString())
+        return false;
+
+    if(!obj.contains(candidatesName))
+        return false;
+
+    QJsonArray array = obj[candidatesName].toArray();
+    for(int i=0; i<array.count(); i++)
+    {
+        candidates << array[i].toString();
+    }
+
+    if(!obj.contains(currentName))
+        return false;
+
+    current = obj[currentName].toString();
+
+    return true;
+
+}
+
+
+
 void StatusPoller::handleEventReply()
 {
 //    SAR_INF("RECV GETEVENT NOW (" << getEvent->isCallbackImmedialetyEnabled() << ")");
@@ -80,6 +118,16 @@ void StatusPoller::handleEventReply()
         SAR_INF(cameraStatus);
         Q_EMIT statusChanged(cameraStatus);
     }
+
+    QString isoSpeed; QStringList isoSpeedCandidates;
+    if(getEnumeratedOption(29, "isoSpeedRate", getEvent->getStatus(), "currentIsoSpeedRate", "isoSpeedRateCandidates", isoSpeed, isoSpeedCandidates))
+        Q_EMIT isoSpeedRatesChanged(isoSpeedCandidates, isoSpeed);
+
+    QString shutterSpeed; QStringList shutterSpeedCandidates;
+    if(getEnumeratedOption(32, "shutterSpeed", getEvent->getStatus(), "currentShutterSpeed", "shutterSpeedCandidates", shutterSpeed, shutterSpeedCandidates))
+        Q_EMIT shutterSpeedsChanged(shutterSpeedCandidates, shutterSpeed);
+
+
     waitingForEventReply = false;
 }
 
@@ -89,18 +137,6 @@ void StatusPoller::handleEventError()
     waitingForEventReply = false;
 }
 
-void StatusPoller::handleAwaitPicReply(const QString &potUrl)
-{
-    QUrl url = potUrl;
-    if(url.isValid())
-    {
-        Q_EMIT haveNewPostViewPictureUrl(potUrl);
-    }
-}
 
-void StatusPoller::handleAwaitPicError()
-{
-
-}
 
 } // namespace SonyAlphaRemote

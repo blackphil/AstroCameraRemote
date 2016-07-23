@@ -28,7 +28,6 @@ private Q_SLOTS:
     void updatePostViewInfo(QString url);
 
 Q_SIGNALS :
-    void message(QString);
     void havePostViewUrl(QString, int, int);
 
 };

@@ -20,8 +20,8 @@ class MainWindow : public QMainWindow
 
     SonyAlphaRemote::Json::StartRecMode* startRecMode;
     SonyAlphaRemote::Json::StopRecMode* stopRecMode;
-    SonyAlphaRemote::Json::GetAvailableShutterSpeeds* getAvailableShutterSpeeds;
     SonyAlphaRemote::Json::SetShutterSpeed* setShutterSpeed;
+    SonyAlphaRemote::Json::SetIsoSpeedRate* setIsoSpeedRate;
     SonyAlphaRemote::Json::ActTakePicture* actTakePicture;
     SonyAlphaRemote::Json::StartBulbShooting* startBulbShooting;
     SonyAlphaRemote::Json::StopBulbShooting* stopBulbShooting;
@@ -51,9 +51,8 @@ private Q_SLOTS:
 
     void error(QString);
 
-    void availableShutterSpeedsChanged();
-
-    void updateAvailableShutterSpeeds();
+    void isoSpeedRatesChanged(const QStringList& candidates, const QString& current);
+    void shutterSpeedsChanged(const QStringList& candidates, const QString& current);
 
     void on_shutterSpeed_activated(const QString &speed);
 
@@ -71,6 +70,10 @@ private Q_SLOTS:
     void appendOutputMessage(QString msg);
 
     void on_simCamReadyBtn_clicked();
+
+    void handleCameraStatus(QString status);
+
+    void on_isoSpeedRate_activated(const QString &isoSpeedRate);
 
 private:
     Ui::MainWindow *ui;

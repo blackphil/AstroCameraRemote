@@ -82,6 +82,30 @@ QJsonDocument SetShutterSpeed::getJson() const
     return QJsonDocument(command);
 }
 
+void SetIsoSpeedRate::setIsoSpeedRate(const QString &value)
+{
+    isoSpeedRate = value;
+}
+
+SetIsoSpeedRate::SetIsoSpeedRate(QObject* parent)
+    : Command(parent)
+    , isoSpeedRate("")
+{
+    setObjectName("SetIsoSpeedRate");
+}
+
+QJsonDocument SetIsoSpeedRate::getJson() const
+{
+    QJsonObject command = getBase();
+    command["method"] = "setIsoSpeedRate";
+    command["params"] = QJsonArray
+    {
+        { QString("%0").arg(isoSpeedRate) }
+    };
+
+    return QJsonDocument(command);
+}
+
 GetShutterSpeed::GetShutterSpeed(QObject* parent)
     : Command(parent)
 {
@@ -129,136 +153,6 @@ QJsonDocument StopRecMode::getJson() const
 
     return QJsonDocument(command);
 }
-
-QStringList GetAvailableShutterSpeeds::getShutterSpeeds() const
-{
-    return shutterSpeeds;
-}
-
-QString GetAvailableShutterSpeeds::getCurrentShutterSpeed() const
-{
-    return currentShutterSpeed;
-}
-
-GetAvailableShutterSpeeds::GetAvailableShutterSpeeds(QObject *parent)
-    : Command(parent)
-{
-    setObjectName("GetAvailableShutterSpeeds");
-}
-
-QJsonDocument GetAvailableShutterSpeeds::getJson() const
-{
-    QJsonObject command = getBase();
-    command["method"] = "getAvailableShutterSpeed";
-    command["params"] = QJsonArray {};
-
-    return QJsonDocument(command);
-}
-
-void GetAvailableShutterSpeeds::handleReply(const QJsonDocument &replyJson)
-{
-    if(!replyJson.isObject() || !replyJson.object().contains("result") || !replyJson.object()["result"].isArray())
-    {
-        handleError(replyJson, tr("invalid reply"));
-        return;
-    }
-
-    QJsonArray result = replyJson.object()["result"].toArray();
-    if(result.count() != 2)
-    {
-        handleError(replyJson, tr("\"result\" is not an array"));
-        return;
-    }
-
-    currentShutterSpeed = result[0].toString();
-    if(!result[1].isArray())
-    {
-        handleError(replyJson, tr("second entry of \"result\" (shutter speeds) is not an array"));
-        return;
-    }
-
-    shutterSpeeds.clear();
-    QJsonArray available = result[1].toArray();
-    for(int i=0; i<available.count(); i++)
-    {
-        shutterSpeeds << available[i].toString();
-    }
-
-    if(!shutterSpeeds.contains(currentShutterSpeed))
-    {
-        handleError(replyJson, tr("shutter speeds don't contain curent shutter speed"));
-        return;
-    }
-
-    Q_EMIT confirmed();
-
-}
-
-QJsonArray GetEvent::getStatus() const
-{
-    return status;
-}
-
-void GetEvent::setCallbackImmedialetyEnabled(bool yes)
-{
-    callbackImmedialetyEnabled = yes;
-}
-
-bool GetEvent::isCallbackImmedialetyEnabled() const
-{
-    return callbackImmedialetyEnabled;
-}
-
-GetEvent::GetEvent(QObject* parent)
-    : Command(parent)
-    , callbackImmedialetyEnabled(true)
-{
-    setObjectName("GetEvent");
-}
-
-QJsonDocument GetEvent::getJson() const
-{
-    QJsonDocument json(getBase());
-//    SAR_INF(QString(json.toJson()));
-    return json;
-
-}
-
-QJsonObject GetEvent::getBase() const
-{
-    return QJsonObject
-    {
-        { "method", "getEvent" },
-        { "id", 1 },
-        { "version", "1.2" },
-        { "params", QJsonArray { !callbackImmedialetyEnabled } }
-    };
-
-
-}
-
-void GetEvent::handleReply(const QJsonDocument &replyJson)
-{
-    if(replyJson.isObject())
-    {
-        if(replyJson.object().contains("result"))
-        {
-            status = replyJson.object()["result"].toArray();
-            Q_EMIT confirmed();
-            return;
-        }
-
-        if(replyJson.object().contains("error"))
-        {
-            if(2 == replyJson.object()["error"].toArray()[0].toInt())
-            {
-                Q_EMIT declined();
-            }
-        }
-    }
-    handleError(replyJson, tr("invalid reply"));
-}
-
 
 ActTakePicture::ActTakePicture(QObject *parent)
     : PostViewProviderCommand(parent)

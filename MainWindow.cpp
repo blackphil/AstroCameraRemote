@@ -25,8 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , startRecMode(new SonyAlphaRemote::Json::StartRecMode(this))
     , stopRecMode(new SonyAlphaRemote::Json::StopRecMode(this))
-    , getAvailableShutterSpeeds(new SonyAlphaRemote::Json::GetAvailableShutterSpeeds(this))
     , setShutterSpeed(new SonyAlphaRemote::Json::SetShutterSpeed(this))
+    , setIsoSpeedRate(new SonyAlphaRemote::Json::SetIsoSpeedRate(this))
     , actTakePicture(new SonyAlphaRemote::Json::ActTakePicture(this))
     , startBulbShooting(new SonyAlphaRemote::Json::StartBulbShooting(this))
     , stopBulbShooting(new SonyAlphaRemote::Json::StopBulbShooting(this))
@@ -41,7 +41,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(sender, SIGNAL(loadedPostViewImage(QByteArray)), this, SLOT(updatePostViewImage(QByteArray)));
 
-    connect(statusPoller, SIGNAL(statusChanged(QString)), ui->cameraStatus, SLOT(setText(QString)));
+    connect(statusPoller, SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
+    connect(statusPoller, SIGNAL(isoSpeedRatesChanged(QStringList,QString))
+            , this, SLOT(isoSpeedRatesChanged(QStringList,QString)));
+    connect(statusPoller, SIGNAL(shutterSpeedsChanged(QStringList,QString))
+            , this, SLOT(shutterSpeedsChanged(QStringList,QString)));
+
 
 
     connect(startRecMode, SIGNAL(confirmed()), this, SLOT(toggleRecordModeBtnStarted()));
@@ -51,10 +56,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(stopRecMode, SIGNAL(confirmed()), this, SLOT(toggleRecordModeBtnStopped()));
     connect(stopRecMode, SIGNAL(error(QString)), this, SLOT(error(QString)));
 
-    connect(getAvailableShutterSpeeds, SIGNAL(confirmed()), this, SLOT(availableShutterSpeedsChanged()));
-    connect(getAvailableShutterSpeeds, SIGNAL(error(QString)), this, SLOT(error(QString)));
-
     connect(setShutterSpeed, SIGNAL(error(QString)), this, SLOT(error(QString)));
+    connect(setIsoSpeedRate, SIGNAL(error(QString)), this, SLOT(error(QString)));
 
     connect(actTakePicture, SIGNAL(havePostViewUrl(QString)), this, SLOT(onPostView(QString)));
     connect(actTakePicture, SIGNAL(error(QString)), this, SLOT(error(QString)));
@@ -100,8 +103,6 @@ void MainWindow::toggleRecordModeBtnStarted()
 {
     ui->toggleRecordModeBtn->setText(tr("Stop record mode"));
     ui->toggleRecordModeBtn->setChecked(true);
-
-    QTimer::singleShot(4000, this, SLOT(updateAvailableShutterSpeeds()));
 }
 
 void MainWindow::hello()
@@ -139,22 +140,27 @@ void MainWindow::error(QString msg)
     ui->output->append(msg);
 }
 
-void MainWindow::availableShutterSpeedsChanged()
+void MainWindow::isoSpeedRatesChanged(const QStringList &candidates, const QString &current)
+{
+    ui->isoSpeedRate->clear();
+    foreach(QString speed, candidates)
+    {
+        ui->isoSpeedRate->insertItem(0, speed);
+    }
+    ui->isoSpeedRate->setCurrentText(current);
+
+}
+
+void MainWindow::shutterSpeedsChanged(const QStringList &candidates, const QString &current)
 {
     ui->shutterSpeed->clear();
-    QStringList speeds = getAvailableShutterSpeeds->getShutterSpeeds();
-    foreach(QString speed, speeds)
+    foreach(QString speed, candidates)
     {
         ui->shutterSpeed->insertItem(0, speed);
     }
-    ui->shutterSpeed->setCurrentText(getAvailableShutterSpeeds->getCurrentShutterSpeed());
-
+    ui->shutterSpeed->setCurrentText(current);
 }
 
-void MainWindow::updateAvailableShutterSpeeds()
-{
-    sender->send(getAvailableShutterSpeeds);
-}
 
 void MainWindow::on_shutterSpeed_activated(const QString &speed)
 {
@@ -227,4 +233,15 @@ void MainWindow::appendOutputMessage(QString msg)
 void MainWindow::on_simCamReadyBtn_clicked()
 {
     statusPoller->simCamReady();
+}
+
+void MainWindow::handleCameraStatus(QString status)
+{
+    ui->cameraStatus->setText(status);
+}
+
+void MainWindow::on_isoSpeedRate_activated(const QString &isoSpeedRate)
+{
+    setIsoSpeedRate->setIsoSpeedRate(isoSpeedRate);
+    sender->send(setIsoSpeedRate);
 }

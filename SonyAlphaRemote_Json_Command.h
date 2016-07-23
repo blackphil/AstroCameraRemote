@@ -54,6 +54,19 @@ public :
     void setShutterSpeed(const QString &value);
 };
 
+class SetIsoSpeedRate : public Command
+{
+    Q_OBJECT
+
+    QString isoSpeedRate;
+
+public :
+    SetIsoSpeedRate(QObject* parent = 0);
+    QJsonDocument getJson() const;
+
+    void setIsoSpeedRate(const QString &value);
+};
+
 class GetShutterSpeed : public Command
 {
     Q_OBJECT
@@ -65,21 +78,6 @@ public :
     QJsonDocument getJson() const;
 //    void handleReply(const QJsonDocument &replyJson);
 };
-
-class GetAvailableShutterSpeeds : public Command
-{
-    Q_OBJECT
-    QStringList shutterSpeeds;
-    QString currentShutterSpeed;
-
-public:
-    GetAvailableShutterSpeeds(QObject *parent = 0);
-    QJsonDocument getJson() const;
-    void handleReply(const QJsonDocument &replyJson);
-    QStringList getShutterSpeeds() const;
-    QString getCurrentShutterSpeed() const;
-};
-
 
 class StartRecMode : public Command
 {
@@ -99,24 +97,6 @@ public :
     QJsonDocument getJson() const;
 };
 
-class GetEvent : public Command
-{
-    QJsonArray status;
-    bool callbackImmedialetyEnabled;
-
-    Q_OBJECT
-
-    QJsonObject getBase() const;
-    void handleReply(const QJsonDocument &replyJson);
-
-public :
-    GetEvent(QObject* parent = 0);
-    QJsonDocument getJson() const;
-    QJsonArray getStatus() const;
-
-    void setCallbackImmedialetyEnabled(bool yes);
-    bool isCallbackImmedialetyEnabled() const;
-};
 
 class SetContShootingMode : public Command
 {

@@ -25,8 +25,7 @@ public :
 protected :
     void onEntry(QEvent* event);
     void onExit(QEvent* event);
-Q_SIGNALS :
-    void message(QString);
+
 };
 
 } // namespace Sequencer

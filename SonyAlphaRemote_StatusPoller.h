@@ -6,6 +6,7 @@
 
 #include "SonyAlphaRemote_Sender.h"
 #include "SonyAlphaRemote_Json_Command.h"
+#include "SonyAlphaRemote_Json_GetEvent.h"
 
 namespace SonyAlphaRemote {
 
@@ -19,6 +20,8 @@ class   StatusPoller : public QObject
     Json::GetEvent* getEvent;
 
     bool waitingForEventReply;
+
+    bool getEnumeratedOption(int index, const QString& type, QJsonArray status, const QString& currentName, const QString& candidatesName, QString& current, QStringList& candidates) const;
 
 public:
     explicit StatusPoller(Sender* sender, QObject *parent = 0);
@@ -38,12 +41,14 @@ Q_SIGNALS:
     void statusChanged(QString);
     void haveNewPostViewPictureUrl(QString);
 
+    void isoSpeedRatesChanged(QStringList, QString);
+    void shutterSpeedsChanged(QStringList, QString);
+
 private Q_SLOTS :
     void poll();
     void handleEventReply();
     void handleEventError();
-    void handleAwaitPicReply(const QString& potUrl);
-    void handleAwaitPicError();
+
 };
 
 } // namespace SonyAlphaRemote
