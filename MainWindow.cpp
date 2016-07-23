@@ -80,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pause, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
     connect(ui->numShots, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
 
+
     recalcBulbShootDuration();
 
 
@@ -174,6 +175,15 @@ void MainWindow::shutterSpeedsChanged(const QStringList &candidates, const QStri
         ui->shutterSpeed->insertItem(0, speed);
     }
     ui->shutterSpeed->setCurrentText(current);
+
+    if(current == "BULB")
+    {
+        ui->bulbShootingGroupBox->setEnabled(true);
+    }
+    else
+    {
+        ui->bulbShootingGroupBox->setEnabled(false);
+    }
 }
 
 void MainWindow::stillQualityChanged(const QStringList &candidates, const QString &current)

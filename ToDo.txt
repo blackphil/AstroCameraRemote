@@ -3,13 +3,13 @@
 - raw download
 - metadata anzeige/download
 - remote image delete
-- gui verriegelungen
 - fix still quality selection/display (RAW, JPEG etc.)
 - normal-shoot sequence
 - post view image history
 - live view
 - ssdp abfrage für kamera suche implementieren
 
+- ERLEDIGT gui verriegelungen
 - ERLEDIGT cancel BULB sequence
 - ERLEDIGT aktuelle Uhrzeit anzeigen
 - ERLEDIGT batterie status anzeige
