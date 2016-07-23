@@ -1,18 +1,22 @@
-- cancel BULB sequence
+- einstellungen in qsettings speichern
 - jpeg download
 - raw download
-- einstellungen in qsettings speichern
-- live view
-- remote image delete
 - metadata anzeige/download
+- remote image delete
 - gui verriegelungen
-- command source code aufräumen
-- normal-shoot sequence
-- aktuelle Uhrzeit anzeigen
-- ssdp abfrage für kamera suche implementieren
-- post view image history
 - fix still quality selection/display (RAW, JPEG etc.)
+- normal-shoot sequence
+- post view image history
+- live view
+- ssdp abfrage für kamera suche implementieren
 
+- ERLEDIGT cancel BULB sequence
+- ERLEDIGT aktuelle Uhrzeit anzeigen
 - ERLEDIGT batterie status anzeige
 - ERLEDIGT ISO einstellbar machen
 - ERLEDIGT verfügbare einstellungen (shutter speed etc.) sofort anzeigen
+
+
+
+
+- command source code aufräumen

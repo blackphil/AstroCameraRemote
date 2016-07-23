@@ -72,6 +72,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(bulbShootSequencer, SIGNAL(statusMessage(QString)), this, SLOT(appendOutputMessage(QString)));
     connect(bulbShootSequencer, SIGNAL(havePostViewUrl(QString, int, int)), this, SLOT(onPostView(QString, int, int)));
+    connect(bulbShootSequencer, SIGNAL(started()), this, SLOT(bulbShootSequencerStarted()));
+    connect(bulbShootSequencer, SIGNAL(stopped()), this, SLOT(bulbShootSequencerStopped()));
+
+    connect(ui->startDelay, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
+    connect(ui->shutterSpeedBulb, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
+    connect(ui->pause, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
+    connect(ui->numShots, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
+
+    recalcBulbShootDuration();
+
 
 
 //    ui->centralWidget->setEnabled(false);
@@ -212,7 +222,11 @@ void MainWindow::on_startBulbSequence_clicked()
 {
     if(bulbShootSequencer->isRunning())
     {
-        ui->output->append(tr("cannot start BULB sequence until running sequence has been finished!"));
+        if(QMessageBox::Yes == QMessageBox::question(this, tr("Stop BULB shoot sequence"), tr("Do you want to stop current BULB shoot sequence?")))
+        {
+            bulbShootSequencer->stop();
+        }
+//        ui->output->append(tr("cannot start BULB sequence until running sequence has been finished!"));
         return;
     }
 
@@ -284,5 +298,35 @@ void MainWindow::updateBatteryStatus()
         ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleDanger());
     else
         ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleNormal());
+
+}
+
+void MainWindow::bulbShootSequencerStarted()
+{
+    ui->startBulbSequence->setText(tr("Stop sequence"));
+}
+
+void MainWindow::bulbShootSequencerStopped()
+{
+    ui->output->append(tr("BULB shoot sequence stopped."));
+    ui->startBulbSequence->setText(tr("Start sequence"));
+}
+
+void MainWindow::recalcBulbShootDuration()
+{
+
+    QTime dt = QTime(0,0,0,0).addMSecs(
+                SonyAlphaRemote::Sequencer::BulbShootSequencer::calculateSequenceDuration(
+                    ui->startDelay->value()
+                    , ui->shutterSpeedBulb->value()
+                    , ui->pause->value()
+                    , ui->numShots->value()));
+
+    ui->calculatedDuration->setText(
+                tr("%0h %1min %2sec %3msec")
+                .arg(dt.hour()).arg(dt.minute()).arg(dt.second()).arg(dt.msec()));
+
+
+
 
 }

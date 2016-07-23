@@ -51,6 +51,10 @@ void BulbShootSequencer::start()
 
     StateWaitForStart* waitForStart = new StateWaitForStart(startDelayTm);
     connect(waitForStart, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
+    connect(stateMachine, SIGNAL(started()), this, SIGNAL(started()));
+    connect(stateMachine, SIGNAL(stopped()), this, SLOT(handleStopped()));
+    connect(stateMachine, SIGNAL(finished()), this, SLOT(handleStopped()));
+
     stateMachine->addState(waitForStart);
     stateMachine->setInitialState(waitForStart);
 
@@ -91,6 +95,13 @@ void BulbShootSequencer::start()
 
 
     stateMachine->start();
+}
+
+void BulbShootSequencer::stop()
+{
+    sender->send(&stopBulbShooting);
+    stateMachine->stop();
+    handleStopped();
 }
 
 void BulbShootSequencer::handleCameraStatus(QString status)
@@ -143,7 +154,27 @@ bool BulbShootSequencer::isRunning() const
 
 int BulbShootSequencer::calculateSequenceDuration() const
 {
-    return startDelayTm->interval() + (2 * shutterSpeedTm->interval() + pauseDelayTm->interval()) * numShots;
+    return calculateSequenceDuration(startDelayTm->interval(), shutterSpeedTm->interval(), pauseDelayTm->interval(), numShots);
+}
+
+int BulbShootSequencer::calculateSequenceDuration(int startDelay, int shutterSpeed, int pauseDelay, int numShots)
+{
+    return startDelay + (2* shutterSpeed + pauseDelay) * numShots;
+}
+
+void BulbShootSequencer::handleStopped()
+{
+
+    if(shutterSpeedTm)
+        shutterSpeedTm->stop();
+
+    if(pauseDelayTm)
+        pauseDelayTm->stop();
+
+    if(startDelayTm)
+        startDelayTm->stop();
+
+    Q_EMIT stopped();
 }
 
 

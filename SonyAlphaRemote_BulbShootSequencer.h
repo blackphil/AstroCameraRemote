@@ -26,6 +26,8 @@ private :
     QPointer<Sender> sender;
     QStateMachine* stateMachine;
 
+    Json::StopBulbShooting stopBulbShooting;
+
     int count;
 
     QTimer* shutterSpeedTm;
@@ -56,16 +58,22 @@ public:
     bool isRunning() const;
 
     int calculateSequenceDuration() const;
+    static int calculateSequenceDuration(int startDelay, int shutterSpeed, int pauseDelay, int numShots);
+
+private Q_SLOTS:
+    void handleStopped();
 
 
 public Q_SLOTS :
     void start();
+    void stop();
     void handleCameraStatus(QString status);
 
 Q_SIGNALS :
+    void started();
+    void stopped();
     void statusMessage(QString);
     void countChanged(int);
-    void finished();
     void cameraReady();
     void havePostViewUrl(QString, int, int);
 

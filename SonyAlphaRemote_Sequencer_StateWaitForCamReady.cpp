@@ -10,6 +10,7 @@ StateWaitForCamReady::StateWaitForCamReady(Sender* sender, int i, int numShots)
     , numShots(numShots)
 
 {
+    setObjectName("StateWaitForCamReady");
     connect(&awaitTakePicture, SIGNAL(havePostViewUrl(QString)), this, SLOT(updatePostViewInfo(QString)));
 }
 

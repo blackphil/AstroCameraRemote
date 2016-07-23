@@ -12,7 +12,10 @@ StateBulbShooting::StateBulbShooting(Sender* sender, QTimer* t, quint32 i, quint
           , tr("stop shoot (%0/%1)").arg(i).arg(maxCount)
           , t)
     , sender(sender)
-    {}
+{
+    setObjectName("StateBulbShooting");
+}
+
 
 void StateBulbShooting::onEntry(QEvent* event)
 {

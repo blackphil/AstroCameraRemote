@@ -82,6 +82,10 @@ private Q_SLOTS:
 
     void updateBatteryStatus();
 
+    void bulbShootSequencerStarted();
+    void bulbShootSequencerStopped();
+    void recalcBulbShootDuration();
+
 private:
     Ui::MainWindow *ui;
 };

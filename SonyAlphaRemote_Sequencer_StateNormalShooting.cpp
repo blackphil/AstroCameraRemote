@@ -6,7 +6,7 @@ namespace Sequencer {
 StateNormalShooting::StateNormalShooting()
     : StateBase(tr("trigger shoot"), "", NULL)
 {
-
+    setObjectName("StateNormalShooting");
 }
 
 } // namespace Sequencer

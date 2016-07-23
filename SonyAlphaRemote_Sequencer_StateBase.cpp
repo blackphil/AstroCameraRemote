@@ -15,7 +15,7 @@ StateBase::StateBase(const QString& entryMessage, const QString& exitMessage, QT
 
 StateBase::~StateBase()
 {
-
+    SAR_INF("[DTOR] state: " << objectName());
 }
 
 
