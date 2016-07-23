@@ -15,24 +15,37 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_3">
-    <item row="5" column="3">
-     <widget class="QLabel" name="imageSubTitle">
+    <item row="3" column="2" colspan="2">
+     <widget class="QLabel" name="currentDate">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
-       <string>&lt;image info&gt;</string>
+       <string>&lt;current date&gt;</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="currentTime">
+    <item row="4" column="1">
+     <widget class="QComboBox" name="format"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_7">
       <property name="text">
-       <string>&lt;current time&gt;</string>
+       <string>Format:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
-    <item row="0" column="3" rowspan="5">
+    <item row="0" column="4" rowspan="7">
      <widget class="QLabel" name="postViewImage">
       <property name="minimumSize">
        <size>
@@ -51,6 +64,16 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="takeShotBtn">
+      <property name="text">
+       <string>Take shot</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QComboBox" name="shutterSpeed"/>
+    </item>
     <item row="0" column="0">
      <widget class="QPushButton" name="toggleRecordModeBtn">
       <property name="text">
@@ -66,39 +89,38 @@
       <property name="text">
        <string>Shutter speed:</string>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QComboBox" name="shutterSpeed"/>
-    </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="takeShotBtn">
-      <property name="text">
-       <string>Take shot</string>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="cameraStatus">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>&lt;camera status&gt;</string>
+       <string>ISO speed rate:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
-    <item row="3" column="0" colspan="3">
+    <item row="3" column="1">
+     <widget class="QComboBox" name="isoSpeedRate"/>
+    </item>
+    <item row="7" column="4">
+     <widget class="QLabel" name="imageSubTitle">
+      <property name="text">
+       <string>&lt;image info&gt;</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="4">
      <widget class="QGroupBox" name="groupBox">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -225,7 +247,7 @@
       </layout>
      </widget>
     </item>
-    <item row="4" column="0" colspan="3">
+    <item row="6" column="0" colspan="4">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
        <string>Output</string>
@@ -250,15 +272,49 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label">
+    <item row="1" column="2" colspan="2">
+     <widget class="QLabel" name="cameraStatus">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
-       <string>ISO speed rate:</string>
+       <string>&lt;camera status&gt;</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
-     <widget class="QComboBox" name="isoSpeedRate"/>
+    <item row="4" column="2" colspan="2">
+     <widget class="QLabel" name="currentTime">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>&lt;current time&gt;</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2" colspan="2">
+     <widget class="QProgressBar" name="batteryStatus">
+      <property name="value">
+       <number>24</number>
+      </property>
+      <property name="invertedAppearance">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

@@ -12,6 +12,11 @@ QString StatusPoller::getCameraStatus() const
     return cameraStatus;
 }
 
+BatteryInfo StatusPoller::getBatteryInfo() const
+{
+    return batteryInfo;
+}
+
 
 void StatusPoller::simCamReady()
 {
@@ -104,6 +109,30 @@ bool StatusPoller::getEnumeratedOption(
 
 }
 
+void StatusPoller::getBatteryInfo(QJsonArray status)
+{
+    int statusCount = status.count();
+    if(statusCount <= 56)
+        return;
+
+    QJsonValueRef value = status[56];
+    if(value.isNull() || !value.isObject())
+        return;
+
+    QJsonObject obj = value.toObject();
+    if(obj["type"].toString() != "batteryInfo")
+        return;
+
+    QJsonArray batteryInfos = obj["batteryInfo"].toArray();
+    if(0 >= batteryInfos.count())
+        return;
+
+    QJsonObject batteryInfo = batteryInfos[0].toObject();
+
+    this->batteryInfo = BatteryInfo(batteryInfo);
+    Q_EMIT batteryStatusChanged();
+}
+
 
 
 void StatusPoller::handleEventReply()
@@ -119,14 +148,21 @@ void StatusPoller::handleEventReply()
         Q_EMIT statusChanged(cameraStatus);
     }
 
+    QJsonArray eventStatusArray = getEvent->getStatus();
+
     QString isoSpeed; QStringList isoSpeedCandidates;
-    if(getEnumeratedOption(29, "isoSpeedRate", getEvent->getStatus(), "currentIsoSpeedRate", "isoSpeedRateCandidates", isoSpeed, isoSpeedCandidates))
+    if(getEnumeratedOption(29, "isoSpeedRate", eventStatusArray, "currentIsoSpeedRate", "isoSpeedRateCandidates", isoSpeed, isoSpeedCandidates))
         Q_EMIT isoSpeedRatesChanged(isoSpeedCandidates, isoSpeed);
 
     QString shutterSpeed; QStringList shutterSpeedCandidates;
-    if(getEnumeratedOption(32, "shutterSpeed", getEvent->getStatus(), "currentShutterSpeed", "shutterSpeedCandidates", shutterSpeed, shutterSpeedCandidates))
+    if(getEnumeratedOption(32, "shutterSpeed", eventStatusArray, "currentShutterSpeed", "shutterSpeedCandidates", shutterSpeed, shutterSpeedCandidates))
         Q_EMIT shutterSpeedsChanged(shutterSpeedCandidates, shutterSpeed);
 
+    QString stillQuality; QStringList stillQualityCandidates;
+    if(getEnumeratedOption(37, "stillQuality", eventStatusArray, "stillQuality", "candidate", stillQuality, stillQualityCandidates))
+        Q_EMIT shutterSpeedsChanged(shutterSpeedCandidates, shutterSpeed);
+
+    getBatteryInfo(eventStatusArray);
 
     waitingForEventReply = false;
 }

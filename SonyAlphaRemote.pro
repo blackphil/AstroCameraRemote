@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     SonyAlphaRemote_Sequencer_StateWaitForCamReady.cpp \
     SonyAlphaRemote_Sequencer_StatePause.cpp \
     SonyAlphaRemote_Sequencer_StateFinish.cpp \
-    SonyAlphaRemote_Json_GetEvent.cpp
+    SonyAlphaRemote_Json_GetEvent.cpp \
+    SonyAlphaRemote_BatteryInfo.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -43,7 +44,8 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_Sequencer_StateWaitForCamReady.h \
     SonyAlphaRemote_Sequencer_StatePause.h \
     SonyAlphaRemote_Sequencer_StateFinish.h \
-    SonyAlphaRemote_Json_GetEvent.h
+    SonyAlphaRemote_Json_GetEvent.h \
+    SonyAlphaRemote_BatteryInfo.h
 
 FORMS    += MainWindow.ui
 

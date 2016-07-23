@@ -34,10 +34,14 @@ MainWindow::MainWindow(QWidget *parent)
     , statusPoller(new SonyAlphaRemote::StatusPoller(sender, this))
     , bulbShootSequencer(new SonyAlphaRemote::Sequencer::BulbShootSequencer(statusPoller, sender, this))
     , aboutToClose(false)
+    , currentTimeDisplayTimer(new QTimer(this))
 
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    connect(currentTimeDisplayTimer, SIGNAL(timeout()), this, SLOT(updateCurrentTimeDisplay()));
+    currentTimeDisplayTimer->start(10);
 
     connect(sender, SIGNAL(loadedPostViewImage(QByteArray)), this, SLOT(updatePostViewImage(QByteArray)));
 
@@ -47,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(statusPoller, SIGNAL(shutterSpeedsChanged(QStringList,QString))
             , this, SLOT(shutterSpeedsChanged(QStringList,QString)));
 
+    connect(statusPoller, SIGNAL(batteryStatusChanged()), this, SLOT(updateBatteryStatus()));
 
 
     connect(startRecMode, SIGNAL(confirmed()), this, SLOT(toggleRecordModeBtnStarted()));
@@ -161,6 +166,16 @@ void MainWindow::shutterSpeedsChanged(const QStringList &candidates, const QStri
     ui->shutterSpeed->setCurrentText(current);
 }
 
+void MainWindow::stillQualityChanged(const QStringList &candidates, const QString &current)
+{
+    ui->format->clear();
+    foreach(QString format, candidates)
+    {
+        ui->format->insertItem(0, format);
+    }
+    ui->format->setCurrentText(current);
+}
+
 
 void MainWindow::on_shutterSpeed_activated(const QString &speed)
 {
@@ -248,4 +263,26 @@ void MainWindow::on_isoSpeedRate_activated(const QString &isoSpeedRate)
 {
     setIsoSpeedRate->setIsoSpeedRate(isoSpeedRate);
     sender->send(setIsoSpeedRate);
+}
+
+void MainWindow::updateCurrentTimeDisplay()
+{
+    QDateTime now = QDateTime::currentDateTime();
+
+    ui->currentDate->setText(now.toString("dd. MM. yyyy"));
+    ui->currentTime->setText(now.toString("HH:MM:ss:zzz"));
+}
+
+void MainWindow::updateBatteryStatus()
+{
+    SonyAlphaRemote::BatteryInfo info = statusPoller->getBatteryInfo();
+    ui->batteryStatus->setMinimum(0);
+    ui->batteryStatus->setMaximum(info.getLevelDenom());
+    ui->batteryStatus->setValue(info.getLevelNumber());
+
+    if(info.getAdditionalStatus() == SonyAlphaRemote::BatteryInfo::AdditionalStatus_batteryNearEnd)
+        ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleDanger());
+    else
+        ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleNormal());
+
 }

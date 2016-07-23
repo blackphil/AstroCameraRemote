@@ -8,7 +8,7 @@
 #include "SonyAlphaRemote_Sender.h"
 #include "SonyAlphaRemote_StatusPoller.h"
 #include "SonyAlphaRemote_BulbShootSequencer.h"
-
+#include "SonyAlphaRemote_BatteryInfo.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +32,8 @@ class MainWindow : public QMainWindow
 
     bool aboutToClose;
 
+    QTimer* currentTimeDisplayTimer;
+
 
     void closeEvent(QCloseEvent *event);
 
@@ -53,6 +55,7 @@ private Q_SLOTS:
 
     void isoSpeedRatesChanged(const QStringList& candidates, const QString& current);
     void shutterSpeedsChanged(const QStringList& candidates, const QString& current);
+    void stillQualityChanged(const QStringList& candidates, const QString& current);
 
     void on_shutterSpeed_activated(const QString &speed);
 
@@ -74,6 +77,10 @@ private Q_SLOTS:
     void handleCameraStatus(QString status);
 
     void on_isoSpeedRate_activated(const QString &isoSpeedRate);
+
+    void updateCurrentTimeDisplay();
+
+    void updateBatteryStatus();
 
 private:
     Ui::MainWindow *ui;

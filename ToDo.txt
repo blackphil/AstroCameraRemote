@@ -1,16 +1,18 @@
-- batterie status anzeige
-- live view
+- cancel BULB sequence
 - jpeg download
 - raw download
+- einstellungen in qsettings speichern
+- live view
 - remote image delete
 - metadata anzeige/download
 - gui verriegelungen
 - command source code aufräumen
 - normal-shoot sequence
-- ERLEDIGT ISO einstellbar machen
-- ERLEDIGT verfügbare einstellungen (shutter speed etc.) sofort anzeigen
 - aktuelle Uhrzeit anzeigen
 - ssdp abfrage für kamera suche implementieren
 - post view image history
-- cancel BULB sequence
-- einstellungen in qsettings speichern
+- fix still quality selection/display (RAW, JPEG etc.)
+
+- ERLEDIGT batterie status anzeige
+- ERLEDIGT ISO einstellbar machen
+- ERLEDIGT verfügbare einstellungen (shutter speed etc.) sofort anzeigen
