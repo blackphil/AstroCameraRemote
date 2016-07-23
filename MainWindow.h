@@ -59,6 +59,7 @@ private Q_SLOTS:
 
     void on_takeShotBtn_clicked();
 
+    void onPostView(const QString &url);
     void onPostView(const QString &url, int i, int numShots);
 
     void updatePostViewImage(QByteArray data);

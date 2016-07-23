@@ -167,6 +167,13 @@ void MainWindow::on_takeShotBtn_clicked()
     sender->send(actTakePicture);
 }
 
+void MainWindow::onPostView(const QString &url)
+{
+    ui->output->append(tr("have new image: %0").arg(url));
+    ui->imageSubTitle->setText(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz"));
+    sender->loadPostViewImage(url);
+}
+
 void MainWindow::onPostView(const QString& url, int i, int numShots)
 {
     ui->output->append(tr("have new image: %0 (%1/%2").arg(url).arg(i).arg(numShots));

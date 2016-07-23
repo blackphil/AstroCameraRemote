@@ -1,0 +1,11 @@
+- batterie status anzeige
+- live view
+- jpeg download
+- raw download
+- remote image delete
+- metadata anzeige/download
+- gui verriegelungen
+- command source code aufräumen
+- normal-shoot sequence
+- ISO einstellbar machen
+- verfügbare einstellungen (shutter speed etc.) sofort anzeigen
