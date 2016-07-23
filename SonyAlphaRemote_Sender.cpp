@@ -68,6 +68,12 @@ QNetworkReply* Sender::privateSend(const QByteArray &buffer)
 
 }
 
+void Sender::handlePostViewImageReply()
+{
+    QByteArray buffer = postViewImageReply->readAll();
+    Q_EMIT loadedPostViewImage(buffer);
+}
+
 void Sender::loadPostViewImage(QString urlStr)
 {
     QUrl url(urlStr);

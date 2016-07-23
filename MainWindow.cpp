@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     , stopBulbShooting(new SonyAlphaRemote::Json::StopBulbShooting(this))
     , sender(new SonyAlphaRemote::Sender(this))
     , statusPoller(new SonyAlphaRemote::StatusPoller(sender, this))
-    , bulbShootSequencer(new SonyAlphaRemote::BulbShootSequencer(statusPoller, sender, this))
+    , bulbShootSequencer(new SonyAlphaRemote::Sequencer::BulbShootSequencer(statusPoller, sender, this))
     , aboutToClose(false)
 
     , ui(new Ui::MainWindow)
@@ -42,7 +42,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(sender, SIGNAL(loadedPostViewImage(QByteArray)), this, SLOT(updatePostViewImage(QByteArray)));
 
     connect(statusPoller, SIGNAL(statusChanged(QString)), ui->cameraStatus, SLOT(setText(QString)));
-    connect(statusPoller, SIGNAL(haveNewPostViewPictureUrl(QString)), this, SLOT(onPostView(QString)));
 
 
     connect(startRecMode, SIGNAL(confirmed()), this, SLOT(toggleRecordModeBtnStarted()));
@@ -64,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(stopBulbShooting, SIGNAL(error(QString)), this, SLOT(error(QString)));
 
     connect(bulbShootSequencer, SIGNAL(statusMessage(QString)), this, SLOT(appendOutputMessage(QString)));
-    connect(bulbShootSequencer, SIGNAL(havePostViewUrl(QString, int, int)), this, SLOT(onPostView(QString)));
+    connect(bulbShootSequencer, SIGNAL(havePostViewUrl(QString, int, int)), this, SLOT(onPostView(QString, int, int)));
 
 
 //    ui->centralWidget->setEnabled(false);
@@ -165,27 +164,7 @@ void MainWindow::on_shutterSpeed_activated(const QString &speed)
 
 void MainWindow::on_takeShotBtn_clicked()
 {
-    statusPoller->setPollPostViewPictureUrlEnabled(false);
-
-    if(ui->shutterSpeed->currentText() == "BULB")
-    {
-        QString cameraStatus = statusPoller->getCameraStatus();
-        if(cameraStatus == "IDLE")
-        {
-            SAR_INF("start BULB shooting now ...");
-            sender->send(startBulbShooting);
-        }
-        else if(cameraStatus == "StillCapturing")
-        {
-            SAR_INF("stop continous shooting now");
-            sender->send(stopBulbShooting);
-            statusPoller->setPollPostViewPictureUrlEnabled(true);
-        }
-    }
-    else
-    {
-        sender->send(actTakePicture);
-    }
+    sender->send(actTakePicture);
 }
 
 void MainWindow::onPostView(const QString& url, int i, int numShots)

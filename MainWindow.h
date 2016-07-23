@@ -28,7 +28,7 @@ class MainWindow : public QMainWindow
 
     SonyAlphaRemote::Sender* sender;
     SonyAlphaRemote::StatusPoller* statusPoller;
-    SonyAlphaRemote::BulbShootSequencer* bulbShootSequencer;
+    SonyAlphaRemote::Sequencer::BulbShootSequencer* bulbShootSequencer;
 
     bool aboutToClose;
 

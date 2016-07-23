@@ -19,7 +19,14 @@ SOURCES += main.cpp\
     SonyAlphaRemote_Sender.cpp \
     SsdpClient.cpp \
     SonyAlphaRemote_StatusPoller.cpp \
-    SonyAlphaRemote_BulbShootSequencer.cpp
+    SonyAlphaRemote_BulbShootSequencer.cpp \
+    SonyAlphaRemote_Sequencer_StateBase.cpp \
+    SonyAlphaRemote_Sequencer_StateWaitForStart.cpp \
+    SonyAlphaRemote_Sequencer_StateNormalShooting.cpp \
+    SonyAlphaRemote_Sequencer_StateBulbShooting.cpp \
+    SonyAlphaRemote_Sequencer_StateWaitForCamReady.cpp \
+    SonyAlphaRemote_Sequencer_StatePause.cpp \
+    SonyAlphaRemote_Sequencer_StateFinish.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -27,6 +34,13 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_Sender.h \
     SsdpClient.h \
     SonyAlphaRemote_StatusPoller.h \
-    SonyAlphaRemote_BulbShootSequencer.h
+    SonyAlphaRemote_BulbShootSequencer.h \
+    SonyAlphaRemote_Sequencer_StateBase.h \
+    SonyAlphaRemote_Sequencer_StateWaitForStart.h \
+    SonyAlphaRemote_Sequencer_StateNormalShooting.h \
+    SonyAlphaRemote_Sequencer_StateBulbShooting.h \
+    SonyAlphaRemote_Sequencer_StateWaitForCamReady.h \
+    SonyAlphaRemote_Sequencer_StatePause.h \
+    SonyAlphaRemote_Sequencer_StateFinish.h
 
 FORMS    += MainWindow.ui

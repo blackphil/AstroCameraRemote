@@ -1,95 +1,18 @@
 #include "SonyAlphaRemote_BulbShootSequencer.h"
 #include "SonyAlphaRemote_Helper.h"
 
+#include "SonyAlphaRemote_Sequencer_StateWaitForStart.h"
+#include "SonyAlphaRemote_Sequencer_StateBulbShooting.h"
+#include "SonyAlphaRemote_Sequencer_StateNormalShooting.h"
+#include "SonyAlphaRemote_Sequencer_StateWaitForCamReady.h"
+#include "SonyAlphaRemote_Sequencer_StatePause.h"
+#include "SonyAlphaRemote_Sequencer_StateFinish.h"
+
 //#define DRY_RUN
 
 namespace SonyAlphaRemote {
+namespace Sequencer {
 
-StateWaitForStart::StateWaitForStart(QTimer* t) : t(t) {}
-
-void StateWaitForStart::onEntry(QEvent*)
-{
-    QString msg = tr("wait for starting BULB sequence (%0 milliseconds)").arg(t->interval());
-    SAR_INF(msg);
-    Q_EMIT message(msg);
-    t->start();
-}
-
-StateShooting::StateShooting(Sender* sender, QTimer* t, quint32 i, quint32 maxCount)
-        : t(t)
-        , sender(sender)
-        , i(i)
-        , maxCount(maxCount)
-    {}
-
-void StateShooting::onEntry(QEvent*)
-{
-    QString msg = tr("start shoot (%0/%1)").arg(i).arg(maxCount);
-    SAR_INF(msg);
-    Q_EMIT message(msg);
-
-#ifndef DRY_RUN
-    if(!sender.isNull())
-        sender.data()->send(&startBulbShooting);
-#endif
-    t->start();
-}
-
-void StateShooting::onExit(QEvent*)
-{
-    QString msg = tr("stop shoot (%0/%1)").arg(i).arg(maxCount);
-    SAR_INF(msg);
-    Q_EMIT message(msg);
-#ifndef DRY_RUN
-    if(!sender.isNull())
-        sender.data()->send(&stopBulbShooting);
-#endif
-}
-
-StateWaitForCamReady::StateWaitForCamReady(Sender* sender, int i, int numShots)
-    : awaitTakePicture(new Json::AwaitTakePicture(this))
-    , sender(sender)
-    , i(i)
-    , numShots(numShots)
-{
-    connect(awaitTakePicture, SIGNAL(havePostViewUrl(QString)), this, SIGNAL(updatePostViewInfo(QString)));
-}
-
-void StateWaitForCamReady::onEntry(QEvent*)
-{
-    QString msg = tr("wait for camera IDLE mode");
-    SAR_INF(msg);
-    Q_EMIT message(msg);
-}
-
-void StateWaitForCamReady::onExit(QEvent *event)
-{
-    sender->send(awaitTakePicture);
-}
-
-void StateWaitForCamReady::updatePostViewInfo(QString url)
-{
-    Q_EMIT havePostViewUrl(url, i, numShots);
-}
-
-
-StatePause::StatePause(QTimer* t) : t(t) {}
-
-void StatePause::onEntry(QEvent*)
-{
-    QString msg = tr("pause");
-    SAR_INF(msg);
-    Q_EMIT message(msg);
-    t->start();
-}
-
-
-void StateFinish::onEntry(QEvent *event)
-{
-    QString msg = tr("finished");
-    SAR_INF(msg);
-    Q_EMIT message(msg);
-}
 
 BulbShootSequencer::BulbShootSequencer(StatusPoller *statusPoller, Sender* sender, QObject *parent)
     : QObject(parent)
@@ -136,9 +59,9 @@ void BulbShootSequencer::start()
 
     QState* prevState = waitForStart;
     QTimer* currentTimer = startDelayTm;
-    for(quint32 i=0; i<numShots; i++)
+    for(int i=0; i<numShots; i++)
     {
-        StateShooting* shooting = new StateShooting(sender, shutterSpeedTm, i+1, numShots);
+        StateBulbShooting* shooting = new StateBulbShooting(sender, shutterSpeedTm, i+1, numShots);
         connect(shooting, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
         stateMachine->addState(shooting);
 
@@ -226,5 +149,5 @@ int BulbShootSequencer::calculateSequenceDuration() const
 }
 
 
-
+} // namespace Sequencer
 } // namespace SonyAlphaRemote

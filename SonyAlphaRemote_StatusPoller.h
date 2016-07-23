@@ -9,7 +9,7 @@
 
 namespace SonyAlphaRemote {
 
-class StatusPoller : public QObject
+class   StatusPoller : public QObject
 {
     Q_OBJECT
 
@@ -17,9 +17,7 @@ class StatusPoller : public QObject
     QTimer* trigger;
     QString cameraStatus;
     Json::GetEvent* getEvent;
-    Json::AwaitTakePicture* awaitTakePicture;
 
-    bool pollPostViewPictureUrlEnabled;
     bool waitingForEventReply;
 
 public:
@@ -33,8 +31,6 @@ public:
 
     QString getCameraStatus() const;
 
-    bool getPollPostViewPictureUrlEnabled() const;
-    void setPollPostViewPictureUrlEnabled(bool value);
 
     void simCamReady();
 
@@ -47,7 +43,7 @@ private Q_SLOTS :
     void handleEventReply();
     void handleEventError();
     void handleAwaitPicReply(const QString& potUrl);
-    void handleAraitPicError();
+    void handleAwaitPicError();
 };
 
 } // namespace SonyAlphaRemote

@@ -12,15 +12,6 @@ QString StatusPoller::getCameraStatus() const
     return cameraStatus;
 }
 
-bool StatusPoller::getPollPostViewPictureUrlEnabled() const
-{
-    return pollPostViewPictureUrlEnabled;
-}
-
-void StatusPoller::setPollPostViewPictureUrlEnabled(bool value)
-{
-    pollPostViewPictureUrlEnabled = value;
-}
 
 void StatusPoller::simCamReady()
 {
@@ -33,13 +24,10 @@ StatusPoller::StatusPoller(Sender *sender, QObject *parent)
     , trigger(NULL)
     , cameraStatus(tr("not connected"))
     , getEvent(new Json::GetEvent(this))
-    , awaitTakePicture(new Json::AwaitTakePicture(this))
-    , pollPostViewPictureUrlEnabled(false)
     , waitingForEventReply(false)
 {
     connect(getEvent, SIGNAL(confirmed()), this, SLOT(handleEventReply()));
     connect(getEvent, SIGNAL(declined()), this, SLOT(handleEventError()));
-    connect(awaitTakePicture, SIGNAL(havePostViewUrl(QString)), this, SLOT(handleAwaitPicReply(QString)));
 }
 
 void StatusPoller::start(double interval)
@@ -74,20 +62,15 @@ void StatusPoller::poll()
 {
     if(!waitingForEventReply)
     {
-        SAR_INF("SEND GETEVENT NOW (" << getEvent->isCallbackImmedialetyEnabled() << ")");
+//        SAR_INF("SEND GETEVENT NOW (" << getEvent->isCallbackImmedialetyEnabled() << ")");
         sender->send(getEvent);
         waitingForEventReply = true;
-    }
-
-    if(pollPostViewPictureUrlEnabled)
-    {
-        sender->send(awaitTakePicture);
     }
 }
 
 void StatusPoller::handleEventReply()
 {
-    SAR_INF("RECV GETEVENT NOW (" << getEvent->isCallbackImmedialetyEnabled() << ")");
+//    SAR_INF("RECV GETEVENT NOW (" << getEvent->isCallbackImmedialetyEnabled() << ")");
     getEvent->setCallbackImmedialetyEnabled(false);
 
     QJsonValueRef camStatVal = getEvent->getStatus()[1];
@@ -112,11 +95,10 @@ void StatusPoller::handleAwaitPicReply(const QString &potUrl)
     if(url.isValid())
     {
         Q_EMIT haveNewPostViewPictureUrl(potUrl);
-        pollPostViewPictureUrlEnabled = false;
     }
 }
 
-void StatusPoller::handleAraitPicError()
+void StatusPoller::handleAwaitPicError()
 {
 
 }

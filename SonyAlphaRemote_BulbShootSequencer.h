@@ -11,84 +11,9 @@
 #include "SonyAlphaRemote_StatusPoller.h"
 
 namespace SonyAlphaRemote {
+namespace Sequencer {
 
-class StateWaitForStart : public QState
-{
-    Q_OBJECT
 
-    QPointer<QTimer> t;
-public :
-    StateWaitForStart(QTimer* t);
-protected :
-    void onEntry(QEvent*);
-Q_SIGNALS :
-    void message(QString);
-};
-
-class StateShooting : public QState
-{
-    Q_OBJECT
-
-    Json::StartBulbShooting startBulbShooting;
-    Json::StopBulbShooting stopBulbShooting;
-    QPointer<QTimer> t;
-    QPointer<Sender> sender;
-    quint32 i;
-    quint32 maxCount;
-public :
-    StateShooting(Sender* sender, QTimer* t, quint32 i, quint32 maxCount);
-protected :
-    void onEntry(QEvent*);
-    void onExit(QEvent*);
-Q_SIGNALS :
-    void message(QString);
-};
-
-class StateWaitForCamReady: public QState
-{
-    Q_OBJECT
-
-    Json::AwaitTakePicture* awaitTakePicture;
-    Sender* sender;
-    int i, numShots;
-
-public :
-    StateWaitForCamReady(Sender *sender, int i, int numShots);
-protected :
-    void onEntry(QEvent*);
-    void onExit(QEvent *event);
-
-private Q_SLOTS:
-    void updatePostViewInfo(QString url);
-
-Q_SIGNALS :
-    void message(QString);
-    void havePostViewUrl(QString, int, int);
-
-};
-
-class StatePause : public QState
-{
-    Q_OBJECT
-
-    QPointer<QTimer> t;
-public:
-    StatePause(QTimer* t);
-protected:
-    void onEntry(QEvent*);
-Q_SIGNALS :
-    void message(QString);
-};
-
-class StateFinish : public QState
-{
-    Q_OBJECT
-
-protected :
-    void onEntry(QEvent *event);
-Q_SIGNALS :
-    void message(QString);
-};
 
 class BulbShootSequencer : public QObject
 {
@@ -110,8 +35,6 @@ private :
 
 
 public:
-
-
 
 
     explicit BulbShootSequencer(StatusPoller* statusPoller, Sender* sender, QObject *parent = 0);
@@ -148,6 +71,7 @@ Q_SIGNALS :
 
 };
 
+} // namespace Sequencer
 } // namespace SonyAlphaRemote
 
 #endif // SONYALPHAREMOTE_BULBSHOOTSEQUENCER_H
