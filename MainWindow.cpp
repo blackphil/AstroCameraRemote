@@ -40,6 +40,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    settings.registerSpinBox(ui->startDelay, "sequencer/startDelay", 0);
+    settings.registerSpinBox(ui->shutterSpeedBulb, "sequencer/shutterSpeed", 1000);
+    settings.registerSpinBox(ui->pause, "sequencer/pause", 2000);
+    settings.registerSpinBox(ui->numShots, "sequencer/numShots", 1);
+
+    settings.registerComboBox(ui->shutterSpeed, "shutterSpeed", "BULB");
+    settings.registerComboBox(ui->isoSpeedRate, "iso", "800");
+
     connect(currentTimeDisplayTimer, SIGNAL(timeout()), this, SLOT(updateCurrentTimeDisplay()));
     currentTimeDisplayTimer->start(10);
 
@@ -305,9 +313,15 @@ void MainWindow::updateBatteryStatus()
     ui->batteryStatus->setValue(info.getLevelNumber());
 
     if(info.getAdditionalStatus() == SonyAlphaRemote::BatteryInfo::AdditionalStatus_batteryNearEnd)
-        ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleDanger());
+        ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleCritical());
     else
-        ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleNormal());
+    {
+        double load = (double)info.getLevelNumber() / (double)info.getLevelDenom();
+        if(0.3 > load)
+            ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleLow());
+        else
+            ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleNormal());
+    }
 
 }
 

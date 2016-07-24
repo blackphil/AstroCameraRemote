@@ -2,8 +2,9 @@
 
 namespace SonyAlphaRemote {
 
-QString BatteryInfo::styleNormal = "QProgressBar::chunk {background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 255, 0, 255), stop:1 rgba(0, 127, 0, 255))};";
-QString BatteryInfo::styleDanger = "QProgressBar::chunk {background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(127, 0, 0, 255))};";
+QString BatteryInfo::styleNormal   = "QProgressBar::chunk {background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 255, 0, 255), stop:1 rgba(0, 127, 0, 255))};";
+QString BatteryInfo::styleLow      = "QProgressBar::chunk {background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 255, 0, 255), stop:1 rgba(127, 127, 0, 255))};";
+QString BatteryInfo::styleCritical = "QProgressBar::chunk {background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(127, 0, 0, 255))};";
 
 QString BatteryInfo::getId() const
 {

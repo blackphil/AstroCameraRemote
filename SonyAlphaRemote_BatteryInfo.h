@@ -34,7 +34,8 @@ private :
     QString description;
 
     static QString styleNormal;
-    static QString styleDanger;
+    static QString styleLow;
+    static QString styleCritical;
 
 
 public:
@@ -48,7 +49,8 @@ public:
     QString getDescription() const;
 
     static QString getStyleNormal() { return styleNormal; }
-    static QString getStyleDanger() { return styleDanger; }
+    static QString getStyleLow() { return styleLow; }
+    static QString getStyleCritical() { return styleCritical; }
 };
 
 } // namespace SonyAlphaRemote

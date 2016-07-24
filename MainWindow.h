@@ -9,6 +9,7 @@
 #include "SonyAlphaRemote_StatusPoller.h"
 #include "SonyAlphaRemote_BulbShootSequencer.h"
 #include "SonyAlphaRemote_BatteryInfo.h"
+#include "SonyAlphaRemote_Settings.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +30,8 @@ class MainWindow : public QMainWindow
     SonyAlphaRemote::Sender* sender;
     SonyAlphaRemote::StatusPoller* statusPoller;
     SonyAlphaRemote::Sequencer::BulbShootSequencer* bulbShootSequencer;
+
+    SonyAlphaRemote::Settings settings;
 
     bool aboutToClose;
 

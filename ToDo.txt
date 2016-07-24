@@ -1,4 +1,4 @@
-- einstellungen in qsettings speichern
+- gui verriegelungen
 - jpeg download
 - raw download
 - metadata anzeige/download
@@ -9,7 +9,7 @@
 - live view
 - ssdp abfrage für kamera suche implementieren
 
-- ERLEDIGT gui verriegelungen
+- ERLEDIGT einstellungen in qsettings speichern
 - ERLEDIGT cancel BULB sequence
 - ERLEDIGT aktuelle Uhrzeit anzeigen
 - ERLEDIGT batterie status anzeige
