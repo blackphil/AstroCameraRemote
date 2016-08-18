@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1194</width>
+    <width>1209</width>
     <height>690</height>
    </rect>
   </property>
@@ -129,20 +129,43 @@
        <string>BULB shooting</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="1">
-        <widget class="QSpinBox" name="startDelay">
-         <property name="suffix">
-          <string>msec</string>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="calculatedDuration">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="maximum">
-          <number>100000</number>
+         <property name="frame">
+          <bool>false</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_3">
+       <item row="4" column="3">
+        <widget class="QPushButton" name="simCamReadyBtn">
          <property name="text">
-          <string>Start delay:</string>
+          <string>SIM CAM READY</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QSpinBox" name="numShots">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>10000</number>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>Calculated duration:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -169,22 +192,13 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QSpinBox" name="shutterSpeedBulb">
-         <property name="suffix">
-          <string>msec</string>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Start delay:</string>
          </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>36000000</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
-         </property>
-         <property name="value">
-          <number>2000</number>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -198,23 +212,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QSpinBox" name="pause">
-         <property name="suffix">
-          <string>msec</string>
-         </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>36000000</number>
-         </property>
-         <property name="value">
-          <number>3000</number>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2" rowspan="4">
+       <item row="0" column="3" rowspan="4">
         <widget class="QPushButton" name="startBulbSequence">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
@@ -227,46 +225,93 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QSpinBox" name="numShots">
-         <property name="minimum">
-          <number>1</number>
+       <item row="0" column="2">
+        <widget class="SonyAlphaRemote::TimeUnitButton" name="startDelayTuBtn">
+         <property name="maximumSize">
+          <size>
+           <width>30</width>
+           <height>20</height>
+          </size>
          </property>
-         <property name="maximum">
-          <number>10000</number>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
          </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="QPushButton" name="simCamReadyBtn">
          <property name="text">
-          <string>SIM CAM READY</string>
+          <string>tu</string>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>8</width>
+           <height>8</height>
+          </size>
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_8">
+       <item row="1" column="2">
+        <widget class="SonyAlphaRemote::TimeUnitButton" name="shutterSpeedTuBtn">
+         <property name="maximumSize">
+          <size>
+           <width>30</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
          <property name="text">
-          <string>Calculated duration:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <string>tu</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="calculatedDuration">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+       <item row="2" column="2">
+        <widget class="SonyAlphaRemote::TimeUnitButton" name="pauseTuBtn">
+         <property name="maximumSize">
+          <size>
+           <width>30</width>
+           <height>20</height>
+          </size>
          </property>
-         <property name="frame">
-          <bool>false</bool>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
          </property>
-         <property name="readOnly">
+         <property name="text">
+          <string>tu</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QDoubleSpinBox" name="startDelay">
+         <property name="showGroupSeparator" stdset="0">
           <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="shutterSpeedBulb">
+         <property name="showGroupSeparator" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QDoubleSpinBox" name="pause">
+         <property name="showGroupSeparator" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>6</number>
          </property>
         </widget>
        </item>
@@ -334,6 +379,9 @@
     </item>
     <item row="0" column="2" colspan="2">
      <widget class="QProgressBar" name="batteryStatus">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="value">
        <number>24</number>
       </property>
@@ -352,7 +400,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1194</width>
+     <width>1209</width>
      <height>21</height>
     </rect>
    </property>
@@ -368,6 +416,13 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>SonyAlphaRemote::TimeUnitButton</class>
+   <extends>QPushButton</extends>
+   <header>SonyAlphaRemote_TimeUnitButton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

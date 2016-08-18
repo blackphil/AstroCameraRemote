@@ -6,6 +6,7 @@
 #include <QList>
 #include <QSpinBox>
 #include <QComboBox>
+#include "SonyAlphaRemote_TimeUnitButton.h"
 
 namespace SonyAlphaRemote {
 
@@ -38,11 +39,30 @@ private :
     void updateValue();
 };
 
+class DoubleSpinBoxSetting : public Setting
+{
+    QDoubleSpinBox* spinBox;
+public :
+    DoubleSpinBoxSetting(QSettings* settings, const QString& namePath, QDoubleSpinBox* spinBox, double defaultValue);
+private :
+    void updateValue();
+};
+
+
 class ComboBoxSetting : public Setting
 {
     QComboBox* comboBox;
 public :
     ComboBoxSetting(QSettings* settings, const QString& namePath, QComboBox* comboBox, const QString& defaultValue);
+private :
+    void updateValue();
+};
+
+class TimeUnitButtonSetting : public Setting
+{
+    TimeUnitButton* button;
+public :
+    TimeUnitButtonSetting(QSettings* settings, const QString& namePath, TimeUnitButton* button, TimeUnitButton::Unit defaultValue);
 private :
     void updateValue();
 };
@@ -54,7 +74,9 @@ class Settings
     QList<Setting*> registeredSettings;
 public:
     void registerSpinBox(QSpinBox* spinBox, const QString& namePath, int defaultValue);
+    void registerDoubleSpinBox(QDoubleSpinBox* spinBox, const QString& namePath, double defaultValue);
     void registerComboBox(QComboBox* comboBox, const QString& namePath, const QString &defaultValue);
+    void registerTimeUnitButton(TimeUnitButton* button, const QString& namePath, TimeUnitButton::Unit defaultValue);
 };
 
 

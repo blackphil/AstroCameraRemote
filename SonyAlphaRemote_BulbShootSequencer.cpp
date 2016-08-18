@@ -159,7 +159,7 @@ int BulbShootSequencer::calculateSequenceDuration() const
 
 int BulbShootSequencer::calculateSequenceDuration(int startDelay, int shutterSpeed, int pauseDelay, int numShots)
 {
-    return startDelay + (2* shutterSpeed + pauseDelay) * numShots;
+    return startDelay + (2* shutterSpeed + pauseDelay) * numShots - pauseDelay;
 }
 
 void BulbShootSequencer::handleStopped()

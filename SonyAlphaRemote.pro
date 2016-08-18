@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     SonyAlphaRemote_Sequencer_StateFinish.cpp \
     SonyAlphaRemote_Json_GetEvent.cpp \
     SonyAlphaRemote_BatteryInfo.cpp \
-    SonyAlphaRemote_Settings.cpp
+    SonyAlphaRemote_Settings.cpp \
+    SonyAlphaRemote_TimeUnitButton.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -47,7 +48,8 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_Sequencer_StateFinish.h \
     SonyAlphaRemote_Json_GetEvent.h \
     SonyAlphaRemote_BatteryInfo.h \
-    SonyAlphaRemote_Settings.h
+    SonyAlphaRemote_Settings.h \
+    SonyAlphaRemote_TimeUnitButton.h
 
 FORMS    += MainWindow.ui
 

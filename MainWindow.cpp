@@ -40,13 +40,22 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    settings.registerSpinBox(ui->startDelay, "sequencer/startDelay", 0);
-    settings.registerSpinBox(ui->shutterSpeedBulb, "sequencer/shutterSpeed", 1000);
-    settings.registerSpinBox(ui->pause, "sequencer/pause", 2000);
-    settings.registerSpinBox(ui->numShots, "sequencer/numShots", 1);
-
     settings.registerComboBox(ui->shutterSpeed, "shutterSpeed", "BULB");
     settings.registerComboBox(ui->isoSpeedRate, "iso", "800");
+
+    settings.registerDoubleSpinBox(ui->startDelay, "sequencer/startDelay", 0);
+    settings.registerDoubleSpinBox(ui->shutterSpeedBulb, "sequencer/shutterSpeed", 1000);
+    settings.registerDoubleSpinBox(ui->pause, "sequencer/pause", 2000);
+    settings.registerSpinBox(ui->numShots, "sequencer/numShots", 1);
+
+    ui->startDelayTuBtn->connectToSpinbox(ui->startDelay);
+    settings.registerTimeUnitButton(ui->startDelayTuBtn, "sequencer/startDelayTimeUnit", SonyAlphaRemote::TimeUnitButton::Unit_Milliseconds);
+
+    ui->shutterSpeedTuBtn->connectToSpinbox(ui->shutterSpeedBulb);
+    settings.registerTimeUnitButton(ui->shutterSpeedTuBtn, "sequencer/shutterSpeedTimeUnit", SonyAlphaRemote::TimeUnitButton::Unit_Milliseconds);
+
+    ui->pauseTuBtn->connectToSpinbox(ui->pause);
+    settings.registerTimeUnitButton(ui->pauseTuBtn, "sequencer/pauseTimeUnit", SonyAlphaRemote::TimeUnitButton::Unit_Milliseconds);
 
     connect(currentTimeDisplayTimer, SIGNAL(timeout()), this, SLOT(updateCurrentTimeDisplay()));
     currentTimeDisplayTimer->start(10);
@@ -83,9 +92,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(bulbShootSequencer, SIGNAL(started()), this, SLOT(bulbShootSequencerStarted()));
     connect(bulbShootSequencer, SIGNAL(stopped()), this, SLOT(bulbShootSequencerStopped()));
 
-    connect(ui->startDelay, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
-    connect(ui->shutterSpeedBulb, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
-    connect(ui->pause, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
+    connect(ui->startDelay, SIGNAL(valueChanged(double)), this, SLOT(recalcBulbShootDuration()));
+    connect(ui->shutterSpeedBulb, SIGNAL(valueChanged(double)), this, SLOT(recalcBulbShootDuration()));
+    connect(ui->pause, SIGNAL(valueChanged(double)), this, SLOT(recalcBulbShootDuration()));
     connect(ui->numShots, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
 
 
@@ -271,9 +280,9 @@ void MainWindow::on_startBulbSequence_clicked()
 void MainWindow::applyBulbSettings()
 {
     bulbShootSequencer->setNumShots(ui->numShots->value());
-    bulbShootSequencer->setShutterSpeed(ui->shutterSpeedBulb->value());
-    bulbShootSequencer->setPauseDelay(ui->pause->value());
-    bulbShootSequencer->setStartDelay(ui->startDelay->value());
+    bulbShootSequencer->setShutterSpeed(ui->shutterSpeedTuBtn->getValueInMilliseconds());
+    bulbShootSequencer->setPauseDelay(ui->pauseTuBtn->getValueInMilliseconds());
+    bulbShootSequencer->setStartDelay(ui->startDelayTuBtn->getValueInMilliseconds());
 }
 
 void MainWindow::appendOutputMessage(QString msg)
@@ -302,7 +311,7 @@ void MainWindow::updateCurrentTimeDisplay()
     QDateTime now = QDateTime::currentDateTime();
 
     ui->currentDate->setText(now.toString("dd. MM. yyyy"));
-    ui->currentTime->setText(now.toString("HH:MM:ss:zzz"));
+    ui->currentTime->setText(now.toString("HH:mm:ss:zzz"));
 }
 
 void MainWindow::updateBatteryStatus()
@@ -311,17 +320,15 @@ void MainWindow::updateBatteryStatus()
     ui->batteryStatus->setMinimum(0);
     ui->batteryStatus->setMaximum(info.getLevelDenom());
     ui->batteryStatus->setValue(info.getLevelNumber());
+    double load = (double)info.getLevelNumber() / (double)info.getLevelDenom();
 
-    if(info.getAdditionalStatus() == SonyAlphaRemote::BatteryInfo::AdditionalStatus_batteryNearEnd)
+    if(0.001 > load || info.getAdditionalStatus() == SonyAlphaRemote::BatteryInfo::AdditionalStatus_batteryNearEnd)
         ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleCritical());
+    else if(0.3 > load)
+        ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleLow());
     else
-    {
-        double load = (double)info.getLevelNumber() / (double)info.getLevelDenom();
-        if(0.3 > load)
-            ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleLow());
-        else
-            ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleNormal());
-    }
+        ui->batteryStatus->setStyleSheet(SonyAlphaRemote::BatteryInfo::getStyleNormal());
+
 
 }
 
@@ -341,9 +348,9 @@ void MainWindow::recalcBulbShootDuration()
 
     QTime dt = QTime(0,0,0,0).addMSecs(
                 SonyAlphaRemote::Sequencer::BulbShootSequencer::calculateSequenceDuration(
-                    ui->startDelay->value()
-                    , ui->shutterSpeedBulb->value()
-                    , ui->pause->value()
+                    ui->startDelayTuBtn->getValueInMilliseconds()
+                    , ui->shutterSpeedTuBtn->getValueInMilliseconds()
+                    , ui->pauseTuBtn->getValueInMilliseconds()
                     , ui->numShots->value()));
 
     ui->calculatedDuration->setText(
