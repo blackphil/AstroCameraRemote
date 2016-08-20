@@ -7,9 +7,11 @@
 
 #include "SonyAlphaRemote_Sender.h"
 #include "SonyAlphaRemote_StatusPoller.h"
-#include "SonyAlphaRemote_BulbShootSequencer.h"
+#include "SonyAlphaRemote_Sequencer_BulbShootSequencer.h"
 #include "SonyAlphaRemote_BatteryInfo.h"
 #include "SonyAlphaRemote_Settings.h"
+#include "SonyAlphaRemote_Sequencer_SettingsManager.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +34,8 @@ class MainWindow : public QMainWindow
     SonyAlphaRemote::Sequencer::BulbShootSequencer* bulbShootSequencer;
 
     SonyAlphaRemote::Settings settings;
+    SonyAlphaRemote::Sequencer::SettingsManager* sequencerSettingsManager;
+
 
     bool aboutToClose;
 
@@ -58,7 +62,6 @@ private Q_SLOTS:
 
     void isoSpeedRatesChanged(const QStringList& candidates, const QString& current);
     void shutterSpeedsChanged(const QStringList& candidates, const QString& current);
-    void stillQualityChanged(const QStringList& candidates, const QString& current);
 
     void on_shutterSpeed_activated(const QString &speed);
 
@@ -88,6 +91,9 @@ private Q_SLOTS:
     void bulbShootSequencerStarted();
     void bulbShootSequencerStopped();
     void recalcBulbShootDuration();
+
+    void addCurrentSequencerSettings();
+    void applySequencerSettings(SonyAlphaRemote::Sequencer::SettingsPtr s);
 
 private:
     Ui::MainWindow *ui;

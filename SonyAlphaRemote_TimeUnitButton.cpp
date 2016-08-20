@@ -66,6 +66,17 @@ int TimeUnitButton::getValueInMilliseconds() const
     return -1;
 }
 
+void TimeUnitButton::setValueInMilliseconds(int v)
+{
+    if(connectedSpinBox)
+    {
+        connectedSpinBox->setValue((double)v / unitSettings[unit].convertToMSec);
+        return;
+    }
+
+    Q_ASSERT(!"no spin box connected!");
+}
+
 void TimeUnitButton::connectToSpinbox(QDoubleSpinBox *spinBox)
 {
     connectedSpinBox = spinBox;

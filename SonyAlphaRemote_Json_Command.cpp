@@ -63,6 +63,11 @@ void SetShutterSpeed::setShutterSpeed(const QString &value)
     shutterSpeed = value;
 }
 
+QString SetShutterSpeed::getShutterSpeed() const
+{
+    return shutterSpeed;
+}
+
 SetShutterSpeed::SetShutterSpeed(QObject* parent)
     : Command(parent)
     , shutterSpeed("")
@@ -85,6 +90,11 @@ QJsonDocument SetShutterSpeed::getJson() const
 void SetIsoSpeedRate::setIsoSpeedRate(const QString &value)
 {
     isoSpeedRate = value;
+}
+
+QString SetIsoSpeedRate::getIsoSpeedRate() const
+{
+    return isoSpeedRate;
 }
 
 SetIsoSpeedRate::SetIsoSpeedRate(QObject* parent)
@@ -379,7 +389,6 @@ PostViewProviderCommand::PostViewProviderCommand(QObject *parent)
 {
 
 }
-
 
 } // namespace Json
 } // namespace SonyAlphaRemote

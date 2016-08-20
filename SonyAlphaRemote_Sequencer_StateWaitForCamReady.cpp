@@ -17,6 +17,7 @@ StateWaitForCamReady::StateWaitForCamReady(Sender* sender, int i, int numShots)
 
 void StateWaitForCamReady::onExit(QEvent *event)
 {
+    Q_UNUSED(event);
     sender->send(&awaitTakePicture);
 }
 

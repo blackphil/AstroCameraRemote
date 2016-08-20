@@ -52,6 +52,7 @@ public :
     QJsonDocument getJson() const;
 
     void setShutterSpeed(const QString &value);
+    QString getShutterSpeed() const;
 };
 
 class SetIsoSpeedRate : public Command
@@ -65,6 +66,7 @@ public :
     QJsonDocument getJson() const;
 
     void setIsoSpeedRate(const QString &value);
+    QString getIsoSpeedRate() const;
 };
 
 class GetShutterSpeed : public Command
@@ -187,8 +189,6 @@ class AwaitTakePicture : public PostViewProviderCommand
 public :
     AwaitTakePicture(QObject* parent = NULL);
     QJsonDocument getJson() const;
-
-
 };
 
 

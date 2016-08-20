@@ -50,6 +50,7 @@ public:
     void setCurrentUnit(Unit unit);
 
     int getValueInMilliseconds() const;
+    void setValueInMilliseconds(int v);
 
     void connectToSpinbox(QDoubleSpinBox *spinBox);
 

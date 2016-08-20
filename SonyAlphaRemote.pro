@@ -19,7 +19,6 @@ SOURCES += main.cpp\
     SonyAlphaRemote_Sender.cpp \
     SsdpClient.cpp \
     SonyAlphaRemote_StatusPoller.cpp \
-    SonyAlphaRemote_BulbShootSequencer.cpp \
     SonyAlphaRemote_Sequencer_StateBase.cpp \
     SonyAlphaRemote_Sequencer_StateWaitForStart.cpp \
     SonyAlphaRemote_Sequencer_StateNormalShooting.cpp \
@@ -30,7 +29,11 @@ SOURCES += main.cpp\
     SonyAlphaRemote_Json_GetEvent.cpp \
     SonyAlphaRemote_BatteryInfo.cpp \
     SonyAlphaRemote_Settings.cpp \
-    SonyAlphaRemote_TimeUnitButton.cpp
+    SonyAlphaRemote_TimeUnitButton.cpp \
+    SonyAlphaRemote_Sequencer_Settings.cpp \
+    SonyAlphaRemote_Sequencer_BulbShootSequencer.cpp \
+    SonyAlphaRemote_Sequencer_NormalShootSequencer.cpp \
+    SonyAlphaRemote_Sequencer_SettingsManager.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -38,7 +41,6 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_Sender.h \
     SsdpClient.h \
     SonyAlphaRemote_StatusPoller.h \
-    SonyAlphaRemote_BulbShootSequencer.h \
     SonyAlphaRemote_Sequencer_StateBase.h \
     SonyAlphaRemote_Sequencer_StateWaitForStart.h \
     SonyAlphaRemote_Sequencer_StateNormalShooting.h \
@@ -49,9 +51,15 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_Json_GetEvent.h \
     SonyAlphaRemote_BatteryInfo.h \
     SonyAlphaRemote_Settings.h \
-    SonyAlphaRemote_TimeUnitButton.h
+    SonyAlphaRemote_TimeUnitButton.h \
+    SonyAlphaRemote_Sequencer_Settings.h \
+    SonyAlphaRemote_Sequencer_BulbShootSequencer.h \
+    SonyAlphaRemote_Sequencer_NormalShootSequencer.h \
+    SonyAlphaRemote_Sequencer_SettingsManager.h
 
 FORMS    += MainWindow.ui
+
+DEFINES += DRY_RUN
 
 DISTFILES += \
     ToDo.txt

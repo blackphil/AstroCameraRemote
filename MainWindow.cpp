@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     , sender(new SonyAlphaRemote::Sender(this))
     , statusPoller(new SonyAlphaRemote::StatusPoller(sender, this))
     , bulbShootSequencer(new SonyAlphaRemote::Sequencer::BulbShootSequencer(statusPoller, sender, this))
+    , sequencerSettingsManager(new SonyAlphaRemote::Sequencer::SettingsManager(this))
     , aboutToClose(false)
     , currentTimeDisplayTimer(new QTimer(this))
 
@@ -97,12 +98,20 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pause, SIGNAL(valueChanged(double)), this, SLOT(recalcBulbShootDuration()));
     connect(ui->numShots, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
 
+    connect(ui->settingsNameCBox, SIGNAL(editTextChanged(QString)), sequencerSettingsManager, SLOT(renameCurrent(QString)));
+    connect(ui->addSettingsBtn, SIGNAL(clicked()), this, SLOT(addCurrentSequencerSettings()));
+    connect(ui->removeSettingsBtn, SIGNAL(clicked()), sequencerSettingsManager, SLOT(removeCurrent()));
+    connect(ui->settingsNameCBox, SIGNAL(currentIndexChanged(QString)), sequencerSettingsManager, SLOT(setCurrent(QString)));
+
+    connect(
+                sequencerSettingsManager, SIGNAL(currentChanged(SonyAlphaRemote::Sequencer::SettingsPtr))
+                , this, SLOT(applySequencerSettings(SonyAlphaRemote::Sequencer::SettingsPtr)));
+
+    ui->settingsNameCBox->addItems(sequencerSettingsManager->getSettingsNames());
+
 
     recalcBulbShootDuration();
 
-
-
-//    ui->centralWidget->setEnabled(false);
     sender->send(startRecMode);
 
 }
@@ -195,22 +204,16 @@ void MainWindow::shutterSpeedsChanged(const QStringList &candidates, const QStri
 
     if(current == "BULB")
     {
-        ui->bulbShootingGroupBox->setEnabled(true);
+//        ui->bulbShootingGroupBox->setEnabled(true);
+        ui->shutterSpeedBulb->setEnabled(true);
+        ui->shutterSpeedTuBtn->setEnabled(true);
     }
     else
     {
-        ui->bulbShootingGroupBox->setEnabled(false);
+//        ui->bulbShootingGroupBox->setEnabled(false);
+        ui->shutterSpeedBulb->setEnabled(false);
+        ui->shutterSpeedTuBtn->setEnabled(false);
     }
-}
-
-void MainWindow::stillQualityChanged(const QStringList &candidates, const QString &current)
-{
-    ui->format->clear();
-    foreach(QString format, candidates)
-    {
-        ui->format->insertItem(0, format);
-    }
-    ui->format->setCurrentText(current);
 }
 
 
@@ -360,4 +363,29 @@ void MainWindow::recalcBulbShootDuration()
 
 
 
+}
+
+void MainWindow::addCurrentSequencerSettings()
+{
+    SonyAlphaRemote::Sequencer::SettingsPtr settings(new SonyAlphaRemote::Sequencer::Settings(ui->settingsNameCBox->currentText()));
+    settings->setShutterSpeed    (ui->shutterSpeed->currentText());
+    settings->setBulbShutterSpeed(ui->shutterSpeedTuBtn->getValueInMilliseconds());
+    settings->setIsoSpeedRate    (ui->isoSpeedRate->currentText());
+    settings->setPauseDelay      (ui->pauseTuBtn->getValueInMilliseconds());
+    settings->setStartDelay      (ui->startDelayTuBtn->getValueInMilliseconds());
+    settings->setNumShots        (ui->numShots->value());
+
+    sequencerSettingsManager->set(settings);
+}
+
+void MainWindow::applySequencerSettings(SonyAlphaRemote::Sequencer::SettingsPtr s)
+{
+    ui->shutterSpeed->setCurrentText(s->getShutterSpeed());
+    ui->shutterSpeedTuBtn->setValueInMilliseconds(s->getBulbShutterSpeed());
+    ui->isoSpeedRate->setCurrentText(s->getIsoSpeedRate());
+    ui->pauseTuBtn->setValueInMilliseconds(s->getPauseDelay());
+    ui->startDelayTuBtn->setValueInMilliseconds(s->getStartDelay());
+    ui->numShots->setValue(s->getNumShots());
+
+    s->apply(sender);
 }

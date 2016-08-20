@@ -1,8 +1,7 @@
-#include "SonyAlphaRemote_BulbShootSequencer.h"
+#include "SonyAlphaRemote_Sequencer_NormalShootSequencer.h"
 #include "SonyAlphaRemote_Helper.h"
 
 #include "SonyAlphaRemote_Sequencer_StateWaitForStart.h"
-#include "SonyAlphaRemote_Sequencer_StateBulbShooting.h"
 #include "SonyAlphaRemote_Sequencer_StateNormalShooting.h"
 #include "SonyAlphaRemote_Sequencer_StateWaitForCamReady.h"
 #include "SonyAlphaRemote_Sequencer_StatePause.h"
@@ -12,29 +11,29 @@ namespace SonyAlphaRemote {
 namespace Sequencer {
 
 
-BulbShootSequencer::BulbShootSequencer(StatusPoller *statusPoller, Sender* sender, QObject *parent)
+
+
+NormalShootSequencer::NormalShootSequencer(StatusPoller *statusPoller, Sender* sender, QObject *parent)
     : QObject(parent)
     , statusPoller(statusPoller)
     , sender(sender)
     , stateMachine(NULL)
     , count(0)
-    , shutterSpeedTm(new QTimer(this))
     , pauseDelayTm(new QTimer(this))
     , startDelayTm(new QTimer(this))
     , numShots(3)
+    , shutterSpeed(0)
 {
     connect(statusPoller, SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
-    shutterSpeedTm->setSingleShot(true);
     pauseDelayTm->setSingleShot(true);
     startDelayTm->setSingleShot(true);
-    shutterSpeedTm->setInterval(1000);
     pauseDelayTm->setInterval(1000);
     startDelayTm->setInterval(1000);
 
 
 }
 
-void BulbShootSequencer::start()
+void NormalShootSequencer::start()
 {
     if(stateMachine)
     {
@@ -63,7 +62,7 @@ void BulbShootSequencer::start()
     QTimer* currentTimer = startDelayTm;
     for(int i=0; i<numShots; i++)
     {
-        StateBulbShooting* shooting = new StateBulbShooting(sender, shutterSpeedTm, i+1, numShots);
+        StateNormalShooting* shooting = new StateNormalShooting(sender, i+1, numShots);
         connect(shooting, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
         stateMachine->addState(shooting);
 
@@ -73,7 +72,7 @@ void BulbShootSequencer::start()
         connect(waitForCamReady, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
         connect(waitForCamReady, SIGNAL(havePostViewUrl(QString, int, int)), this, SIGNAL(havePostViewUrl(QString, int, int)));
         stateMachine->addState(waitForCamReady);
-        shooting->addTransition(shutterSpeedTm, SIGNAL(timeout()), waitForCamReady);
+        shooting->addTransition(waitForCamReady);
 
         StatePause* pause = new StatePause(pauseDelayTm);
         stateMachine->addState(pause);
@@ -97,76 +96,63 @@ void BulbShootSequencer::start()
     stateMachine->start();
 }
 
-void BulbShootSequencer::stop()
+void NormalShootSequencer::stop()
 {
-    sender->send(&stopBulbShooting);
     stateMachine->stop();
     handleStopped();
 }
 
-void BulbShootSequencer::handleCameraStatus(QString status)
+void NormalShootSequencer::handleCameraStatus(QString status)
 {
     if(status == "IDLE")
         Q_EMIT cameraReady();
 }
 
-int BulbShootSequencer::getNumShots() const
+int NormalShootSequencer::getNumShots() const
 {
     return numShots;
 }
 
-void BulbShootSequencer::setNumShots(int value)
+void NormalShootSequencer::setNumShots(int value)
 {
     numShots = value;
 }
 
-int BulbShootSequencer::getStartDelay() const
+int NormalShootSequencer::getStartDelay() const
 {
     return startDelayTm->interval();
 }
-void BulbShootSequencer::setStartDelay(int value)
+void NormalShootSequencer::setStartDelay(int value)
 {
     startDelayTm->setInterval(value);
 }
 
-int BulbShootSequencer::getShutterSpeed() const
-{
-    return shutterSpeedTm->interval();
-}
-void BulbShootSequencer::setShutterSpeed(int value)
-{
-    shutterSpeedTm->setInterval(value);
-}
-
-int BulbShootSequencer::getPauseDelay() const
+int NormalShootSequencer::getPauseDelay() const
 {
     return pauseDelayTm->interval();
 }
-void BulbShootSequencer::setPauseDelay(int value)
+void NormalShootSequencer::setPauseDelay(int value)
 {
     pauseDelayTm->setInterval(value);
 }
 
-bool BulbShootSequencer::isRunning() const
+bool NormalShootSequencer::isRunning() const
 {
     return stateMachine && stateMachine->isRunning();
 }
 
-int BulbShootSequencer::calculateSequenceDuration() const
+int NormalShootSequencer::calculateSequenceDuration() const
 {
-    return calculateSequenceDuration(startDelayTm->interval(), shutterSpeedTm->interval(), pauseDelayTm->interval(), numShots);
+    return calculateSequenceDuration(startDelayTm->interval(), shutterSpeed, pauseDelayTm->interval(), numShots);
 }
 
-int BulbShootSequencer::calculateSequenceDuration(int startDelay, int shutterSpeed, int pauseDelay, int numShots)
+int NormalShootSequencer::calculateSequenceDuration(int startDelay, int shutterSpeed, int pauseDelay, int numShots)
 {
     return startDelay + (2* shutterSpeed + pauseDelay) * numShots - pauseDelay;
 }
 
-void BulbShootSequencer::handleStopped()
+void NormalShootSequencer::handleStopped()
 {
-
-    if(shutterSpeedTm)
-        shutterSpeedTm->stop();
 
     if(pauseDelayTm)
         pauseDelayTm->stop();
@@ -177,6 +163,15 @@ void BulbShootSequencer::handleStopped()
     Q_EMIT stopped();
 }
 
+int NormalShootSequencer::getShutterSpeed() const
+{
+    return shutterSpeed;
+}
+
+void NormalShootSequencer::setShutterSpeed(int value)
+{
+    shutterSpeed = value;
+}
 
 } // namespace Sequencer
 } // namespace SonyAlphaRemote
