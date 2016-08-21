@@ -46,12 +46,12 @@ void TimeUnitButton::internalUpdate(bool updateSpinBoxValue)
 }
 
 
-TimeUnitButton::Unit TimeUnitButton::currentUnit() const
+int TimeUnitButton::currentUnit() const
 {
     return unit;
 }
 
-void TimeUnitButton::setCurrentUnit(TimeUnitButton::Unit unit)
+void TimeUnitButton::setCurrentUnit(int unit)
 {
     this->unit = unit;
     internalUpdate(false);
@@ -79,7 +79,13 @@ void TimeUnitButton::setValueInMilliseconds(int v)
 
 void TimeUnitButton::connectToSpinbox(QDoubleSpinBox *spinBox)
 {
+    if(connectedSpinBox)
+        disconnect(spinBox, SIGNAL(valueChanged(double)), this, SLOT(handleValueChanged(double)));
+
     connectedSpinBox = spinBox;
+
+    if(connectedSpinBox)
+        connect(connectedSpinBox, SIGNAL(valueChanged(double)), this, SLOT(handleValueChanged(double)));
 }
 
 void TimeUnitButton::nextCheckState()
@@ -88,6 +94,12 @@ void TimeUnitButton::nextCheckState()
     unit = (Unit)nextUnit;
     internalUpdate(true);
     Q_EMIT unitChanged(unit);
+}
+
+void TimeUnitButton::handleValueChanged(double)
+{
+    int ms = getValueInMilliseconds();
+    Q_EMIT valueChanged(ms);
 }
 
 } // namespace SonyAlphaRemote

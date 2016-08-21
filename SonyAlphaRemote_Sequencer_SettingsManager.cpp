@@ -3,85 +3,116 @@
 namespace SonyAlphaRemote {
 namespace Sequencer {
 
-class ScopedQSettingsGroup
+
+
+SettingsManager::SettingsManager(SonyAlphaRemote::Setting* parent)
+    : Setting(parent)
+    , current(NULL)
 {
-    QSettings& s;
+    setObjectName("sequencer");
+}
 
-public :
+void SettingsManager::load()
+{
+    qDeleteAll(settings);
+    settings.clear();
 
-    ScopedQSettingsGroup(const QString& name, QSettings& s)
-        : s(s)
+    qSettings->beginGroup(objectName());
+
+
+
+    QString currentName = qSettings->value("currentSettings", "default").toString();
+    QStringList availableSettings = qSettings->childGroups();
+
+    foreach(QString name, availableSettings)
     {
-        s.beginGroup(name);
+        Sequencer::Settings* s = new Sequencer::Settings(this);
+        s->setObjectName(name);
+        s->load();
+        settings.insert(name, s);
+        if(s->objectName() == currentName)
+        {
+            current = s;
+        }
     }
 
+    qSettings->endGroup();
 
-    ~ScopedQSettingsGroup() { s.endGroup(); }
-};
 
-SettingsManager::SettingsManager(QObject *parent)
-    : QObject(parent)
+    if(settings.isEmpty())
+    {
+        Sequencer::Settings* defaultSettings(new Sequencer::Settings(this));
+        defaultSettings->setObjectName("default");
+        settings[defaultSettings->objectName()] = defaultSettings;
+        current = defaultSettings;
+    }
+
+    if(!current)
+        current = settings.begin().value();
+
+    Q_EMIT currentChanged(current->objectName(), settings.keys());
+}
+
+void SettingsManager::save()
 {
-    ScopedQSettingsGroup seqGrp("Sequencer", qSettings); Q_UNUSED(seqGrp);
-    currentName = qSettings.value("currentSettings", "").toString();
+    qSettings->beginGroup(objectName());
+
+    if(current)
+        qSettings->setValue("currentSettings", current->objectName());
+
+    for(QHash<QString, Sequencer::Settings*>::ConstIterator it=settings.constBegin(); it!=settings.constEnd(); ++it)
+    {
+        (*it)->save();
+    }
+
+    qSettings->endGroup();
+
+}
+
+void SettingsManager::add(Settings *s)
+{
+    Q_ASSERT(s != current);
+    if(s == current)
+        return;
+
+    if(settings.contains(s->objectName()))
+    {
+        settings[s->objectName()]->deleteLater();
+    }
+    settings[s->objectName()] = s;
 }
 
 QStringList SettingsManager::getSettingsNames() const
 {
-    ScopedQSettingsGroup seqGrp("Sequencer", qSettings); Q_UNUSED(seqGrp);
-    return qSettings.childGroups();
-}
-
-
-bool SettingsManager::rename(const QString &oldName, const QString &newName)
-{
-//    if(!remove(oldName))
-//        return false;
-//    if(!add(newName))
-//        return false;
-
-//    if(currentName == oldName)
-//        setCurrent(newName);
-
-    return true;
-}
-
-bool SettingsManager::renameCurrent(const QString &newName)
-{
-//    if(currentName.isEmpty() || currentName == newName)
-//        return false;
-//    return rename(currentName, newName);
-    return true;
+    return settings.keys();
 }
 
 void SettingsManager::setCurrent(const QString &name)
 {
-    currentName = name;
-    handleCurrentChanged();
+    if(!settings.contains(name))
+        return;
+
+    if(current == settings[name])
+        return;
+
+    current = settings[name];
+
+    Q_EMIT currentChanged(name, settings.keys());
 }
 
 bool SettingsManager::remove(QString name)
 {
+    if(!settings.contains(name))
+        return false;
+
+    Sequencer::Settings* toRemove = settings[name];
+    toRemove->deleteLater();
+    settings.remove(name);
+
+    if(toRemove == current)
     {
-        ScopedQSettingsGroup seqGrp("Sequencer", qSettings); Q_UNUSED(seqGrp);
-
-        if(!qSettings.childGroups().contains(name))
-            return false;
-
-        qSettings.remove(name);
-
+        setCurrent(settings.begin().key());
     }
-
-    if(name == currentName)
-    {
-        QStringList list = getSettingsNames();
-        if(list.isEmpty())
-            currentName = "";
-        else
-            currentName = list.first();
-        handleCurrentChanged();
-    }
-
 
     Q_EMIT removed(name);
     return true;
@@ -89,16 +120,56 @@ bool SettingsManager::remove(QString name)
 
 bool SettingsManager::removeCurrent()
 {
-    return remove(currentName);
+    if(!current)
+        return false;
+    return remove(current->objectName());
 }
 
-
-void SettingsManager::handleCurrentChanged()
+void SettingsManager::setShutterSpeed(const QString &value)
 {
-    ScopedQSettingsGroup seqGrp("Sequencer", qSettings); Q_UNUSED(seqGrp);
-    qSettings.setValue("currentSettings", currentName);
-    Q_EMIT currentChanged(currentName);
+    current->setShutterSpeed(value);
 }
+
+void SettingsManager::setIso(const QString &value)
+{
+    current->setIso(value);
+}
+
+void SettingsManager::setShutterSpeedBulb(int value)
+{
+    current->setShutterSpeedBulb(value);
+}
+
+void SettingsManager::setShutterSpeedBulbUnit(int value)
+{
+    current->setShutterspeedBulbUnit(value);
+}
+
+void SettingsManager::setStartDelay(int value)
+{
+    current->setStartDelay(value);
+}
+
+void SettingsManager::setStartDelayUnit(int value)
+{
+    current->setStartDelayUnit(value);
+}
+
+void SettingsManager::setPause(int value)
+{
+    current->setPause(value);
+}
+
+void SettingsManager::setPauseUnit(int value)
+{
+    current->setPauseUnit(value);
+}
+
+void SettingsManager::setNumShots(int value)
+{
+    current->setNumShots(value);
+}
+
 
 } // namespace Sequencer
 } // namespace SonyAlphaRemote

@@ -3,38 +3,53 @@
 
 
 #include <QObject>
-#include <QSettings>
+#include <QHash>
 
-
+#include "SonyAlphaRemote_Settings.h"
 #include "SonyAlphaRemote_Sequencer_Settings.h"
 
 namespace SonyAlphaRemote {
 namespace Sequencer {
 
-class SettingsManager : public QObject
+class SettingsManager : public Setting
 {
     Q_OBJECT
 
-    mutable QSettings qSettings;
-
-    QString currentName;
+    Sequencer::Settings* current;
+    QHash<QString, Sequencer::Settings*> settings;
 
 public:
-    explicit SettingsManager(QObject *parent = 0);
+    explicit SettingsManager(Setting *parent);
 
     QStringList getSettingsNames() const;
-    void handleCurrentChanged();
+    Sequencer::Settings* getCurrent() const { return current; }
 
 Q_SIGNALS :
-    void currentChanged(QString);
+    void currentChanged(QString, QStringList);
     void removed(QString);
 
 public Q_SLOTS :
-    bool rename(const QString& oldName, const QString& newName);
-    bool renameCurrent(const QString& newName);
+    void load();
+    void save();
+
+    void add(Sequencer::Settings* s);
     bool remove(QString name);
     bool removeCurrent();
     void setCurrent(const QString& name);
+
+    void setShutterSpeed(const QString &value);
+    void setIso(const QString &value);
+
+    void setShutterSpeedBulb(int value);
+    void setShutterSpeedBulbUnit(int value);
+
+    void setStartDelay(int value);
+    void setStartDelayUnit(int value);
+
+    void setPause(int value);
+    void setPauseUnit(int value);
+
+    void setNumShots(int value);
 
 };
 

@@ -36,18 +36,19 @@ private :
 
     QDoubleSpinBox* connectedSpinBox;
 
-    Unit unit;
+    int unit;
     void internalUpdate(bool updateSpinBoxValue);
 
 Q_SIGNALS :
-    void unitChanged(Unit unit);
+    void unitChanged(int);
+    void valueChanged(int);
 
 
 public:
     TimeUnitButton(QWidget *parent);
 
-    Unit currentUnit() const;
-    void setCurrentUnit(Unit unit);
+    int currentUnit() const;
+    void setCurrentUnit(int unit);
 
     int getValueInMilliseconds() const;
     void setValueInMilliseconds(int v);
@@ -56,6 +57,9 @@ public:
 
 protected :
     void nextCheckState();
+
+protected Q_SLOTS :
+    void handleValueChanged(double);
 };
 
 } // namespace SonyAlphaRemote

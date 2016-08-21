@@ -7,64 +7,59 @@
 #include <QMutex>
 #include <QSharedPointer>
 
-#include "SonyAlphaRemote_Json_Command.h"
+#include "SonyAlphaRemote_Settings.h"
 
-#if 0
+
 namespace SonyAlphaRemote {
 
 class Sender;
 
 namespace Sequencer {
 
-class Settings : public QObject
+class Settings : public Setting
 {
     Q_OBJECT
 
-    Json::SetShutterSpeed shutterSpeed;
-    Json::SetIsoSpeedRate isoSpeedRate;
-
-    int bulbShutterSpeed;
-    int pauseDelay;
+    QString shutterSpeed;
+    QString iso;
+    int shutterSpeedBulb;
+    int shutterspeedBulbUnit;
     int startDelay;
+    int startDelayUnit;
+    int pause;
+    int pauseUnit;
     int numShots;
 
-    int applyStatus;
-    QMutex confirmMutex;
-    QWaitCondition confirmCondition;
-
-
-Q_SIGNALS:
-    void error(QString);
-
-private Q_SLOTS :
-    void confirmedShutterSpeed();
-    void confirmedIsoSpeedRate();
-
 public:
-    Settings(const QString& name = "", QObject* parent = 0);
+    Settings(Setting* parent);
     ~Settings();
 
-    bool apply(Sender* sender);
+    void addChildSetting(Setting* child);
+    void load();
+    void save();
 
     QString getShutterSpeed() const;
     void setShutterSpeed(const QString &value);
-    int getBulbShutterSpeed() const;
-    void setBulbShutterSpeed(int value);
-    QString getIsoSpeedRate() const;
-    void setIsoSpeedRate(const QString &value);
-    int getPauseDelay() const;
-    void setPauseDelay(int value);
+    QString getIso() const;
+    void setIso(const QString &value);
+    int getShutterSpeedBulb() const;
+    void setShutterSpeedBulb(int value);
     int getStartDelay() const;
     void setStartDelay(int value);
+    int getPause() const;
+    void setPause(int value);
     int getNumShots() const;
     void setNumShots(int value);
+    int getShutterspeedBulbUnit() const;
+    void setShutterspeedBulbUnit(int value);
+    int getStartDelayUnit() const;
+    void setStartDelayUnit(int value);
+    int getPauseUnit() const;
+    void setPauseUnit(int value);
 };
-
-typedef QSharedPointer<Settings> SettingsPtr;
 
 } //namespace Sequencer
 } // namespace SonyAlphaRemote
 
-#endif
 
 #endif // SONYALPHAREMOTE_SHOOTSEQUENCE_H

@@ -3,102 +3,40 @@
 #include "SonyAlphaRemote_Sender.h"
 #include "SonyAlphaRemote_Json_Command.h"
 #include "SonyAlphaRemote_Helper.h"
-#if 0
 
 namespace SonyAlphaRemote {
 
 namespace Sequencer {
 
-enum ApplyStatusFlags
-{
-      Apply_ShutterSpeed = 1
-    , Apply_IsoSpeedRate = 2
-};
-
-Settings::Settings(const QString& name, QObject* parent)
-    : QObject(parent)
-{
-    SAR_INF("Sequencer::Settings ctor");
-
-    setObjectName(name);
-
-    connect(&shutterSpeed, SIGNAL(confirmed()), this, SLOT(confirmedShutterSpeed()));
-    connect(&isoSpeedRate, SIGNAL(confirmed()), this, SLOT(confirmedIsoSpeedRate()));
-}
-
-Settings::~Settings()
-{
-    SAR_INF("Sequencer::Settings dtor");
-}
-
-bool Settings::apply(Sender *sender)
-{
-    applyStatus = ~0;
-
-    sender->send(&shutterSpeed);
-    sender->send(&isoSpeedRate);
-
-    QMutexLocker l(&confirmMutex);
-    while(0 != applyStatus)
-    {
-        if(!confirmCondition.wait(&confirmMutex, 10 * 1000))
-        {
-            Q_EMIT error(tr("apply shoot sequence settings: waiting for confirmation timet out"));
-            return false;
-        }
-    }
-
-    return true;
-}
-
-
-
-
-void Settings::confirmedShutterSpeed() { applyStatus &= ~Apply_ShutterSpeed; confirmCondition.wakeAll(); }
-void Settings::confirmedIsoSpeedRate() { applyStatus &= ~Apply_IsoSpeedRate; confirmCondition.wakeAll(); }
-
-
-
-
 
 QString Settings::getShutterSpeed() const
 {
-    return shutterSpeed.getShutterSpeed();
+    return shutterSpeed;
 }
 
 void Settings::setShutterSpeed(const QString &value)
 {
-    shutterSpeed.setShutterSpeed(value);
+    shutterSpeed = value;
 }
 
-int Settings::getBulbShutterSpeed() const
+QString Settings::getIso() const
 {
-    return bulbShutterSpeed;
+    return iso;
 }
 
-void Settings::setBulbShutterSpeed(int value)
+void Settings::setIso(const QString &value)
 {
-    bulbShutterSpeed = value;
+    iso = value;
 }
 
-QString Settings::getIsoSpeedRate() const
+int Settings::getShutterSpeedBulb() const
 {
-    return isoSpeedRate.getIsoSpeedRate();
+    return shutterSpeedBulb;
 }
 
-void Settings::setIsoSpeedRate(const QString &value)
+void Settings::setShutterSpeedBulb(int value)
 {
-    isoSpeedRate.setIsoSpeedRate(value);
-}
-
-int Settings::getPauseDelay() const
-{
-    return pauseDelay;
-}
-
-void Settings::setPauseDelay(int value)
-{
-    pauseDelay = value;
+    shutterSpeedBulb = value;
 }
 
 int Settings::getStartDelay() const
@@ -111,6 +49,16 @@ void Settings::setStartDelay(int value)
     startDelay = value;
 }
 
+int Settings::getPause() const
+{
+    return pause;
+}
+
+void Settings::setPause(int value)
+{
+    pause = value;
+}
+
 int Settings::getNumShots() const
 {
     return numShots;
@@ -121,6 +69,85 @@ void Settings::setNumShots(int value)
     numShots = value;
 }
 
+int Settings::getShutterspeedBulbUnit() const
+{
+    return shutterspeedBulbUnit;
+}
+
+void Settings::setShutterspeedBulbUnit(int value)
+{
+    shutterspeedBulbUnit = value;
+}
+
+int Settings::getStartDelayUnit() const
+{
+    return startDelayUnit;
+}
+
+void Settings::setStartDelayUnit(int value)
+{
+    startDelayUnit = value;
+}
+
+int Settings::getPauseUnit() const
+{
+    return pauseUnit;
+}
+
+void Settings::setPauseUnit(int value)
+{
+    pauseUnit = value;
+}
+
+Settings::Settings(Setting *parent)
+    : Setting(parent)
+    , shutterSpeed("BULB")
+    , iso("800")
+    , shutterSpeedBulb(1000)
+    , shutterspeedBulbUnit(2)
+    , startDelay(0)
+    , startDelayUnit(2)
+    , pause(1000)
+    , pauseUnit(2)
+    , numShots(1)
+{
+    SAR_INF("Sequencer::Settings ctor");
+}
+
+Settings::~Settings()
+{
+    SAR_INF("Sequencer::Settings dtor");
+}
+
+void Settings::save()
+{
+    qSettings->beginGroup(objectName());
+    qSettings->setValue("shutterSpeed", shutterSpeed);
+    qSettings->setValue("iso", iso);
+    qSettings->setValue("shutterSpeedBulb", shutterSpeedBulb);
+    qSettings->setValue("shutterSpeedBulbUnit", shutterspeedBulbUnit);
+    qSettings->setValue("startDelay", startDelay);
+    qSettings->setValue("startDelayUnit", startDelayUnit);
+    qSettings->setValue("pause", pause);
+    qSettings->setValue("pauseUnit", pauseUnit);
+    qSettings->setValue("numShots", numShots);
+    qSettings->endGroup();
+}
+
+void Settings::load()
+{
+    qSettings->beginGroup(objectName());
+    shutterSpeed = qSettings->value("shutterSpeed", "BULB").toString();
+    iso = qSettings->value("iso", "800").toString();
+    shutterSpeedBulb = qSettings->value("shutterSpeedBulb", 1000).toInt();
+    shutterspeedBulbUnit = qSettings->value("shutterSpeedBulbUnit", 2).toInt();
+    startDelay = qSettings->value("startDelay", 0).toInt();
+    startDelayUnit = qSettings->value("startDelayUnit", 2).toInt();
+    pause = qSettings->value("pause", 1000).toInt();
+    pauseUnit = qSettings->value("pauseUnit", 2).toInt();
+    numShots = qSettings->value("numShots", 1).toInt();
+    qSettings->endGroup();
+}
+
 } //namespace Sequencer
 } // namespace SonyAlphaRemote
-#endif

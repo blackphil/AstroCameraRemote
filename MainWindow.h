@@ -21,6 +21,16 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    enum CameraConnectionState
+    {
+        State_NotConnected = 0x00
+        , State_Hello = 0x01
+        , State_ShutterSpeeds = 0x02
+        , State_IsoSpeeds = 0x04
+        , State_SettingsLoaded = 0x08
+        , State_Completed = 0x07
+    };
+
     SonyAlphaRemote::Json::StartRecMode* startRecMode;
     SonyAlphaRemote::Json::StopRecMode* stopRecMode;
     SonyAlphaRemote::Json::SetShutterSpeed* setShutterSpeed;
@@ -33,16 +43,19 @@ class MainWindow : public QMainWindow
     SonyAlphaRemote::StatusPoller* statusPoller;
     SonyAlphaRemote::Sequencer::BulbShootSequencer* bulbShootSequencer;
 
-    SonyAlphaRemote::Settings settings;
+    SonyAlphaRemote::Settings* settings;
     SonyAlphaRemote::Sequencer::SettingsManager* sequencerSettingsManager;
 
 
+    int connectionState;
     bool aboutToClose;
 
     QTimer* currentTimeDisplayTimer;
 
 
     void closeEvent(QCloseEvent *event);
+
+    void connectionStateChanged();
 
 
 public:
@@ -60,8 +73,9 @@ private Q_SLOTS:
 
     void error(QString);
 
-    void isoSpeedRatesChanged(const QStringList& candidates, const QString& current);
-    void shutterSpeedsChanged(const QStringList& candidates, const QString& current);
+    void isoSpeedRatesChanged(const QStringList& candidates, const QString&);
+    void shutterSpeedsChanged(const QStringList& candidates, const QString&);
+    void shutterSpeedChanged(const QString& value);
 
     void on_shutterSpeed_activated(const QString &speed);
 
@@ -90,10 +104,10 @@ private Q_SLOTS:
 
     void bulbShootSequencerStarted();
     void bulbShootSequencerStopped();
-    void recalcBulbShootDuration();
+    void recalcSequenceDuration();
 
     void addCurrentSequencerSettings();
-    void applySequencerSettings(const QString& name);
+    void applySequencerSettings(const QString& name, const QStringList& availableSettings);
     void removeSequencerSettings(const QString& name);
 
 private:
