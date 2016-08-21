@@ -41,22 +41,24 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    settings.registerComboBox(ui->shutterSpeed, "shutterSpeed", "BULB");
-    settings.registerComboBox(ui->isoSpeedRate, "iso", "800");
+    connect(sequencerSettingsManager, SIGNAL(currentChanged(QString)), &settings, SIGNAL(activeSequencerSettingsChanged(QString)));
 
-    settings.registerDoubleSpinBox(ui->startDelay, "sequencer/startDelay", 0);
-    settings.registerDoubleSpinBox(ui->shutterSpeedBulb, "sequencer/shutterSpeed", 1000);
-    settings.registerDoubleSpinBox(ui->pause, "sequencer/pause", 2000);
-    settings.registerSpinBox(ui->numShots, "sequencer/numShots", 1);
+    settings.registerComboBox(ui->shutterSpeed, "sequencer/<sequencer-settings-name>/shutterSpeed", "BULB");
+    settings.registerComboBox(ui->isoSpeedRate, "sequencer/<sequencer-settings-name>/iso", "800");
+
+    settings.registerDoubleSpinBox(ui->startDelay, "sequencer/<sequencer-settings-name>/startDelay", 0);
+    settings.registerDoubleSpinBox(ui->shutterSpeedBulb, "sequencer/<sequencer-settings-name>/shutterSpeedBulb", 1000);
+    settings.registerDoubleSpinBox(ui->pause, "sequencer/<sequencer-settings-name>/pause", 2000);
+    settings.registerSpinBox(ui->numShots, "sequencer/<sequencer-settings-name>/numShots", 1);
 
     ui->startDelayTuBtn->connectToSpinbox(ui->startDelay);
-    settings.registerTimeUnitButton(ui->startDelayTuBtn, "sequencer/startDelayTimeUnit", SonyAlphaRemote::TimeUnitButton::Unit_Milliseconds);
+    settings.registerTimeUnitButton(ui->startDelayTuBtn, "sequencer/<sequencer-settings-name>/startDelayTimeUnit", SonyAlphaRemote::TimeUnitButton::Unit_Milliseconds);
 
     ui->shutterSpeedTuBtn->connectToSpinbox(ui->shutterSpeedBulb);
-    settings.registerTimeUnitButton(ui->shutterSpeedTuBtn, "sequencer/shutterSpeedTimeUnit", SonyAlphaRemote::TimeUnitButton::Unit_Milliseconds);
+    settings.registerTimeUnitButton(ui->shutterSpeedTuBtn, "sequencer/<sequencer-settings-name>/shutterSpeedTimeUnit", SonyAlphaRemote::TimeUnitButton::Unit_Milliseconds);
 
     ui->pauseTuBtn->connectToSpinbox(ui->pause);
-    settings.registerTimeUnitButton(ui->pauseTuBtn, "sequencer/pauseTimeUnit", SonyAlphaRemote::TimeUnitButton::Unit_Milliseconds);
+    settings.registerTimeUnitButton(ui->pauseTuBtn, "sequencer/<sequencer-settings-name>/pauseTimeUnit", SonyAlphaRemote::TimeUnitButton::Unit_Milliseconds);
 
     connect(currentTimeDisplayTimer, SIGNAL(timeout()), this, SLOT(updateCurrentTimeDisplay()));
     currentTimeDisplayTimer->start(10);
@@ -98,17 +100,18 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pause, SIGNAL(valueChanged(double)), this, SLOT(recalcBulbShootDuration()));
     connect(ui->numShots, SIGNAL(valueChanged(int)), this, SLOT(recalcBulbShootDuration()));
 
-    connect(ui->settingsNameCBox, SIGNAL(editTextChanged(QString)), sequencerSettingsManager, SLOT(renameCurrent(QString)));
+//    connect(ui->settingsNameCBox, SIGNAL(editTextChanged(QString)), sequencerSettingsManager, SLOT(renameCurrent(QString)));
     connect(ui->addSettingsBtn, SIGNAL(clicked()), this, SLOT(addCurrentSequencerSettings()));
     connect(ui->removeSettingsBtn, SIGNAL(clicked()), sequencerSettingsManager, SLOT(removeCurrent()));
     connect(ui->settingsNameCBox, SIGNAL(currentIndexChanged(QString)), sequencerSettingsManager, SLOT(setCurrent(QString)));
+    connect(sequencerSettingsManager, SIGNAL(removed(QString)), this, SLOT(removeSequencerSettings(QString)));
 
     connect(
-                sequencerSettingsManager, SIGNAL(currentChanged(SonyAlphaRemote::Sequencer::SettingsPtr))
-                , this, SLOT(applySequencerSettings(SonyAlphaRemote::Sequencer::SettingsPtr)));
+                sequencerSettingsManager, SIGNAL(currentChanged(QString))
+                , this, SLOT(applySequencerSettings(QString)));
 
     ui->settingsNameCBox->addItems(sequencerSettingsManager->getSettingsNames());
-
+//    applySequencerSettings(sequencerSettingsManager->getCurrent());
 
     recalcBulbShootDuration();
 
@@ -367,25 +370,38 @@ void MainWindow::recalcBulbShootDuration()
 
 void MainWindow::addCurrentSequencerSettings()
 {
-    SonyAlphaRemote::Sequencer::SettingsPtr settings(new SonyAlphaRemote::Sequencer::Settings(ui->settingsNameCBox->currentText()));
-    settings->setShutterSpeed    (ui->shutterSpeed->currentText());
-    settings->setBulbShutterSpeed(ui->shutterSpeedTuBtn->getValueInMilliseconds());
-    settings->setIsoSpeedRate    (ui->isoSpeedRate->currentText());
-    settings->setPauseDelay      (ui->pauseTuBtn->getValueInMilliseconds());
-    settings->setStartDelay      (ui->startDelayTuBtn->getValueInMilliseconds());
-    settings->setNumShots        (ui->numShots->value());
+    if(!sequencerSettingsManager->getSettingsNames().contains(ui->settingsNameCBox->currentText()))
+    {
+        ui->settingsNameCBox->addItem(ui->settingsNameCBox->currentText());
+        sequencerSettingsManager->setCurrent(ui->settingsNameCBox->currentText());
+        settings.save();
+    }
 
-    sequencerSettingsManager->set(settings);
+//    SonyAlphaRemote::Sequencer::SettingsPtr settings(new SonyAlphaRemote::Sequencer::Settings(ui->settingsNameCBox->currentText()));
+//    settings->setShutterSpeed    (ui->shutterSpeed->currentText());
+//    settings->setBulbShutterSpeed(ui->shutterSpeedTuBtn->getValueInMilliseconds());
+//    settings->setIsoSpeedRate    (ui->isoSpeedRate->currentText());
+//    settings->setPauseDelay      (ui->pauseTuBtn->getValueInMilliseconds());
+//    settings->setStartDelay      (ui->startDelayTuBtn->getValueInMilliseconds());
+//    settings->setNumShots        (ui->numShots->value());
+
+//    sequencerSettingsManager->set(settings);
 }
 
-void MainWindow::applySequencerSettings(SonyAlphaRemote::Sequencer::SettingsPtr s)
+void MainWindow::applySequencerSettings(const QString &name)
 {
-    ui->shutterSpeed->setCurrentText(s->getShutterSpeed());
-    ui->shutterSpeedTuBtn->setValueInMilliseconds(s->getBulbShutterSpeed());
-    ui->isoSpeedRate->setCurrentText(s->getIsoSpeedRate());
-    ui->pauseTuBtn->setValueInMilliseconds(s->getPauseDelay());
-    ui->startDelayTuBtn->setValueInMilliseconds(s->getStartDelay());
-    ui->numShots->setValue(s->getNumShots());
+//    ui->shutterSpeed->setCurrentText(s->getShutterSpeed());
+//    ui->shutterSpeedTuBtn->setValueInMilliseconds(s->getBulbShutterSpeed());
+//    ui->isoSpeedRate->setCurrentText(s->getIsoSpeedRate());
+//    ui->pauseTuBtn->setValueInMilliseconds(s->getPauseDelay());
+//    ui->startDelayTuBtn->setValueInMilliseconds(s->getStartDelay());
+//    ui->numShots->setValue(s->getNumShots());
 
-    s->apply(sender);
+//    s->apply(sender);
+    settings.load();
+}
+
+void MainWindow::removeSequencerSettings(const QString &name)
+{
+    ui->settingsNameCBox->removeItem(ui->settingsNameCBox->findText(name));
 }

@@ -93,7 +93,8 @@ private Q_SLOTS:
     void recalcBulbShootDuration();
 
     void addCurrentSequencerSettings();
-    void applySequencerSettings(SonyAlphaRemote::Sequencer::SettingsPtr s);
+    void applySequencerSettings(const QString& name);
+    void removeSequencerSettings(const QString& name);
 
 private:
     Ui::MainWindow *ui;

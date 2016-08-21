@@ -9,7 +9,7 @@
 
 #include "SonyAlphaRemote_Json_Command.h"
 
-
+#if 0
 namespace SonyAlphaRemote {
 
 class Sender;
@@ -64,5 +64,7 @@ typedef QSharedPointer<Settings> SettingsPtr;
 
 } //namespace Sequencer
 } // namespace SonyAlphaRemote
+
+#endif
 
 #endif // SONYALPHAREMOTE_SHOOTSEQUENCE_H

@@ -17,16 +17,23 @@ class Setting : public QObject
 protected :
     QSettings* settings;
     QString namePath;
+    QString activeSequencerSettings;
+    QVariant defaultValue;
 
-    Setting(QSettings* settings, const QString& namePath);
+    Setting(QSettings* settings, const QString& namePath, const QVariant& defaultValue);
     virtual void updateValue() = 0;
+
+    void setValue(QString path, const QVariant& value);
 
 public :
     virtual ~Setting() {}
-    QVariant getValue(const QVariant& defaultValue = QVariant()) const;
+    QVariant getValue() const;
 
 public Q_SLOTS :
     void valueChanged();
+    void activeSequencerSettingsChanged(const QString& name);
+    void save();
+    virtual void load() = 0;
 };
 
 
@@ -37,6 +44,7 @@ public :
     SpinBoxSetting(QSettings* settings, const QString& namePath, QSpinBox* spinBox, int defaultValue);
 private :
     void updateValue();
+    void load();
 };
 
 class DoubleSpinBoxSetting : public Setting
@@ -46,6 +54,7 @@ public :
     DoubleSpinBoxSetting(QSettings* settings, const QString& namePath, QDoubleSpinBox* spinBox, double defaultValue);
 private :
     void updateValue();
+    void load();
 };
 
 
@@ -56,6 +65,7 @@ public :
     ComboBoxSetting(QSettings* settings, const QString& namePath, QComboBox* comboBox, const QString& defaultValue);
 private :
     void updateValue();
+    void load();
 };
 
 class TimeUnitButtonSetting : public Setting
@@ -65,18 +75,28 @@ public :
     TimeUnitButtonSetting(QSettings* settings, const QString& namePath, TimeUnitButton* button, TimeUnitButton::Unit defaultValue);
 private :
     void updateValue();
+    void load();
 };
 
 
-class Settings
+class Settings : public QObject
 {
+    Q_OBJECT
+
     QSettings settings;
     QList<Setting*> registeredSettings;
+
+Q_SIGNALS:
+    void activeSequencerSettingsChanged(QString);
+
 public:
     void registerSpinBox(QSpinBox* spinBox, const QString& namePath, int defaultValue);
     void registerDoubleSpinBox(QDoubleSpinBox* spinBox, const QString& namePath, double defaultValue);
     void registerComboBox(QComboBox* comboBox, const QString& namePath, const QString &defaultValue);
     void registerTimeUnitButton(TimeUnitButton* button, const QString& namePath, TimeUnitButton::Unit defaultValue);
+
+    void save();
+    void load();
 };
 
 

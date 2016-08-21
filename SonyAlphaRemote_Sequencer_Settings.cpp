@@ -3,6 +3,7 @@
 #include "SonyAlphaRemote_Sender.h"
 #include "SonyAlphaRemote_Json_Command.h"
 #include "SonyAlphaRemote_Helper.h"
+#if 0
 
 namespace SonyAlphaRemote {
 
@@ -122,3 +123,4 @@ void Settings::setNumShots(int value)
 
 } //namespace Sequencer
 } // namespace SonyAlphaRemote
+#endif

@@ -17,25 +17,22 @@ class SettingsManager : public QObject
 
     mutable QSettings qSettings;
 
-
-    SettingsPtr current;
+    QString currentName;
 
 public:
     explicit SettingsManager(QObject *parent = 0);
 
     QStringList getSettingsNames() const;
-    bool get(SettingsPtr settings) const;
-
     void handleCurrentChanged();
 
 Q_SIGNALS :
-    void currentChanged(SonyAlphaRemote::Sequencer::SettingsPtr s);
+    void currentChanged(QString);
+    void removed(QString);
 
 public Q_SLOTS :
-    void set(SonyAlphaRemote::Sequencer::SettingsPtr settings);
     bool rename(const QString& oldName, const QString& newName);
     bool renameCurrent(const QString& newName);
-    bool remove(const QString& name);
+    bool remove(QString name);
     bool removeCurrent();
     void setCurrent(const QString& name);
 
