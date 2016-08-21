@@ -7,6 +7,22 @@
 #include <QMessageBox>
 #include <QRegExp>
 
+namespace helper
+{
+int shutterSpeedStrToMilliseconds(QString shutterSpeedStr)
+{
+    QRegExp rx1("1/(\\d+)");
+    QRegExp rx2("(\\d+)\"");
+    int milliSeconds = 0;
+    if(rx1.exactMatch(shutterSpeedStr))
+        milliSeconds = (int)(1000. / rx1.cap(1).toDouble());
+    else if(rx2.exactMatch(shutterSpeedStr))
+        milliSeconds = 1000 * rx2.cap(1).toDouble();
+
+    return milliSeconds;
+}
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     settings->save();
@@ -36,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
     , sender(new SonyAlphaRemote::Sender(this))
     , statusPoller(new SonyAlphaRemote::StatusPoller(sender, this))
     , bulbShootSequencer(new SonyAlphaRemote::Sequencer::BulbShootSequencer(statusPoller, sender, this))
+    , normalShootSequencer(new SonyAlphaRemote::Sequencer::NormalShootSequencer(statusPoller, sender, this))
     , settings(new SonyAlphaRemote::Settings(this))
     , sequencerSettingsManager(new SonyAlphaRemote::Sequencer::SettingsManager(settings))
     , connectionState(State_NotConnected)
@@ -96,8 +113,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(bulbShootSequencer, SIGNAL(statusMessage(QString)), this, SLOT(appendOutputMessage(QString)));
     connect(bulbShootSequencer, SIGNAL(havePostViewUrl(QString, int, int)), this, SLOT(onPostView(QString, int, int)));
-    connect(bulbShootSequencer, SIGNAL(started()), this, SLOT(bulbShootSequencerStarted()));
-    connect(bulbShootSequencer, SIGNAL(stopped()), this, SLOT(bulbShootSequencerStopped()));
+    connect(bulbShootSequencer, SIGNAL(started()), this, SLOT(shootSequencerStarted()));
+    connect(bulbShootSequencer, SIGNAL(stopped()), this, SLOT(shootSequencerStopped()));
+
+    connect(normalShootSequencer, SIGNAL(statusMessage(QString)), this, SLOT(appendOutputMessage(QString)));
+    connect(normalShootSequencer, SIGNAL(havePostViewUrl(QString,int,int)), this, SLOT(onPostView(QString,int,int)));
+    connect(normalShootSequencer, SIGNAL(started()), this, SLOT(shootSequencerStarted()));
+    connect(normalShootSequencer, SIGNAL(stopped()), this, SLOT(shootSequencerStopped()));
 
     connect(ui->startDelay, SIGNAL(valueChanged(double)), this, SLOT(recalcSequenceDuration()));
     connect(ui->shutterSpeedBulb, SIGNAL(valueChanged(double)), this, SLOT(recalcSequenceDuration()));
@@ -286,23 +308,52 @@ void MainWindow::updatePostViewImage(QByteArray data)
     ui->postViewImage->setPixmap(pixmap);
 }
 
-void MainWindow::on_startBulbSequence_clicked()
+bool MainWindow::stopRunningSequence()
 {
-    if(bulbShootSequencer->isRunning())
+    if(bulbShootSequencer->isRunning() || normalShootSequencer->isRunning())
     {
-        if(QMessageBox::Yes == QMessageBox::question(this, tr("Stop BULB shoot sequence"), tr("Do you want to stop current BULB shoot sequence?")))
+        if(QMessageBox::Yes == QMessageBox::question(
+                    this, tr("Stop shoot sequence"), tr("Do you want to stop current shoot sequence?")))
         {
-            bulbShootSequencer->stop();
+            if(bulbShootSequencer->isRunning())
+                bulbShootSequencer->stop();
+            else if(normalShootSequencer->isRunning())
+                normalShootSequencer->stop();
+            return true;
         }
-//        ui->output->append(tr("cannot start BULB sequence until running sequence has been finished!"));
-        return;
     }
 
-    ui->output->append("-------------------------------------------------------------");
-    ui->output->append(tr("start BULB sequence at %0").arg(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz")));
+    return false;
+}
 
-    applyBulbSettings();
-    int duration = bulbShootSequencer->calculateSequenceDuration();
+void MainWindow::on_startBulbSequence_clicked()
+{
+    if(stopRunningSequence())
+        return;
+
+    ui->output->append("-------------------------------------------------------------");
+    ui->output->append(tr("start sequence at %0").arg(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz")));
+
+    int duration = 0;
+
+    if(ui->shutterSpeed->currentText() == "BULB")
+    {
+        bulbShootSequencer->setNumShots(ui->numShots->value());
+        bulbShootSequencer->setShutterSpeed(ui->shutterSpeedTuBtn->getValueInMilliseconds());
+        bulbShootSequencer->setPauseDelay(ui->pauseTuBtn->getValueInMilliseconds());
+        bulbShootSequencer->setStartDelay(ui->startDelayTuBtn->getValueInMilliseconds());
+        duration = bulbShootSequencer->calculateSequenceDuration();
+    }
+    else
+    {
+        int milliSeconds = helper::shutterSpeedStrToMilliseconds(ui->shutterSpeed->currentText());
+        normalShootSequencer->setNumShots(ui->numShots->value());
+        normalShootSequencer->setShutterSpeed(milliSeconds);
+        normalShootSequencer->setPauseDelay(ui->pauseTuBtn->getValueInMilliseconds());
+        normalShootSequencer->setStartDelay(ui->startDelayTuBtn->getValueInMilliseconds());
+        duration = normalShootSequencer->calculateSequenceDuration();
+    }
+
 
     QTime dt = QTime(0,0,0,0).addMSecs(duration);
     ui->output->append(
@@ -315,16 +366,12 @@ void MainWindow::on_startBulbSequence_clicked()
                      .addMSecs(duration).toString("yyyy-MM-ddTHH:mm:ss:zzz")));
     ui->output->append("-------------------------------------------------------------");
 
-    bulbShootSequencer->start();
+    if(ui->shutterSpeed->currentText() == "BULB")
+        bulbShootSequencer->start();
+    else
+        normalShootSequencer->start();
 }
 
-void MainWindow::applyBulbSettings()
-{
-    bulbShootSequencer->setNumShots(ui->numShots->value());
-    bulbShootSequencer->setShutterSpeed(ui->shutterSpeedTuBtn->getValueInMilliseconds());
-    bulbShootSequencer->setPauseDelay(ui->pauseTuBtn->getValueInMilliseconds());
-    bulbShootSequencer->setStartDelay(ui->startDelayTuBtn->getValueInMilliseconds());
-}
 
 void MainWindow::appendOutputMessage(QString msg)
 {
@@ -373,14 +420,14 @@ void MainWindow::updateBatteryStatus()
 
 }
 
-void MainWindow::bulbShootSequencerStarted()
+void MainWindow::shootSequencerStarted()
 {
     ui->startBulbSequence->setText(tr("Stop sequence"));
 }
 
-void MainWindow::bulbShootSequencerStopped()
+void MainWindow::shootSequencerStopped()
 {
-    ui->output->append(tr("BULB shoot sequence stopped."));
+    ui->output->append(tr("shoot sequence stopped."));
     ui->startBulbSequence->setText(tr("Start sequence"));
 }
 
@@ -398,19 +445,12 @@ void MainWindow::recalcSequenceDuration()
     }
     else
     {
-        QString shutterSpeedStr = ui->shutterSpeed->currentText();
-        QRegExp rx1("1/(\\d+)");
-        QRegExp rx2("(\\d+)\"");
-        double seconds;
-        if(rx1.exactMatch(shutterSpeedStr))
-            seconds = 1. / rx1.cap(1).toDouble();
-        else if(rx2.exactMatch(shutterSpeedStr))
-            seconds = rx2.cap(1).toDouble();
 
+        int milliSeconds = helper::shutterSpeedStrToMilliseconds(ui->shutterSpeed->currentText());
         dt = QTime(0,0,0,0).addMSecs(
                     SonyAlphaRemote::Sequencer::BulbShootSequencer::calculateSequenceDuration(
                         ui->startDelayTuBtn->getValueInMilliseconds()
-                        , (int)seconds * 1000
+                        , milliSeconds
                         , ui->pauseTuBtn->getValueInMilliseconds()
                         , ui->numShots->value()));
     }

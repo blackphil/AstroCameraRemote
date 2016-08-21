@@ -59,7 +59,7 @@ HEADERS  += MainWindow.h \
 
 FORMS    += MainWindow.ui
 
-DEFINES += DRY_RUN
+#DEFINES += DRY_RUN
 
 DISTFILES += \
     ToDo.txt

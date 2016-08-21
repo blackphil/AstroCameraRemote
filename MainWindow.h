@@ -8,6 +8,7 @@
 #include "SonyAlphaRemote_Sender.h"
 #include "SonyAlphaRemote_StatusPoller.h"
 #include "SonyAlphaRemote_Sequencer_BulbShootSequencer.h"
+#include "SonyAlphaRemote_Sequencer_NormalShootSequencer.h"
 #include "SonyAlphaRemote_BatteryInfo.h"
 #include "SonyAlphaRemote_Settings.h"
 #include "SonyAlphaRemote_Sequencer_SettingsManager.h"
@@ -42,6 +43,7 @@ class MainWindow : public QMainWindow
     SonyAlphaRemote::Sender* sender;
     SonyAlphaRemote::StatusPoller* statusPoller;
     SonyAlphaRemote::Sequencer::BulbShootSequencer* bulbShootSequencer;
+    SonyAlphaRemote::Sequencer::NormalShootSequencer* normalShootSequencer;
 
     SonyAlphaRemote::Settings* settings;
     SonyAlphaRemote::Sequencer::SettingsManager* sequencerSettingsManager;
@@ -88,8 +90,6 @@ private Q_SLOTS:
 
     void on_startBulbSequence_clicked();
 
-    void applyBulbSettings();
-
     void appendOutputMessage(QString msg);
 
     void on_simCamReadyBtn_clicked();
@@ -102,13 +102,15 @@ private Q_SLOTS:
 
     void updateBatteryStatus();
 
-    void bulbShootSequencerStarted();
-    void bulbShootSequencerStopped();
+    void shootSequencerStarted();
+    void shootSequencerStopped();
     void recalcSequenceDuration();
 
     void addCurrentSequencerSettings();
     void applySequencerSettings(const QString& name, const QStringList& availableSettings);
     void removeSequencerSettings(const QString& name);
+
+    bool stopRunningSequence();
 
 private:
     Ui::MainWindow *ui;

@@ -14,7 +14,7 @@ void StateNormalShooting::onEntry(QEvent *ev)
 {
 #ifndef DRY_RUN
     if(!sender.isNull())
-        sender.data()->send(actTakePicture);
+        sender.data()->send(&actTakePicture);
 #endif
 
     StateBase::onEntry(ev);
