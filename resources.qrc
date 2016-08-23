@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/sequencer">
+        <file alias="Countdown_Msg.html">Sequencer_Countdown_Msg.html</file>
+        <file alias="Normal_Msg.html">Sequencer_Normal_Msg.html</file>
+    </qresource>
+</RCC>

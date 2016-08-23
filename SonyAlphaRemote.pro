@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     SonyAlphaRemote_Sequencer_Settings.cpp \
     SonyAlphaRemote_Sequencer_BulbShootSequencer.cpp \
     SonyAlphaRemote_Sequencer_NormalShootSequencer.cpp \
-    SonyAlphaRemote_Sequencer_SettingsManager.cpp
+    SonyAlphaRemote_Sequencer_SettingsManager.cpp \
+    SonyAlphaRemote_Sequencer_Base.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -55,7 +56,8 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_Sequencer_Settings.h \
     SonyAlphaRemote_Sequencer_BulbShootSequencer.h \
     SonyAlphaRemote_Sequencer_NormalShootSequencer.h \
-    SonyAlphaRemote_Sequencer_SettingsManager.h
+    SonyAlphaRemote_Sequencer_SettingsManager.h \
+    SonyAlphaRemote_Sequencer_Base.h
 
 FORMS    += MainWindow.ui
 
@@ -63,3 +65,6 @@ FORMS    += MainWindow.ui
 
 DISTFILES += \
     ToDo.txt
+
+RESOURCES += \
+    resources.qrc

@@ -19,6 +19,12 @@ protected :
     QString exitMessage;
     QPointer<QTimer> t;
 
+    QTimer* countDownTimer;
+    int countDown;
+
+    QString countdownMsg;
+    QString normalMsg;
+
 public :
 
     StateBase(const QString& entryMessage, const QString& exitMessage, QTimer* t);
@@ -29,9 +35,13 @@ public :
 
     QTimer* getTimer() const { return t; }
 
+private Q_SLOTS:
+    void triggerCountDown();
+
 
 Q_SIGNALS :
     void message(QString);
+    void updateStatus(QString);
 };
 
 } // namespace Sequencer

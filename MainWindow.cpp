@@ -112,11 +112,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(stopBulbShooting, SIGNAL(error(QString)), this, SLOT(error(QString)));
 
     connect(bulbShootSequencer, SIGNAL(statusMessage(QString)), this, SLOT(appendOutputMessage(QString)));
+    connect(bulbShootSequencer, SIGNAL(updateStatus(QString)), this, SLOT(updateSequencerStatus(QString)));
     connect(bulbShootSequencer, SIGNAL(havePostViewUrl(QString, int, int)), this, SLOT(onPostView(QString, int, int)));
     connect(bulbShootSequencer, SIGNAL(started()), this, SLOT(shootSequencerStarted()));
     connect(bulbShootSequencer, SIGNAL(stopped()), this, SLOT(shootSequencerStopped()));
 
     connect(normalShootSequencer, SIGNAL(statusMessage(QString)), this, SLOT(appendOutputMessage(QString)));
+    connect(normalShootSequencer, SIGNAL(updateStatus(QString)), this, SLOT(updateSequencerStatus(QString)));
     connect(normalShootSequencer, SIGNAL(havePostViewUrl(QString,int,int)), this, SLOT(onPostView(QString,int,int)));
     connect(normalShootSequencer, SIGNAL(started()), this, SLOT(shootSequencerStarted()));
     connect(normalShootSequencer, SIGNAL(stopped()), this, SLOT(shootSequencerStopped()));
@@ -326,6 +328,11 @@ bool MainWindow::stopRunningSequence()
     return false;
 }
 
+void MainWindow::updateSequencerStatus(const QString &status)
+{
+    ui->sequencerStatus->setText(status);
+}
+
 void MainWindow::on_startBulbSequence_clicked()
 {
     if(stopRunningSequence())
@@ -437,7 +444,7 @@ void MainWindow::recalcSequenceDuration()
     if(ui->shutterSpeed->currentText() == "BULB")
     {
         dt = QTime(0,0,0,0).addMSecs(
-                    SonyAlphaRemote::Sequencer::BulbShootSequencer::calculateSequenceDuration(
+                    SonyAlphaRemote::Sequencer::Base::calculateSequenceDuration(
                         ui->startDelayTuBtn->getValueInMilliseconds()
                         , ui->shutterSpeedTuBtn->getValueInMilliseconds()
                         , ui->pauseTuBtn->getValueInMilliseconds()
@@ -448,7 +455,7 @@ void MainWindow::recalcSequenceDuration()
 
         int milliSeconds = helper::shutterSpeedStrToMilliseconds(ui->shutterSpeed->currentText());
         dt = QTime(0,0,0,0).addMSecs(
-                    SonyAlphaRemote::Sequencer::BulbShootSequencer::calculateSequenceDuration(
+                    SonyAlphaRemote::Sequencer::Base::calculateSequenceDuration(
                         ui->startDelayTuBtn->getValueInMilliseconds()
                         , milliSeconds
                         , ui->pauseTuBtn->getValueInMilliseconds()

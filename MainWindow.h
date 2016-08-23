@@ -112,6 +112,8 @@ private Q_SLOTS:
 
     bool stopRunningSequence();
 
+    void updateSequencerStatus(const QString& status);
+
 private:
     Ui::MainWindow *ui;
 };
