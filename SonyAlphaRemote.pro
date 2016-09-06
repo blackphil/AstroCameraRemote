@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     SonyAlphaRemote_Sequencer_BulbShootSequencer.cpp \
     SonyAlphaRemote_Sequencer_NormalShootSequencer.cpp \
     SonyAlphaRemote_Sequencer_SettingsManager.cpp \
-    SonyAlphaRemote_Sequencer_Base.cpp
+    SonyAlphaRemote_Sequencer_Base.cpp \
+    SonyAlphaRemote_PostView_Info.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -57,7 +58,8 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_Sequencer_BulbShootSequencer.h \
     SonyAlphaRemote_Sequencer_NormalShootSequencer.h \
     SonyAlphaRemote_Sequencer_SettingsManager.h \
-    SonyAlphaRemote_Sequencer_Base.h
+    SonyAlphaRemote_Sequencer_Base.h \
+    SonyAlphaRemote_PostView_Info.h
 
 FORMS    += MainWindow.ui
 

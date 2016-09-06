@@ -292,13 +292,38 @@ void MainWindow::on_takeShotBtn_clicked()
 
 void MainWindow::onPostView(const QString &url)
 {
+    bool ok = false;
+
+    SonyAlphaRemote::PostView::Info newInfo;
+    newInfo.setShutterSpeedMs(ui->shutterSpeed->currentText().toInt(&ok));
+    newInfo.setIso(ui->isoSpeedRate->currentText().toInt(&ok));
+    QDateTime ts = QDateTime::currentDateTime();
+    newInfo.setTimestamp(ts);
+    newInfo.setUrl(url);
+
+    postViewImageStack.push_back(newInfo);
+
     ui->output->append(tr("have new image: %0").arg(url));
-    ui->imageSubTitle->setText(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz"));
+    ui->imageSubTitle->setText(ts.toString("yyyy-MM-ddTHH:mm:ss:zzz"));
     sender->loadPostViewImage(url);
 }
 
 void MainWindow::onPostView(const QString& url, int i, int numShots)
 {
+    bool ok = false;
+
+    SonyAlphaRemote::PostView::Info newInfo;
+    newInfo.setShutterSpeedMs(ui->shutterSpeed->currentText().toInt(&ok));
+    newInfo.setIso(ui->isoSpeedRate->currentText().toInt(&ok));
+    QDateTime ts = QDateTime::currentDateTime();
+    newInfo.setTimestamp(ts);
+    newInfo.setUrl(url);
+    newInfo.setSeqNr(i);
+    newInfo.setNumShots(numShots);
+
+    postViewImageStack.push_back(newInfo);
+
+
     ui->output->append(tr("have new image: %0 (%1/%2)").arg(url).arg(i).arg(numShots));
     ui->imageSubTitle->setText(tr("image %0/%1").arg(i).arg(numShots));
     sender->loadPostViewImage(url);
@@ -306,8 +331,19 @@ void MainWindow::onPostView(const QString& url, int i, int numShots)
 
 void MainWindow::updatePostViewImage(QByteArray data)
 {
+
     QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data, "JPG"));
-    ui->postViewImage->setPixmap(pixmap);
+    Q_ASSERT(!postViewImageStack.isEmpty());
+    if(postViewImageStack.isEmpty())
+    {
+        SAR_ERR(tr("post view image stack is empty!!!"));
+        ui->postViewImage->setPixmap(pixmap);
+        return;
+    }
+
+    postViewImageStack.back().setImage(pixmap);
+    ui->postViewImage->setPixmap(postViewImageStack.back().getImage());
+
 }
 
 bool MainWindow::stopRunningSequence()

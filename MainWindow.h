@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QCloseEvent>
 #include <QTimer>
+#include <QList>
 
 #include "SonyAlphaRemote_Sender.h"
 #include "SonyAlphaRemote_StatusPoller.h"
@@ -12,6 +13,7 @@
 #include "SonyAlphaRemote_BatteryInfo.h"
 #include "SonyAlphaRemote_Settings.h"
 #include "SonyAlphaRemote_Sequencer_SettingsManager.h"
+#include "SonyAlphaRemote_PostView_Info.h"
 
 
 namespace Ui {
@@ -53,6 +55,8 @@ class MainWindow : public QMainWindow
     bool aboutToClose;
 
     QTimer* currentTimeDisplayTimer;
+
+    QList<SonyAlphaRemote::PostView::Info> postViewImageStack;
 
 
     void closeEvent(QCloseEvent *event);
