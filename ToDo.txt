@@ -1,13 +1,13 @@
+- bugfix: sequencer countdown status stoppt nicht, wenn Sequenz abbgebrochen wird
+- bugfix: App lässt sich nur schwer beenden, wenn mitten beim capture versucht wird zu beenden (wartet auf IDLE status)
+- long exposure nr ein- ausschaltbar machen
 - gui verriegelungen
-- jpeg download
-- raw download
+- gui design verbessern
+- gui design für Nacht-Modus
 - metadata anzeige/download
-- remote image delete
-- fix still quality selection/display (RAW, JPEG etc.)
-- normal-shoot sequence
 - post view image history
 - live view
-- ssdp abfrage für kamera suche implementieren
+- ssdp abfrage für kamera suche
 
 - ERLEDIGT einstellungen in qsettings speichern
 - ERLEDIGT cancel BULB sequence
@@ -15,8 +15,15 @@
 - ERLEDIGT batterie status anzeige
 - ERLEDIGT ISO einstellbar machen
 - ERLEDIGT verfügbare einstellungen (shutter speed etc.) sofort anzeigen
+- ERLEDIGT normal-shoot sequence
 
 
 
 
 - command source code aufräumen
+
+
+- GEHT NICHT (ILCE 6000 unterstützt das nicht) fix still quality selection/display (RAW, JPEG etc.)
+- GEHT NICHT (ILCE 6000 unterstützt das nicht) jpeg download
+- GEHT NICHT (ILCE 6000 unterstützt das nicht) raw download
+- GEHT NICHT (ILCE 6000 unterstützt das nicht) remote image delete
