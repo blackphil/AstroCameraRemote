@@ -18,6 +18,7 @@ BulbShootSequencer::BulbShootSequencer(StatusPoller *statusPoller, Sender* sende
     , pauseDelayTm(new QTimer(this))
     , startDelayTm(new QTimer(this))
 {
+    setObjectName(tr("normal shoot"));
     shutterSpeedTm->setSingleShot(true);
     pauseDelayTm->setSingleShot(true);
     startDelayTm->setSingleShot(true);

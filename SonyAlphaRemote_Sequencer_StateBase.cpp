@@ -3,6 +3,7 @@
 #include "SonyAlphaRemote_Helper.h"
 
 #include <QFile>
+#include <QStateMachine>
 
 #define MSG_MAX_LEN 40
 
@@ -11,7 +12,7 @@ namespace Sequencer {
 
 
 StateBase::StateBase(const QString& entryMessage, const QString& exitMessage, QTimer* t)
-    :entryMessage(entryMessage)
+    : entryMessage(entryMessage)
     , exitMessage(exitMessage)
     , t(t)
     , countDownTimer(NULL != t ? new QTimer(this) : NULL)
@@ -27,7 +28,9 @@ StateBase::StateBase(const QString& entryMessage, const QString& exitMessage, QT
     normalMsg = normalMsgFile.readAll();
 
     if(countDownTimer)
+    {
         connect(countDownTimer, SIGNAL(timeout()), this, SLOT(triggerCountDown()));
+    }
 }
 
 StateBase::~StateBase()
@@ -37,7 +40,7 @@ StateBase::~StateBase()
 
 
 void StateBase::onEntry(QEvent*)
-{
+{   
     if(!entryMessage.isEmpty())
     {
         SAR_INF(entryMessage);
@@ -47,7 +50,11 @@ void StateBase::onEntry(QEvent*)
     if(t)
     {
         t->start();
-        countDownTimer->start(1000);
+        if(countDownTimer)
+        {
+            connect(machine(), SIGNAL(stopped()), countDownTimer, SLOT(stop()));
+            countDownTimer->start(1000);
+        }
     }
     else
         Q_EMIT updateStatus(normalMsg.arg(entryMessage.left(MSG_MAX_LEN)).arg(exitMessage.left(MSG_MAX_LEN)));
@@ -62,7 +69,10 @@ void StateBase::onExit(QEvent*)
     }
 
     if(countDownTimer)
+    {
         countDownTimer->stop();
+        disconnect(machine(), SIGNAL(stopped()), countDownTimer, SLOT(stop()));
+    }
     else
         Q_EMIT updateStatus(normalMsg.arg(entryMessage.left(MSG_MAX_LEN)).arg(exitMessage.left(MSG_MAX_LEN)));
 }

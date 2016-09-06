@@ -19,6 +19,7 @@ NormalShootSequencer::NormalShootSequencer(StatusPoller *statusPoller, Sender* s
     , startDelayTm(new QTimer(this))
     , shutterSpeed(0)
 {
+    setObjectName(tr("normal shoot"));
     pauseDelayTm->setSingleShot(true);
     startDelayTm->setSingleShot(true);
     pauseDelayTm->setInterval(1000);

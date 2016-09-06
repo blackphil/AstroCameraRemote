@@ -68,6 +68,7 @@ void Base::stop()
 {
     stateMachine->stop();
     handleStopped();
+    Q_EMIT updateStatus(tr("Sequence \"%0\" stopped").arg(objectName()));
 }
 
 void Base::handleCameraStatus(QString status)
