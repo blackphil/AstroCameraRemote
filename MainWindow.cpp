@@ -364,11 +364,11 @@ void MainWindow::on_startBulbSequence_clicked()
 
     QTime dt = QTime(0,0,0,0).addMSecs(duration);
     ui->output->append(
-                tr("calculated duration: %0h %1min %2sec %3msec")
+                tr("estimated duration: %0h %1min %2sec %3msec")
                 .arg(dt.hour()).arg(dt.minute()).arg(dt.second()).arg(dt.msec()));
 
     ui->output->append(
-                tr("calculated finish time: %0")
+                tr("estimated finish time: %0")
                 .arg(QDateTime::currentDateTime()
                      .addMSecs(duration).toString("yyyy-MM-ddTHH:mm:ss:zzz")));
     ui->output->append("-------------------------------------------------------------");
@@ -462,7 +462,7 @@ void MainWindow::recalcSequenceDuration()
                         , ui->numShots->value()));
     }
 
-    ui->calculatedDuration->setText(
+    ui->estimatedDuration->setText(
                 tr("%0h %1min %2sec %3msec")
                 .arg(dt.hour()).arg(dt.minute()).arg(dt.second()).arg(dt.msec()));
 
