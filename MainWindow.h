@@ -57,6 +57,7 @@ class MainWindow : public QMainWindow
     QTimer* currentTimeDisplayTimer;
 
     QList<SonyAlphaRemote::PostView::Info> postViewImageStack;
+    int postViewCursor;
 
 
     void closeEvent(QCloseEvent *event);
@@ -91,6 +92,7 @@ private Q_SLOTS:
     void onPostView(const QString &url, int i, int numShots);
 
     void updatePostViewImage(QByteArray data);
+    void updatePostView();
 
     void on_startBulbSequence_clicked();
 
@@ -117,6 +119,10 @@ private Q_SLOTS:
     bool stopRunningSequence();
 
     void updateSequencerStatus(const QString& status);
+
+    void on_postViewFwd_clicked();
+
+    void on_postViewBwd_clicked();
 
 private:
     Ui::MainWindow *ui;

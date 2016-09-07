@@ -58,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
     , connectionState(State_NotConnected)
     , aboutToClose(false)
     , currentTimeDisplayTimer(new QTimer(this))
+    , postViewCursor(0)
 
     , ui(new Ui::MainWindow)
 {
@@ -304,7 +305,7 @@ void MainWindow::onPostView(const QString &url)
     postViewImageStack.push_back(newInfo);
 
     ui->output->append(tr("have new image: %0").arg(url));
-    ui->imageSubTitle->setText(ts.toString("yyyy-MM-ddTHH:mm:ss:zzz"));
+//    ui->imageSubTitle->setText(ts.toString("yyyy-MM-ddTHH:mm:ss:zzz"));
     sender->loadPostViewImage(url);
 }
 
@@ -325,7 +326,7 @@ void MainWindow::onPostView(const QString& url, int i, int numShots)
 
 
     ui->output->append(tr("have new image: %0 (%1/%2)").arg(url).arg(i).arg(numShots));
-    ui->imageSubTitle->setText(tr("image %0/%1").arg(i).arg(numShots));
+//    ui->imageSubTitle->setText(tr("image %0/%1").arg(i).arg(numShots));
     sender->loadPostViewImage(url);
 }
 
@@ -342,8 +343,19 @@ void MainWindow::updatePostViewImage(QByteArray data)
     }
 
     postViewImageStack.back().setImage(pixmap);
-    ui->postViewImage->setPixmap(postViewImageStack.back().getImage());
+    postViewCursor = postViewImageStack.count()-1;
+    updatePostView();
 
+}
+
+void MainWindow::updatePostView()
+{
+    if(0 <= postViewCursor && postViewImageStack.count() > postViewCursor)
+    {
+        const QPixmap& image = postViewImageStack[postViewCursor].getImage();
+        if(!image.isNull())
+            ui->postViewImage->setPixmap(image);
+    }
 }
 
 bool MainWindow::stopRunningSequence()
@@ -566,4 +578,24 @@ void MainWindow::applySequencerSettings(const QString &name, const QStringList &
 void MainWindow::removeSequencerSettings(const QString &name)
 {
     ui->settingsNameCBox->removeItem(ui->settingsNameCBox->findText(name));
+}
+
+void MainWindow::on_postViewFwd_clicked()
+{
+    int nextPos = qMin(postViewCursor+1, postViewImageStack.count()-1);
+    if(postViewCursor != nextPos)
+    {
+        postViewCursor = nextPos;
+        updatePostView();
+    }
+}
+
+void MainWindow::on_postViewBwd_clicked()
+{
+    int nextPos = qMax(postViewCursor-1, 0);
+    if(postViewCursor != nextPos)
+    {
+        postViewCursor = nextPos;
+        updatePostView();
+    }
 }
