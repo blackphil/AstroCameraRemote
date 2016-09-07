@@ -356,6 +356,17 @@ void MainWindow::updatePostView()
         if(!image.isNull())
             ui->postViewImage->setPixmap(image);
     }
+
+    if(postViewCursor >= postViewImageStack.count()-1)
+        ui->postViewFwd->setEnabled(false);
+    else
+        ui->postViewFwd->setEnabled(true);
+
+    if(postViewCursor <= 0)
+        ui->postViewBwd->setEnabled(false);
+    else
+        ui->postViewBwd->setEnabled(true);
+
 }
 
 bool MainWindow::stopRunningSequence()
