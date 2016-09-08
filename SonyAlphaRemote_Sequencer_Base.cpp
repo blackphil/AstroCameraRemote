@@ -58,6 +58,7 @@ void Base::start()
 
     stateMachine = new QStateMachine(this);
     connect(stateMachine, SIGNAL(stopped()), this, SIGNAL(stopped()));
+    connect(stateMachine, SIGNAL(finished()), this, SIGNAL(stopped()));
 
     handleStarted();
 
