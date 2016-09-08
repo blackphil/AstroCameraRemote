@@ -14,6 +14,7 @@
 #include "SonyAlphaRemote_Settings.h"
 #include "SonyAlphaRemote_Sequencer_SettingsManager.h"
 #include "SonyAlphaRemote_PostView_Info.h"
+#include "Settings_General.h"
 
 
 namespace Ui {
@@ -49,6 +50,7 @@ class MainWindow : public QMainWindow
 
     SonyAlphaRemote::Settings* settings;
     SonyAlphaRemote::Sequencer::SettingsManager* sequencerSettingsManager;
+    Settings::General* generalSettings;
 
 
     int connectionState;
@@ -123,6 +125,10 @@ private Q_SLOTS:
     void on_postViewFwd_clicked();
 
     void on_postViewBwd_clicked();
+
+    void on_actionQuit_triggered();
+
+    void on_action_Settings_triggered();
 
 private:
     Ui::MainWindow *ui;

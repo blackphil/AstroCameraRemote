@@ -12,6 +12,7 @@ Setting::Setting(Setting* parent)
 
 Settings::Settings(QObject *parent)
 {
+    Q_ASSERT(parent);
     QObject::setParent(parent);
     Setting::qSettings = &settings;
 }

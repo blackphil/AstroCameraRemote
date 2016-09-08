@@ -3,9 +3,11 @@
 
 #include "SonyAlphaRemote_Helper.h"
 #include "SonyAlphaRemote_Sender.h"
+#include "SettingsDialog.h"
 
 #include <QMessageBox>
 #include <QRegExp>
+
 
 namespace helper
 {
@@ -55,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     , normalShootSequencer(new SonyAlphaRemote::Sequencer::NormalShootSequencer(statusPoller, sender, this))
     , settings(new SonyAlphaRemote::Settings(this))
     , sequencerSettingsManager(new SonyAlphaRemote::Sequencer::SettingsManager(settings))
+    , generalSettings(new Settings::General(settings))
     , connectionState(State_NotConnected)
     , aboutToClose(false)
     , currentTimeDisplayTimer(new QTimer(this))
@@ -65,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     settings->add(sequencerSettingsManager);
+    settings->add(generalSettings);
 
     connect(ui->shutterSpeed, SIGNAL(currentTextChanged(QString)), this, SLOT(shutterSpeedChanged(QString)));
 
@@ -609,4 +613,15 @@ void MainWindow::on_postViewBwd_clicked()
         postViewCursor = nextPos;
         updatePostView();
     }
+}
+
+void MainWindow::on_actionQuit_triggered()
+{
+    close();
+}
+
+void MainWindow::on_action_Settings_triggered()
+{
+    SettingsDialog dlg(generalSettings, this);
+    dlg.exec();
 }

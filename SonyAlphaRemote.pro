@@ -35,7 +35,9 @@ SOURCES += main.cpp\
     SonyAlphaRemote_Sequencer_NormalShootSequencer.cpp \
     SonyAlphaRemote_Sequencer_SettingsManager.cpp \
     SonyAlphaRemote_Sequencer_Base.cpp \
-    SonyAlphaRemote_PostView_Info.cpp
+    SonyAlphaRemote_PostView_Info.cpp \
+    SettingsDialog.cpp \
+    Settings_General.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -59,9 +61,12 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_Sequencer_NormalShootSequencer.h \
     SonyAlphaRemote_Sequencer_SettingsManager.h \
     SonyAlphaRemote_Sequencer_Base.h \
-    SonyAlphaRemote_PostView_Info.h
+    SonyAlphaRemote_PostView_Info.h \
+    SettingsDialog.h \
+    Settings_General.h
 
-FORMS    += MainWindow.ui
+FORMS    += MainWindow.ui \
+    SettingsDialog.ui
 
 #DEFINES += DRY_RUN
 

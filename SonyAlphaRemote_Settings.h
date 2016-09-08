@@ -38,7 +38,7 @@ class Settings : public Setting
     QList<Setting*> childSettings;
 
 public :
-    Settings(QObject* parent = 0);
+    Settings(QObject* parent);
     QSettings* getQSettings() { return &settings; }
 
     void add(Setting* s);
