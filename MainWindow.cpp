@@ -8,7 +8,7 @@
 #include <QMessageBox>
 #include <QRegExp>
 #include <QFile>
-
+#include <QFileInfo>
 
 
 namespace helper
@@ -206,11 +206,22 @@ void MainWindow::connectionStateChanged()
 
 void MainWindow::updateStyle()
 {
-//    QFile styleSheetFile(":/stylesheets/Night.css");
-    QFile styleSheetFile("D:/philipp/qsync/me/astro/dev/SonyAlphaRemote/Night.css");
-    styleSheetFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString styleSheet = styleSheetFile.readAll();
-    qApp->setStyleSheet(styleSheet);
+    static const QStringList styleLocations =
+    {
+        "D:/philipp/qsync/me/astro/dev/SonyAlphaRemote/Night.css"
+        , ":/stylesheets/Night.css"
+    };
+
+    foreach(QFileInfo info, styleLocations)
+    {
+        if(!info.exists())
+            continue;
+        QFile styleSheetFile(info.absoluteFilePath());
+        styleSheetFile.open(QIODevice::ReadOnly | QIODevice::Text);
+        QString styleSheet = styleSheetFile.readAll();
+        qApp->setStyleSheet(styleSheet);
+        break;
+    }
 
 }
 
