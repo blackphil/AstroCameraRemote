@@ -1,5 +1,5 @@
 #include "Settings_General.h"
-
+#include "SonyAlphaRemote_Settings.h"
 
 namespace Settings {
 
@@ -14,7 +14,22 @@ bool General::getLenrEnabled() const
 
 void General::setLenrEnabled(bool value)
 {
-    lenrEnabled = value;
+    if(lenrEnabled != value)
+    {
+        lenrEnabled = value;
+        Q_EMIT settingChanged();
+    }
+}
+
+General *General::getInstance()
+{
+    foreach(QObject* child, SonyAlphaRemote::Settings::getInstance()->children())
+    {
+        General* me = qobject_cast<General*>(child);
+        if(me)
+            return me;
+    }
+    return NULL;
 }
 
 General::General(Setting *parent)
@@ -36,6 +51,8 @@ void General::load()
     qSettings->beginGroup(groupName);
     lenrEnabled = qSettings->value(lenrEnabledName, lenrEnabledDefault).toBool();
     qSettings->endGroup();
+
+    Q_EMIT settingChanged();
 }
 
 } // namespace Settings

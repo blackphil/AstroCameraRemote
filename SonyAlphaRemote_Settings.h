@@ -19,6 +19,9 @@ protected :
     QSettings* qSettings;
     Setting(Setting *parent = 0);
 
+Q_SIGNALS:
+    void settingChanged();
+
 public :
     virtual ~Setting() {}
 
@@ -33,6 +36,8 @@ class Settings : public Setting
 {
     Q_OBJECT
 
+    static QPointer<Settings> instance;
+
     QSettings settings;
 
     QList<Setting*> childSettings;
@@ -42,6 +47,8 @@ public :
     QSettings* getQSettings() { return &settings; }
 
     void add(Setting* s);
+
+    static Settings* getInstance();
 
 public:
     void save();

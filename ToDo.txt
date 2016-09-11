@@ -2,23 +2,23 @@
 - long exposure nr ein- ausschaltbar machen
 - gui verriegelungen
 - gui design verbessern
-- gui design für Nacht-Modus
 - metadata anzeige/download
 - post view image history
 - live view
 - ssdp abfrage für kamera suche
 
-- FIXED: nach Ende der Sequenz wechselt der "Stop-button" nicht wieder auf "start" (scheint aber korrekt zu funktionieren)
+- DONE design für Nacht-Modus
+- FIXED nach Ende der Sequenz wechselt der "Stop-button" nicht wieder auf "start" (scheint aber korrekt zu funktionieren)
 - WORKSFORME: während die berechnete Sequenzdauer in der Log-Nachricht korrekt zu sein scheint,
           stimmt sie bei einer normalen Sequence im LineEdit nicht (noch inkl. angenommener "long exp. nr"-Wartezeit)
-- ERLEDIGT: sequencer countdown status stoppt nicht, wenn Sequenz abbgebrochen wird
-- ERLEDIGT einstellungen in qsettings speichern
-- ERLEDIGT cancel BULB sequence
-- ERLEDIGT aktuelle Uhrzeit anzeigen
-- ERLEDIGT batterie status anzeige
-- ERLEDIGT ISO einstellbar machen
-- ERLEDIGT verfügbare einstellungen (shutter speed etc.) sofort anzeigen
-- ERLEDIGT normal-shoot sequence
+- FIXED sequencer countdown status stoppt nicht, wenn Sequenz abbgebrochen wird
+- DONE einstellungen in qsettings speichern
+- DONE cancel BULB sequence
+- DONE aktuelle Uhrzeit anzeigen
+- DONE batterie status anzeige
+- DONE ISO einstellbar machen
+- DONE verfügbare einstellungen (shutter speed etc.) sofort anzeigen
+- DONE normal-shoot sequence
 
 
 

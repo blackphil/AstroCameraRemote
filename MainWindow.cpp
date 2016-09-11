@@ -82,6 +82,8 @@ MainWindow::MainWindow(QWidget *parent)
     settings->add(sequencerSettingsManager);
     settings->add(generalSettings);
 
+    connect(::Settings::General::getInstance(), SIGNAL(settingChanged()), this, SLOT(recalcSequenceDuration()));
+
     connect(ui->shutterSpeed, SIGNAL(currentTextChanged(QString)), this, SLOT(shutterSpeedChanged(QString)));
 
     ui->startDelayTuBtn->connectToSpinbox(ui->startDelay);

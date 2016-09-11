@@ -1,7 +1,8 @@
 #include "SonyAlphaRemote_Sequencer_Base.h"
 
 #include "SonyAlphaRemote_Helper.h"
-
+#include "SonyAlphaRemote_Settings.h"
+#include "Settings_General.h"
 #include "SonyAlphaRemote_Sequencer_StateBase.h"
 
 namespace SonyAlphaRemote {
@@ -40,7 +41,11 @@ bool Base::isRunning() const
 
 int Base::calculateSequenceDuration(int startDelay, int shutterSpeed, int pauseDelay, int numShots)
 {
-    return startDelay + (2* shutterSpeed + pauseDelay) * numShots - pauseDelay;
+    int factor = 1;
+    if(::Settings::General::getInstance()->getLenrEnabled())
+        factor = 2;
+
+    return startDelay + (factor * shutterSpeed + pauseDelay) * numShots - pauseDelay;
 }
 
 void Base::start()

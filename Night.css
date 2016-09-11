@@ -4,11 +4,15 @@ QMenuBar, QGroupBox, QPushButton, QComboBox, QMainWindow, QTextEdit {
 }
 
 
-QLineEdit, QSpinBox,  QDoubleSpinBox, QMessageBox {
+QLineEdit, QSpinBox,  QDoubleSpinBox, QMessageBox, QDialog, QCheckBox {
     border: 1px solid #101010;
     background-color: rgb(160, 0, 0);
     selection-background-color: rgb(140, 0, 0);
 }
+
+QCheckBox {
+    border: 0px
+    }
 
 QComboBox::drop-down, QComboBox:editable, QComboBox QAbstractItemView, QMenu {
     border: 1px solid #101010;

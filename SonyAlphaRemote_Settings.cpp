@@ -1,4 +1,5 @@
 #include "SonyAlphaRemote_Settings.h"
+#include <QPointer>
 
 namespace SonyAlphaRemote {
 
@@ -9,12 +10,19 @@ Setting::Setting(Setting* parent)
 {
 }
 
+QPointer<Settings> Settings::instance(0);
 
 Settings::Settings(QObject *parent)
 {
     Q_ASSERT(parent);
     QObject::setParent(parent);
     Setting::qSettings = &settings;
+    instance = this;
+}
+
+Settings* Settings::getInstance()
+{
+    return instance;
 }
 
 void Settings::add(Setting *s)

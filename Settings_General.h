@@ -8,6 +8,8 @@ namespace Settings {
 
 class General : public SonyAlphaRemote::Setting
 {
+    Q_OBJECT
+
     static QString groupName;
     static bool lenrEnabledDefault;
     static QString lenrEnabledName;
@@ -23,6 +25,8 @@ public:
 
     bool getLenrEnabled() const;
     void setLenrEnabled(bool value);
+
+    static General* getInstance();
 };
 
 } // namespace Settings
