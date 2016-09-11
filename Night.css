@@ -1,0 +1,26 @@
+
+QMenuBar, QGroupBox, QPushButton, QComboBox, QMainWindow, QTextEdit {
+    border: 1px solid #101010; background-color: rgb(20, 20, 20);
+}
+
+
+QLineEdit, QSpinBox,  QDoubleSpinBox {
+    border: 1px solid #101010;
+    background-color: rgb(60, 60, 60);
+    selection-background-color: rgb(40, 20, 20);
+}
+
+QComboBox::drop-down, QComboBox:editable, QComboBox QAbstractItemView {
+    border: 1px solid #101010;
+    background-color: rgb(40, 20, 20);
+    selection-background-color: rgb(40, 20, 20);
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(100, 100, 0, 255), stop:1 rgba(100, 50, 0, 255))
+}
+QProgressBar {
+    border-bottom-left-radius: 1px;
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(100, 0, 0, 255), stop:1 rgba(50, 0, 0, 255))
+}
+

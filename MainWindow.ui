@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1238</width>
-    <height>983</height>
+    <height>989</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,6 +15,22 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_4">
+    <item row="5" column="0" colspan="3">
+     <widget class="QLabel" name="sequencerStatus">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>&lt;center&gt;blub&lt;/center&gt;</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::RichText</enum>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0" rowspan="2">
      <widget class="QPushButton" name="toggleRecordModeBtn">
       <property name="text">
@@ -34,9 +50,6 @@
     </item>
     <item row="0" column="2" rowspan="2">
      <widget class="QProgressBar" name="batteryStatus">
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
       <property name="value">
        <number>24</number>
       </property>
@@ -437,68 +450,6 @@
       </layout>
      </widget>
     </item>
-    <item row="5" column="0" colspan="3">
-     <widget class="QLabel" name="sequencerStatus">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>&lt;center&gt;blub&lt;/center&gt;</string>
-      </property>
-      <property name="textFormat">
-       <enum>Qt::RichText</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="0" colspan="4">
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="title">
-       <string>Output</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="leftMargin">
-        <number>5</number>
-       </property>
-       <property name="topMargin">
-        <number>5</number>
-       </property>
-       <property name="rightMargin">
-        <number>5</number>
-       </property>
-       <property name="bottomMargin">
-        <number>5</number>
-       </property>
-       <property name="spacing">
-        <number>3</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QTextEdit" name="output">
-         <property name="minimumSize">
-          <size>
-           <width>350</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="undoRedoEnabled">
-          <bool>false</bool>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="0" column="3" rowspan="6">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
@@ -569,9 +520,6 @@
            <height>600</height>
           </size>
          </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(240, 255, 211);</string>
-         </property>
          <property name="text">
           <string>post view image</string>
          </property>
@@ -607,6 +555,28 @@
         </widget>
        </item>
       </layout>
+     </widget>
+    </item>
+    <item row="6" column="0" colspan="4">
+     <widget class="QTextEdit" name="output">
+      <property name="minimumSize">
+       <size>
+        <width>350</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="undoRedoEnabled">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
    </layout>

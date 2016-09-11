@@ -63,8 +63,11 @@ class MainWindow : public QMainWindow
 
 
     void closeEvent(QCloseEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
     void connectionStateChanged();
+
+    void updateStyle();
 
 
 public:

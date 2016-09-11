@@ -7,6 +7,8 @@
 
 #include <QMessageBox>
 #include <QRegExp>
+#include <QFile>
+
 
 
 namespace helper
@@ -42,6 +44,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_F5)
+    {
+        updateStyle();
+    }
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , startRecMode(new SonyAlphaRemote::Json::StartRecMode(this))
@@ -65,6 +75,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     , ui(new Ui::MainWindow)
 {
+
+    updateStyle();
     ui->setupUi(this);
 
     settings->add(sequencerSettingsManager);
@@ -190,6 +202,16 @@ void MainWindow::connectionStateChanged()
         settings->load();
         connectionState |= State_SettingsLoaded;
     }
+}
+
+void MainWindow::updateStyle()
+{
+//    QFile styleSheetFile(":/stylesheets/Night.css");
+    QFile styleSheetFile("D:/philipp/qsync/me/astro/dev/SonyAlphaRemote/Night.css");
+    styleSheetFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString styleSheet = styleSheetFile.readAll();
+    qApp->setStyleSheet(styleSheet);
+
 }
 
 void MainWindow::hello()
@@ -552,12 +574,6 @@ void MainWindow::addCurrentSequencerSettings()
 
         sequencerSettingsManager->add(s);
         sequencerSettingsManager->setCurrent(s->objectName());
-
-//        ui->settingsNameCBox->blockSignals(true);
-//        ui->settingsNameCBox->addItem(s->objectName());
-//        ui->settingsNameCBox->setCurrentText(s->objectName());
-//        ui->settingsNameCBox->blockSignals(false);
-
     }
 }
 
