@@ -76,6 +76,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
 
+    setWindowFlags(Qt::CustomizeWindowHint);
+
     updateStyle();
     ui->setupUi(this);
 
@@ -649,8 +651,41 @@ void MainWindow::on_actionQuit_triggered()
     close();
 }
 
-void MainWindow::on_action_Settings_triggered()
+
+void MainWindow::on_actionSettings_triggered()
 {
     SettingsDialog dlg(generalSettings, this);
     dlg.exec();
+
+}
+
+void MainWindow::on_actionClose_triggered()
+{
+    close();
+}
+
+
+
+void MainWindow::on_actionMaximize_triggered()
+{
+    if(isMaximized())
+        showNormal();
+    else
+        showMaximized();
+
+}
+
+void MainWindow::on_actionMinimize_triggered()
+{
+    static bool wasMaximizedBefore = false;
+    if(!isMinimized())
+    {
+        wasMaximizedBefore = isMaximized();
+        showMinimized();
+    }
+    else if(wasMaximizedBefore)
+        showMaximized();
+    else
+        showNormal();
+
 }

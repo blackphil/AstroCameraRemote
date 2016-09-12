@@ -131,7 +131,14 @@ private Q_SLOTS:
 
     void on_actionQuit_triggered();
 
-    void on_action_Settings_triggered();
+
+    void on_actionSettings_triggered();
+
+    void on_actionClose_triggered();
+
+    void on_actionMaximize_triggered();
+
+    void on_actionMinimize_triggered();
 
 private:
     Ui::MainWindow *ui;

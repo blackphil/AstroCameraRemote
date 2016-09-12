@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     SonyAlphaRemote_Sequencer_Base.cpp \
     SonyAlphaRemote_PostView_Info.cpp \
     SettingsDialog.cpp \
-    Settings_General.cpp
+    Settings_General.cpp \
+    ToolBar.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -63,7 +64,8 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_Sequencer_Base.h \
     SonyAlphaRemote_PostView_Info.h \
     SettingsDialog.h \
-    Settings_General.h
+    Settings_General.h \
+    ToolBar.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui

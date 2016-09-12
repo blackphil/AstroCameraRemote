@@ -10,7 +10,7 @@ QLineEdit, QSpinBox,  QDoubleSpinBox, QMessageBox, QDialog, QCheckBox {
     selection-background-color: rgb(140, 0, 0);
 }
 
-QCheckBox {
+QCheckBox, QToolBar {
     border: 0px
     }
 

@@ -8,5 +8,11 @@
     </qresource>
     <qresource prefix="/images">
         <file>Arrow_down.svg</file>
+        <file>Close.svg</file>
+        <file>Maximize.svg</file>
+        <file>Minimize.svg</file>
+        <file>RestoreSize.svg</file>
+        <file>Settings.svg</file>
+        <file>Quit.svg</file>
     </qresource>
 </RCC>
