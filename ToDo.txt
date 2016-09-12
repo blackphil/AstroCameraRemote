@@ -1,12 +1,13 @@
 - bugfix: App lässt sich nur schwer beenden, wenn mitten beim capture versucht wird zu beenden (wartet auf IDLE status)
 - long exposure nr ein- ausschaltbar machen
 - gui verriegelungen
-- gui design verbessern
-- metadata anzeige/download
-- post view image history
+- metadata anzeige
+- metadata download
 - live view
 - ssdp abfrage für kamera suche
 
+- DONE post view image history (metadata anzeige fehlt noch)
+- DONE gui design verbessern --> keine windows title bar mehr ... wird alles über custom toolbars gemanaged.
 - DONE design für Nacht-Modus
 - FIXED nach Ende der Sequenz wechselt der "Stop-button" nicht wieder auf "start" (scheint aber korrekt zu funktionieren)
 - WORKSFORME: während die berechnete Sequenzdauer in der Log-Nachricht korrekt zu sein scheint,
