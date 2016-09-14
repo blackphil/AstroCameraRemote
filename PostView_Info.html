@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            h1 { border: 1px solid #ccc; text-align: center; }
+            td { width: 200px}
+            table, td, tr, th { padding:2px; spacing: 1px; border: 1px solid; border-collapse: collapse; }
+            .label { font-family: arial; font-weight: bold; font-size: 12px; text-align: right; }
+            .value { font-family: arial; font-size: 12px; text-align: left; }
+            .header { font-family: arial; font-weight: bold; font-size: 12px; text-align: center; }
+        </style>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <td class="label">date:</td>
+                <td class="value">%0</td>
+                <td class="label">time:</td>
+                <td class="value">%1</td>
+                <td class="label">sequence #:</td>
+                <td class="value">%2/%3</td>
+            </td>
+            <tr>
+                <td class="label">shutter speed:</td>
+                <td class="value">%4</td>
+                <td class="label">iso speed:</td>
+                <td class="value">%5</td>
+                <td class="label">dimensions:</td>
+                <td class="value" colspan="2" >%6x%7</td>
+            </tr>
+        </table>
+    </body>
+</html>

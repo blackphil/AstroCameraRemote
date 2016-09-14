@@ -10,7 +10,8 @@ namespace PostView {
 
 class Info
 {
-    int shutterSpeedMs;
+    QString shutterSpeed;
+    int shutterSpeedBulbMs;
     int iso;
     QDateTime timestamp;
     QUrl url;
@@ -18,12 +19,15 @@ class Info
     int numShots;
     QPixmap image;
 
+    static QString htmlPattern;
+
 
 public:
     Info();
-    Info(int shutterSpeedMs, int iso, const QDateTime& ts, const QUrl& url, int seqNr = 0, int numShots = 0, QPixmap image = QPixmap());
-    int getShutterSpeedMs() const;
-    void setShutterSpeedMs(int value);
+    Info(
+            QString shutterSpeed, int shutterSpeedBulbMs, int iso
+            , const QDateTime &ts, const QUrl &url, int seqNr, int numShots
+            , const QPixmap& image = QPixmap());
     int getIso() const;
     void setIso(int value);
     QDateTime getTimestamp() const;
@@ -36,6 +40,12 @@ public:
     void setNumShots(int value);
     const QPixmap& getImage() const;
     void setImage(const QPixmap &value);
+
+    QString toHtml() const;
+    QString getShutterSpeed() const;
+    void setShutterSpeed(const QString &value);
+    int getShutterSpeedBulbMs() const;
+    void setShutterSpeedBulbMs(int value);
 };
 
 } // namespace PostView

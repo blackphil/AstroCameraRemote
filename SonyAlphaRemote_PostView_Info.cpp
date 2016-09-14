@@ -1,20 +1,52 @@
 #include "SonyAlphaRemote_PostView_Info.h"
 
+#include <QFile>
+
 namespace SonyAlphaRemote {
 namespace PostView {
 
+QString Info::htmlPattern;
+
+QString Info::getShutterSpeed() const
+{
+    return shutterSpeed;
+}
+
+void Info::setShutterSpeed(const QString &value)
+{
+    shutterSpeed = value;
+}
+
+int Info::getShutterSpeedBulbMs() const
+{
+    return shutterSpeedBulbMs;
+}
+
+void Info::setShutterSpeedBulbMs(int value)
+{
+    shutterSpeedBulbMs = value;
+}
 
 Info::Info()
-    : shutterSpeedMs(0)
+    : shutterSpeedBulbMs(0)
     , iso(0)
     , seqNr(0)
     , numShots(0)
 {
-
+    if(htmlPattern.isEmpty())
+    {
+        QFile htmlPatternFile(":/sequencer/PostView_Info.html");
+        htmlPatternFile.open(QIODevice::ReadOnly | QIODevice::Text);
+        htmlPattern = htmlPatternFile.readAll();
+    }
 }
 
-Info::Info(int shutterSpeedMs, int iso, const QDateTime& ts, const QUrl& url, int seqNr, int numShots, QPixmap image)
-    : shutterSpeedMs(shutterSpeedMs)
+Info::Info(
+        QString shutterSpeed, int shutterSpeedBulbMs, int iso
+        , const QDateTime& ts, const QUrl& url, int seqNr, int numShots
+        , const QPixmap &image)
+    : shutterSpeed(shutterSpeed)
+    , shutterSpeedBulbMs(shutterSpeedBulbMs)
     , iso(iso)
     , timestamp(ts)
     , url(url)
@@ -25,15 +57,7 @@ Info::Info(int shutterSpeedMs, int iso, const QDateTime& ts, const QUrl& url, in
 
 }
 
-int Info::getShutterSpeedMs() const
-{
-    return shutterSpeedMs;
-}
 
-void Info::setShutterSpeedMs(int value)
-{
-    shutterSpeedMs = value;
-}
 
 int Info::getIso() const
 {
@@ -93,6 +117,23 @@ const QPixmap &Info::getImage() const
 void Info::setImage(const QPixmap &value)
 {
     image = value;
+}
+
+QString Info::toHtml() const
+{
+    QString shutterSpeedStr = shutterSpeed;
+    if(shutterSpeed == "BULB")
+        shutterSpeedStr = QString("%0ms (BULB)").arg(shutterSpeedBulbMs);
+
+    return htmlPattern
+            .arg(timestamp.toString("yyyy-MM-dd"))
+            .arg(timestamp.toString("HH:mm:ss:zzz"))
+            .arg(seqNr)
+            .arg(numShots)
+            .arg(shutterSpeedStr)
+            .arg(iso)
+            .arg(image.isNull() ? "?" : QString::number(image.width()))
+            .arg(image.isNull() ? "?" : QString::number(image.height()));
 }
 
 

@@ -140,6 +140,8 @@ private Q_SLOTS:
 
     void on_actionMinimize_triggered();
 
+    void on_actionDebug_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

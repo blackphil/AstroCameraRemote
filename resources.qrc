@@ -2,6 +2,7 @@
     <qresource prefix="/sequencer">
         <file alias="Countdown_Msg.html">Sequencer_Countdown_Msg.html</file>
         <file alias="Normal_Msg.html">Sequencer_Normal_Msg.html</file>
+        <file>PostView_Info.html</file>
     </qresource>
     <qresource prefix="/stylesheets">
         <file>Night.css</file>
@@ -14,5 +15,6 @@
         <file>RestoreSize.svg</file>
         <file>Settings.svg</file>
         <file>Quit.svg</file>
+        <file>test_image.jpg</file>
     </qresource>
 </RCC>

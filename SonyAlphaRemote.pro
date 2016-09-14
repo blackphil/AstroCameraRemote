@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     SonyAlphaRemote_PostView_Info.cpp \
     SettingsDialog.cpp \
     Settings_General.cpp \
-    ToolBar.cpp
+    ToolBar.cpp \
+    SonyAlphaRemote_PostView_FullScreenWindow.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -65,10 +66,12 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_PostView_Info.h \
     SettingsDialog.h \
     Settings_General.h \
-    ToolBar.h
+    ToolBar.h \
+    SonyAlphaRemote_PostView_FullScreenWindow.h
 
 FORMS    += MainWindow.ui \
-    SettingsDialog.ui
+    SettingsDialog.ui \
+    SonyAlphaRemote_PostView_FullScreenWindow.ui
 
 #DEFINES += DRY_RUN
 
