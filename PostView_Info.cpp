@@ -1,8 +1,7 @@
-#include "SonyAlphaRemote_PostView_Info.h"
+#include "PostView_Info.h"
 
 #include <QFile>
 
-namespace SonyAlphaRemote {
 namespace PostView {
 
 QString Info::htmlPattern;
@@ -138,4 +137,3 @@ QString Info::toHtml() const
 
 
 } // namespace PostView
-} // namespace SonyAlphaRemote

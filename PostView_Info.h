@@ -5,7 +5,6 @@
 #include <QUrl>
 #include <QPixmap>
 
-namespace SonyAlphaRemote {
 namespace PostView {
 
 class Info
@@ -49,6 +48,5 @@ public:
 };
 
 } // namespace PostView
-} // namespace SonyAlphaRemote
 
 #endif // SONYALPHAREMOTE_POSTVIEW_INFO_H

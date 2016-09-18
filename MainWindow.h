@@ -13,7 +13,7 @@
 #include "SonyAlphaRemote_BatteryInfo.h"
 #include "SonyAlphaRemote_Settings.h"
 #include "SonyAlphaRemote_Sequencer_SettingsManager.h"
-#include "SonyAlphaRemote_PostView_Info.h"
+#include "PostView_Info.h"
 #include "Settings_General.h"
 
 
@@ -58,8 +58,6 @@ class MainWindow : public QMainWindow
 
     QTimer* currentTimeDisplayTimer;
 
-    QList<SonyAlphaRemote::PostView::Info> postViewImageStack;
-    int postViewCursor;
 
 
     void closeEvent(QCloseEvent *event);
@@ -68,6 +66,9 @@ class MainWindow : public QMainWindow
     void connectionStateChanged();
 
     void updateStyle();
+
+Q_SIGNALS :
+    void newPostViewInfo(PostView::Info);
 
 
 public:
@@ -96,9 +97,6 @@ private Q_SLOTS:
     void onPostView(const QString &url);
     void onPostView(const QString &url, int i, int numShots);
 
-    void updatePostViewImage(QByteArray data);
-    void updatePostView();
-
     void on_startBulbSequence_clicked();
 
     void appendOutputMessage(QString msg);
@@ -125,12 +123,7 @@ private Q_SLOTS:
 
     void updateSequencerStatus(const QString& status);
 
-    void on_postViewFwd_clicked();
-
-    void on_postViewBwd_clicked();
-
     void on_actionQuit_triggered();
-
 
     void on_actionSettings_triggered();
 

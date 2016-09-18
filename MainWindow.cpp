@@ -51,16 +51,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     case Qt::Key_F5 :
         updateStyle();
         break;
-    case Qt::Key_F11 :
-        if(ui->postViewImage->isFullScreen())
-            ui->postViewImage->showNormal();
-        else
-            ui->postViewImage->showFullScreen();
-        break;
-    case Qt::Key_Escape :
-        if(ui->postViewImage->isFullScreen())
-            ui->postViewImage->showNormal();
-        break;
     default :
         break;
     }
@@ -85,7 +75,6 @@ MainWindow::MainWindow(QWidget *parent)
     , connectionState(State_NotConnected)
     , aboutToClose(false)
     , currentTimeDisplayTimer(new QTimer(this))
-    , postViewCursor(0)
 
     , ui(new Ui::MainWindow)
 {
@@ -121,7 +110,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(currentTimeDisplayTimer, SIGNAL(timeout()), this, SLOT(updateCurrentTimeDisplay()));
     currentTimeDisplayTimer->start(10);
 
-    connect(sender, SIGNAL(loadedPostViewImage(QByteArray)), this, SLOT(updatePostViewImage(QByteArray)));
+    connect(sender, SIGNAL(loadedPostViewImage(QByteArray)), ui->postViewWidget, SLOT(updatePostViewImage(QByteArray)));
+    connect(this, SIGNAL(newPostViewInfo(PostView::Info)), ui->postViewWidget, SLOT(newInfo(PostView::Info)));
     connect(statusPoller, SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
     connect(statusPoller, SIGNAL(isoSpeedRatesChanged(QStringList,QString))
             , this, SLOT(isoSpeedRatesChanged(QStringList,QString)));
@@ -350,7 +340,7 @@ void MainWindow::onPostView(const QString &url)
 {
     bool ok = false;
 
-    SonyAlphaRemote::PostView::Info newInfo;
+    PostView::Info newInfo;
     newInfo.setShutterSpeed(ui->shutterSpeed->currentText());
     newInfo.setShutterSpeedBulbMs(ui->shutterSpeedTuBtn->getValueInMilliseconds());
     newInfo.setIso(ui->isoSpeedRate->currentText().toInt(&ok));
@@ -358,7 +348,7 @@ void MainWindow::onPostView(const QString &url)
     newInfo.setTimestamp(ts);
     newInfo.setUrl(url);
 
-    postViewImageStack.push_back(newInfo);
+    Q_EMIT newPostViewInfo(newInfo);
 
     ui->output->append(tr("have new image: %0").arg(url));
 //    ui->imageSubTitle->setText(ts.toString("yyyy-MM-ddTHH:mm:ss:zzz"));
@@ -369,7 +359,7 @@ void MainWindow::onPostView(const QString& url, int i, int numShots)
 {
     bool ok = false;
 
-    SonyAlphaRemote::PostView::Info newInfo;
+    PostView::Info newInfo;
     newInfo.setShutterSpeed(ui->shutterSpeed->currentText());
     newInfo.setShutterSpeedBulbMs(ui->shutterSpeedTuBtn->getValueInMilliseconds());
     newInfo.setIso(ui->isoSpeedRate->currentText().toInt(&ok));
@@ -379,7 +369,7 @@ void MainWindow::onPostView(const QString& url, int i, int numShots)
     newInfo.setSeqNr(i);
     newInfo.setNumShots(numShots);
 
-    postViewImageStack.push_back(newInfo);
+    Q_EMIT newPostViewInfo(newInfo);
 
 
     ui->output->append(tr("have new image: %0 (%1/%2)").arg(url).arg(i).arg(numShots));
@@ -387,49 +377,7 @@ void MainWindow::onPostView(const QString& url, int i, int numShots)
     sender->loadPostViewImage(url);
 }
 
-void MainWindow::updatePostViewImage(QByteArray data)
-{
 
-    QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data, "JPG"));
-    Q_ASSERT(!postViewImageStack.isEmpty());
-    if(postViewImageStack.isEmpty())
-    {
-        SAR_ERR(tr("post view image stack is empty!!!"));
-        ui->postViewImage->setPixmap(pixmap);
-        return;
-    }
-
-    pixmap = pixmap.scaled(ui->postViewImage->width(), ui->postViewImage->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-    postViewImageStack.back().setImage(pixmap);
-    postViewCursor = postViewImageStack.count()-1;
-    updatePostView();
-
-}
-
-void MainWindow::updatePostView()
-{
-    if(0 <= postViewCursor && postViewImageStack.count() > postViewCursor)
-    {
-        const SonyAlphaRemote::PostView::Info& info = postViewImageStack[postViewCursor];
-        const QPixmap& image = info.getImage();
-        ui->postViewMetaInfo->setText(info.toHtml());
-        if(!image.isNull())
-            ui->postViewImage->setPixmap(image);
-
-    }
-
-    if(postViewCursor >= postViewImageStack.count()-1)
-        ui->postViewFwd->setEnabled(false);
-    else
-        ui->postViewFwd->setEnabled(true);
-
-    if(postViewCursor <= 0)
-        ui->postViewBwd->setEnabled(false);
-    else
-        ui->postViewBwd->setEnabled(true);
-
-}
 
 bool MainWindow::stopRunningSequence()
 {
@@ -647,25 +595,7 @@ void MainWindow::removeSequencerSettings(const QString &name)
     ui->settingsNameCBox->removeItem(ui->settingsNameCBox->findText(name));
 }
 
-void MainWindow::on_postViewFwd_clicked()
-{
-    int nextPos = qMin(postViewCursor+1, postViewImageStack.count()-1);
-    if(postViewCursor != nextPos)
-    {
-        postViewCursor = nextPos;
-        updatePostView();
-    }
-}
 
-void MainWindow::on_postViewBwd_clicked()
-{
-    int nextPos = qMax(postViewCursor-1, 0);
-    if(postViewCursor != nextPos)
-    {
-        postViewCursor = nextPos;
-        updatePostView();
-    }
-}
 
 void MainWindow::on_actionQuit_triggered()
 {
@@ -716,7 +646,8 @@ void MainWindow::on_actionDebug_triggered()
     QFile testImage(":/images/test_image.jpg");
     testImage.open(QIODevice::ReadOnly);
 
-    SonyAlphaRemote::PostView::Info info;
-    postViewImageStack << info;
-    updatePostViewImage(testImage.readAll());
+    PostView::Info info;
+    info.setImage(QPixmap::fromImage(QImage::fromData(testImage.readAll(), "JPG")));
+    Q_EMIT newPostViewInfo(info);
+
 }

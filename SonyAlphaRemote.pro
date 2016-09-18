@@ -35,11 +35,12 @@ SOURCES += main.cpp\
     SonyAlphaRemote_Sequencer_NormalShootSequencer.cpp \
     SonyAlphaRemote_Sequencer_SettingsManager.cpp \
     SonyAlphaRemote_Sequencer_Base.cpp \
-    SonyAlphaRemote_PostView_Info.cpp \
     SettingsDialog.cpp \
     Settings_General.cpp \
     ToolBar.cpp \
-    SonyAlphaRemote_PostView_FullScreenWindow.cpp
+    SonyAlphaRemote_PostView_FullScreenWindow.cpp \
+    PostView_Widget.cpp \
+    PostView_Info.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -63,15 +64,17 @@ HEADERS  += MainWindow.h \
     SonyAlphaRemote_Sequencer_NormalShootSequencer.h \
     SonyAlphaRemote_Sequencer_SettingsManager.h \
     SonyAlphaRemote_Sequencer_Base.h \
-    SonyAlphaRemote_PostView_Info.h \
     SettingsDialog.h \
     Settings_General.h \
     ToolBar.h \
-    SonyAlphaRemote_PostView_FullScreenWindow.h
+    SonyAlphaRemote_PostView_FullScreenWindow.h \
+    PostView_Widget.h \
+    PostView_Info.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \
-    SonyAlphaRemote_PostView_FullScreenWindow.ui
+    SonyAlphaRemote_PostView_FullScreenWindow.ui \
+    PostView_Widget.ui
 
 #DEFINES += DRY_RUN
 
