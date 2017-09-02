@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = SonyAlphaRemote
 TEMPLATE = app
 
+QTPLUGIN += svg
 
 SOURCES += main.cpp\
         MainWindow.cpp \

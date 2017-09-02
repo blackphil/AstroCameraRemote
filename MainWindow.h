@@ -76,7 +76,7 @@ public:
     ~MainWindow();
 
 private Q_SLOTS:
-    void on_toggleRecordModeBtn_clicked();
+    void toggleRecordModeBtn(bool on);
 
     void toggleRecordModeBtnStopped();
     void toggleRecordModeBtnStarted();

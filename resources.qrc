@@ -16,5 +16,8 @@
         <file>Settings.svg</file>
         <file>Quit.svg</file>
         <file>test_image.jpg</file>
+        <file>Bug.svg</file>
+        <file>Record.svg</file>
+        <file>Record_off.svg</file>
     </qresource>
 </RCC>

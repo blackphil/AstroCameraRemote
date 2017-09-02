@@ -31,7 +31,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     settings->save();
 
-    if(ui->toggleRecordModeBtn->isChecked())
+    if(ui->actionToggleRecordMode->isChecked())
     {
         sender->send(stopRecMode);
         aboutToClose = true;
@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
 
-    setWindowFlags(Qt::CustomizeWindowHint);
+//    setWindowFlags(Qt::CustomizeWindowHint);
 
     updateStyle();
     ui->setupUi(this);
@@ -119,7 +119,7 @@ MainWindow::MainWindow(QWidget *parent)
             , this, SLOT(shutterSpeedsChanged(QStringList,QString)));
     connect(statusPoller, SIGNAL(batteryStatusChanged()), this, SLOT(updateBatteryStatus()));
 
-
+    connect(ui->actionToggleRecordMode, SIGNAL(toggled(bool)), this, SLOT(toggleRecordModeBtn(bool)));
     connect(startRecMode, SIGNAL(confirmed()), this, SLOT(toggleRecordModeBtnStarted()));
     connect(startRecMode, SIGNAL(confirmed()), this, SLOT(hello()));
     connect(startRecMode, SIGNAL(error(QString)), this, SLOT(helloError(QString)));
@@ -177,30 +177,36 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_toggleRecordModeBtn_clicked()
+
+
+void MainWindow::toggleRecordModeBtn(bool on)
 {
-    if(!ui->toggleRecordModeBtn->isChecked())
+    if(on)
     {
-        sender->send(stopRecMode);
+        ui->output->append(tr("turning on record mode"));
+        sender->send(startRecMode);
     }
     else
     {
-        sender->send(startRecMode);
+        ui->output->append(tr("turning off record mode"));
+        sender->send(stopRecMode);
     }
 }
 
+
+
 void MainWindow::toggleRecordModeBtnStopped()
 {
-    ui->toggleRecordModeBtn->setText(tr("Start record mode"));
-    ui->toggleRecordModeBtn->setChecked(false);
+    ui->actionToggleRecordMode->setChecked(false);
+    ui->output->append(tr("record mode turned off"));
     if(aboutToClose)
         close();
 }
 
 void MainWindow::toggleRecordModeBtnStarted()
 {
-    ui->toggleRecordModeBtn->setText(tr("Stop record mode"));
-    ui->toggleRecordModeBtn->setChecked(true);
+    ui->actionToggleRecordMode->setChecked(true);
+    ui->output->append(tr("record mode turned on"));
 }
 
 void MainWindow::connectionStateChanged()
@@ -214,22 +220,22 @@ void MainWindow::connectionStateChanged()
 
 void MainWindow::updateStyle()
 {
-    static const QStringList styleLocations =
-    {
-        "D:/philipp/qsync/me/astro/dev/SonyAlphaRemote/Night.css"
-        , ":/stylesheets/Night.css"
-    };
+//    static const QStringList styleLocations =
+//    {
+//        "D:/philipp/qsync/me/astro/dev/SonyAlphaRemote/Night.css"
+//        , ":/stylesheets/Night.css"
+//    };
 
-    foreach(QFileInfo info, styleLocations)
-    {
-        if(!info.exists())
-            continue;
-        QFile styleSheetFile(info.absoluteFilePath());
-        styleSheetFile.open(QIODevice::ReadOnly | QIODevice::Text);
-        QString styleSheet = styleSheetFile.readAll();
-        qApp->setStyleSheet(styleSheet);
-        break;
-    }
+//    foreach(QFileInfo info, styleLocations)
+//    {
+//        if(!info.exists())
+//            continue;
+//        QFile styleSheetFile(info.absoluteFilePath());
+//        styleSheetFile.open(QIODevice::ReadOnly | QIODevice::Text);
+//        QString styleSheet = styleSheetFile.readAll();
+//        qApp->setStyleSheet(styleSheet);
+//        break;
+//    }
 
 }
 
