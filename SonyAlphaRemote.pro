@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     LiveView_Reader.cpp \
     LiveView_Commands.cpp \
     LiveView_ReaderThread.cpp \
-    LiveView_ThreadInfo.cpp
+    LiveView_ThreadInfo.cpp \
+    LiveView_Info.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -80,7 +81,8 @@ HEADERS  += MainWindow.h \
     LiveView_Reader.h \
     LiveView_Commands.h \
     LiveView_ReaderThread.h \
-    LiveView_ThreadInfo.h
+    LiveView_ThreadInfo.h \
+    LiveView_Info.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

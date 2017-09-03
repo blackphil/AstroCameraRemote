@@ -3,6 +3,7 @@
         <file alias="Countdown_Msg.html">Sequencer_Countdown_Msg.html</file>
         <file alias="Normal_Msg.html">Sequencer_Normal_Msg.html</file>
         <file>PostView_Info.html</file>
+        <file>LiveView_Info.html</file>
     </qresource>
     <qresource prefix="/stylesheets">
         <file>Night.css</file>

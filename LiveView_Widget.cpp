@@ -1,8 +1,10 @@
 #include "LiveView_Widget.h"
 #include "ui_LiveView_Widget.h"
 #include "SonyAlphaRemote_Helper.h"
+#include "LiveView_Info.h"
 
 #include <QMutexLocker>
+#include <QTime>
 
 using namespace SonyAlphaRemote;
 
@@ -56,8 +58,36 @@ void Widget::stop()
 
 void Widget::updateLiveViewImage(const PayloadPtr &data)
 {
+    static int fps = 0;
+
+    static QTime lastTimeStamp = QTime::currentTime();
+
+    QTime now = QTime::currentTime();
+
+    static int time = 0;
+    static int count = 0;
+
+    if(count < 10)
+    {
+        time += lastTimeStamp.msecsTo(now);
+        count++;
+    }
+    else if(time > 0)
+    {
+        fps = (int)(10000 / time);
+        time = 0;
+        count = 0;
+
+        Info metaInfo;
+        metaInfo.setFps(fps);
+        ui->metaInfo->setText(metaInfo.toHtml());
+    }
+
+    lastTimeStamp = now;
+
     QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data->payload, "JPG"));
-    ui->label->setPixmap(pixmap);
+    ui->liveViewImage->setPixmap(pixmap);
+
 }
 
 void Widget::startReaderThread(QString url)
@@ -73,7 +103,7 @@ void Widget::startReaderThread(QString url)
     connect(readerThread, SIGNAL(newPayload(PayloadPtr)), this, SLOT(updateLiveViewImage(PayloadPtr)));
 
     threadInfo.running = true;
-    readerThread->start();
+    readerThread->start(QThread::LowestPriority);
 
 
     SAR_INF("started reader thread URL(" << url << ")");

@@ -78,7 +78,7 @@ void Reader::close()
 
 void Reader::readyRead()
 {
-    SAR_INF("READY READ");
+//    SAR_INF("READY READ");
 
 
     switch(status)
@@ -104,7 +104,7 @@ bool Reader::readCommonHeader()
 {
     int readLength = 1 + 1 + 2 + 4;
 
-    SAR_INF("bytes available: " << connection->bytesAvailable());
+//    SAR_INF("bytes available: " << connection->bytesAvailable());
 
     if(readLength > connection->bytesAvailable())
         return false;
