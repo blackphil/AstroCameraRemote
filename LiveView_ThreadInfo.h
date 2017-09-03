@@ -25,7 +25,8 @@ struct ThreadInfo
 
     JpegQueue q;
     bool running;
-    ThreadInfo() : running(false) {}
+    float targetFps;
+    ThreadInfo() : running(false), targetFps(0.5) {}
 };
 
 } // namespace LiveView

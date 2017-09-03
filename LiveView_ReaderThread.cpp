@@ -29,6 +29,7 @@ void ReaderThread::run()
         delete reader;
     reader = new Reader();
     connect(reader, SIGNAL(newPayload(PayloadPtr)), this, SIGNAL(newPayload(PayloadPtr)));
+    reader->setTargetFps(threadInfo->targetFps);
     reader->open(url);
 
     QThread::run();

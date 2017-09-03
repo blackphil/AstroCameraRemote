@@ -4,6 +4,16 @@
 
 namespace LiveView {
 
+long Info::getFrameCount() const
+{
+    return frameCount;
+}
+
+void Info::setFrameCount(long value)
+{
+    frameCount = value;
+}
+
 Info::Info()
     : fps(0)
 {
@@ -13,12 +23,12 @@ Info::Info()
     htmlPattern = htmlPatternFile.readAll();
 }
 
-int Info::getFps() const
+float Info::getFps() const
 {
     return fps;
 }
 
-void Info::setFps(int value)
+void Info::setFps(float value)
 {
     fps = value;
 }
@@ -26,7 +36,7 @@ void Info::setFps(int value)
 QString Info::toHtml() const
 {
 
-    return htmlPattern.arg(fps);
+    return htmlPattern.arg(fps, 0, 'g', 2).arg(frameCount);
 }
 
 

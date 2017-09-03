@@ -23,6 +23,12 @@ bool Reader::getReady() const
     return connection && connection->isFinished();
 }
 
+
+void Reader::setTargetFps(float value)
+{
+    targetFps = value;
+}
+
 Reader::Reader(QObject *parent)
     : QObject(parent)
     , manager(new QNetworkAccessManager(this))
@@ -33,6 +39,8 @@ Reader::Reader(QObject *parent)
     , status(ReadCommonHeader)
 {
     qRegisterMetaType<PayloadPtr>("PayloadPtr");
+
+    lastFrameTs = QTime::currentTime();
 }
 
 void Reader::open(QString urlStr)
@@ -181,7 +189,38 @@ bool Reader::readPayload()
     QByteArray jpegData = readBytes(jpegSize);
     QByteArray paddingData = readBytes(paddingSize);
 
-    Q_EMIT newPayload(PayloadPtr(new Payload(jpegData, paddingData)));
+    QTime now = QTime::currentTime();
+
+    static int time = 0;
+    static int count = 0;
+
+
+    if(count < 10)
+    {
+        time += lastFrameTs.msecsTo(now);
+        count++;
+    }
+
+    float fps = (float)count * 1000 / (float)time;
+
+    if(count == 10)
+    {
+        time = 0;
+        count = 0;
+    }
+
+
+    if(fps <= targetFps)
+    {
+        lastFrameTs = now;
+        SAR_INF("have new payload (fps: " << fps << ")");
+        Q_EMIT newPayload(PayloadPtr(new Payload(jpegData, paddingData)));
+    }
+    else
+    {
+        SAR_INF("skipped payload (fps: " << fps << ")");
+    }
+
     return true;
 
 }

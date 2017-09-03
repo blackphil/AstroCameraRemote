@@ -6,6 +6,7 @@
 #include <QByteArray>
 #include <QSharedPointer>
 #include <QNetworkAccessManager>
+#include <QTime>
 
 
 namespace LiveView {
@@ -31,6 +32,9 @@ class Reader : public QObject
     QNetworkAccessManager* manager;
     QNetworkReply* connection;
 
+    QTime lastFrameTs;
+    float targetFps;
+
     bool ready;
     int jpegSize;
     int paddingSize;
@@ -47,12 +51,11 @@ class Reader : public QObject
 public:
 
 
-
-
     explicit Reader(QObject *parent = nullptr);
-
-
     bool getReady() const;
+
+
+    void setTargetFps(float value);
 
 Q_SIGNALS :
     void newPayload(PayloadPtr);

@@ -58,32 +58,21 @@ void Widget::stop()
 
 void Widget::updateLiveViewImage(const PayloadPtr &data)
 {
-    static int fps = 0;
+    static float fps = 0;
+    static int frameCount = 0;
 
     static QTime lastTimeStamp = QTime::currentTime();
 
     QTime now = QTime::currentTime();
 
-    static int time = 0;
-    static int count = 0;
 
-    if(count < 10)
-    {
-        time += lastTimeStamp.msecsTo(now);
-        count++;
-    }
-    else if(time > 0)
-    {
-        fps = (int)(10000 / time);
-        time = 0;
-        count = 0;
-
-        Info metaInfo;
-        metaInfo.setFps(fps);
-        ui->metaInfo->setText(metaInfo.toHtml());
-    }
+    fps = (float)(1000.0 / (float)lastTimeStamp.msecsTo(now));
 
     lastTimeStamp = now;
+    Info metaInfo;
+    metaInfo.setFps(fps);
+    metaInfo.setFrameCount(frameCount++);
+    ui->metaInfo->setText(metaInfo.toHtml());
 
     QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data->payload, "JPG"));
     ui->liveViewImage->setPixmap(pixmap);
