@@ -135,6 +135,8 @@ private Q_SLOTS:
 
     void on_actionDebug_triggered();
 
+    void viewsTabChanged(int index);
+
 private:
     Ui::MainWindow *ui;
 };

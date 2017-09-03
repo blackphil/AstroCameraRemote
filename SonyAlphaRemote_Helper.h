@@ -59,10 +59,16 @@ public:
 
 } // namespace SonyAlphaRemote
 
-#define SAR_INF(X) SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Info, __FUNCTION__, __LINE__) << X
-#define SAR_WRN(X) SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Warning, __FUNCTION__,  __LINE__) << X
-#define SAR_ERR(X) SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Error, __FUNCTION__, __LINE__) << X
-#define SAR_NOT_IMPLEMENTED SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Warning, __FUNCTION__, __LINE__) << " not implemented yet!"
-
+#ifdef QT_DEBUG
+#define SAR_INF(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Info, __FUNCTION__, __LINE__) << X
+#define SAR_WRN(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Warning, __FUNCTION__,  __LINE__) << X
+#define SAR_ERR(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Error, __FUNCTION__, __LINE__) << X
+#define SAR_NOT_IMPLEMENTED ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Warning, __FUNCTION__, __LINE__) << " not implemented yet!"
+#else
+#define SAR_INF(X) qt_noop()
+#define SAR_WRN(X) qt_noop()
+#define SAR_ERR(X) qt_noop()
+#define SAR_NOT_IMPLEMENTED qt_noop()
+#endif
 
 #endif // SONYALPHAREMOTE_HELPER_H

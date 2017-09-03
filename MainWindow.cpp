@@ -4,6 +4,7 @@
 #include "SonyAlphaRemote_Helper.h"
 #include "SonyAlphaRemote_Sender.h"
 #include "SettingsDialog.h"
+#include "LiveView_Widget.h"
 
 #include <QMessageBox>
 #include <QRegExp>
@@ -162,6 +163,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(
                 sequencerSettingsManager, SIGNAL(currentChanged(QString,QStringList))
                 , this, SLOT(applySequencerSettings(QString,QStringList)));
+
+    ui->liveViewWidget->setSender(sender);
+    connect(ui->viewsTabWidget, SIGNAL(currentChanged(int)), this, SLOT(viewsTabChanged(int)));
 
     ui->settingsNameCBox->addItems(sequencerSettingsManager->getSettingsNames());
 //    applySequencerSettings(sequencerSettingsManager->getCurrent());
@@ -656,4 +660,14 @@ void MainWindow::on_actionDebug_triggered()
     info.setImage(QPixmap::fromImage(QImage::fromData(testImage.readAll(), "JPG")));
     Q_EMIT newPostViewInfo(info);
 
+}
+
+void MainWindow::viewsTabChanged(int index)
+{
+
+    QWidget* currentTab = ui->viewsTabWidget->widget(index);
+    if(currentTab == ui->liveViewTab)
+        ui->liveViewWidget->start();
+    else
+        ui->liveViewWidget->stop();
 }

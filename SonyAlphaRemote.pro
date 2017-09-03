@@ -41,7 +41,12 @@ SOURCES += main.cpp\
     ToolBar.cpp \
     SonyAlphaRemote_PostView_FullScreenWindow.cpp \
     PostView_Widget.cpp \
-    PostView_Info.cpp
+    PostView_Info.cpp \
+    LiveView_Widget.cpp \
+    LiveView_Reader.cpp \
+    LiveView_Commands.cpp \
+    LiveView_ReaderThread.cpp \
+    LiveView_ThreadInfo.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -70,12 +75,18 @@ HEADERS  += MainWindow.h \
     ToolBar.h \
     SonyAlphaRemote_PostView_FullScreenWindow.h \
     PostView_Widget.h \
-    PostView_Info.h
+    PostView_Info.h \
+    LiveView_Widget.h \
+    LiveView_Reader.h \
+    LiveView_Commands.h \
+    LiveView_ReaderThread.h \
+    LiveView_ThreadInfo.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \
     SonyAlphaRemote_PostView_FullScreenWindow.ui \
-    PostView_Widget.ui
+    PostView_Widget.ui \
+    LiveView_Widget.ui
 
 #DEFINES += DRY_RUN
 
