@@ -137,6 +137,8 @@ private Q_SLOTS:
 
     void viewsTabChanged(int index);
 
+    void on_testHfdBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

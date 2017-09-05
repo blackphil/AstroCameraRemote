@@ -5,6 +5,7 @@
 #include "SonyAlphaRemote_Sender.h"
 #include "SettingsDialog.h"
 #include "LiveView_Widget.h"
+#include "hfd/Hfd_Calculator.h"
 
 #include <QMessageBox>
 #include <QRegExp>
@@ -670,4 +671,10 @@ void MainWindow::viewsTabChanged(int index)
         ui->liveViewWidget->start();
     else
         ui->liveViewWidget->stop();
+}
+
+void MainWindow::on_testHfdBtn_clicked()
+{
+    Hfd::Calculator hfdTest;
+    hfdTest.test();
 }

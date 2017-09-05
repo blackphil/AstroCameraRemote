@@ -21,4 +21,15 @@
         <file>Record.svg</file>
         <file>Record_off.svg</file>
     </qresource>
+    <qresource prefix="/hfd">
+        <file>hfd/focus_test/jpeg/focus_test_596.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_600.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_601.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_602.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_607.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_611.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_617.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_624.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_630.jpg</file>
+    </qresource>
 </RCC>
