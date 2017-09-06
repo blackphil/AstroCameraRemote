@@ -1,13 +1,20 @@
-- bugfix: je nach länge/breite des mainwindows wird das preview-image nicht vollständig angezeit.
-- bugfix: App lässt sich nur schwer beenden, wenn mitten beim capture versucht wird zu beenden (wartet auf IDLE status)
 - long exposure nr ein- ausschaltbar machen
 - gui verriegelungen
-- metadata anzeige
 - metadata download
-- live view
 - ssdp abfrage für kamera suche
 - namespaces neu organisieren ("SonyAlphaRemote" is zu lang und eigentlich überflüssig)
+- stern in der live-view auswählen
+- sternverfolgung nach Auswahl
+- HFD auf verfolgtem Stern live brechnen und Wert anzeigen
+- HFD grafisch anzeigen
+- Bahtinov Stern auswählen
+- Bahtinov Stern verfolgen
+- Bahtinov Stern auswerten (Spikes-Kreuz bewerten)
 
+- WORKSFORME: bugfix: je nach länge/breite des mainwindows wird das preview-image nicht vollständig angezeit.
+- DONE live view
+- DONE metadata anzeige
+- DONE bugfix: App lässt sich nur schwer beenden, wenn mitten beim capture versucht wird zu beenden (wartet auf IDLE status)
 - DONE post view image history (metadata anzeige fehlt noch)
 - DONE gui design verbessern --> keine windows title bar mehr ... wird alles über custom toolbars gemanaged.
 - DONE design für Nacht-Modus
