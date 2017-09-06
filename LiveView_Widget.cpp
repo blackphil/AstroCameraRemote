@@ -77,6 +77,7 @@ void Widget::stop()
     if(!sender)
         SAR_ERR("no sender available!!!");
     sender->send(stopLiveView);
+    stopReaderThread();
 }
 
 float Widget::calcFps()

@@ -71,7 +71,8 @@ class MainWindow : public QMainWindow
 
 Q_SIGNALS :
     void newPostViewInfo(PostView::Info);
-
+    void connectedToCamera();
+    void disconnectedFromCamera();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

@@ -171,6 +171,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->liveViewWidget->setSender(sender);
     connect(ui->viewsTabWidget, SIGNAL(currentChanged(int)), this, SLOT(viewsTabChanged(int)));
+    connect(this, SIGNAL(connectedToCamera()), ui->liveViewWidget, SLOT(start()));
+    connect(this, SIGNAL(disconnectedFromCamera()), ui->liveViewWidget, SLOT(stop()));
 
     ui->settingsNameCBox->addItems(sequencerSettingsManager->getSettingsNames());
 //    applySequencerSettings(sequencerSettingsManager->getCurrent());
@@ -225,6 +227,11 @@ void MainWindow::connectionStateChanged()
         settings->load();
         connectionState |= State_SettingsLoaded;
     }
+
+    if(connectionState == State_NotConnected)
+        Q_EMIT disconnectedFromCamera();
+    else
+        Q_EMIT connectedToCamera();
 }
 
 void MainWindow::updateStyle()
@@ -278,7 +285,7 @@ void MainWindow::helloError(QString msg)
             sender->send(startRecMode);
         }
     }
-    while(QMessageBox::Yes == btn);
+    while(QMessageBox::Yes == btn && State_NotConnected != connectionState);
 
     connectionState &= ~State_Hello;
     connectionStateChanged();
