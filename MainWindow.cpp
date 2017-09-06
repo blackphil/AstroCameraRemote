@@ -74,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     , settings(new SonyAlphaRemote::Settings(this))
     , sequencerSettingsManager(new SonyAlphaRemote::Sequencer::SettingsManager(settings))
     , generalSettings(new Settings::General(settings))
+    , liveViewSettings(new LiveView::Settings(settings))
     , connectionState(State_NotConnected)
     , aboutToClose(false)
     , currentTimeDisplayTimer(new QTimer(this))
@@ -88,6 +89,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     settings->add(sequencerSettingsManager);
     settings->add(generalSettings);
+    settings->add(liveViewSettings);
+
+    ui->liveViewWidget->setSettings(liveViewSettings);
 
     connect(::Settings::General::getInstance(), SIGNAL(settingChanged()), this, SLOT(recalcSequenceDuration()));
 

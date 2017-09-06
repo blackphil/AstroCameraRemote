@@ -46,9 +46,10 @@ SOURCES += main.cpp\
     LiveView_Reader.cpp \
     LiveView_Commands.cpp \
     LiveView_ReaderThread.cpp \
-    LiveView_ThreadInfo.cpp \
     LiveView_Info.cpp \
-    hfd/Hfd_Calculator.cpp
+    hfd/Hfd_Calculator.cpp \
+    LiveView_ImageQueue.cpp \
+    LiveView_Settings.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -82,9 +83,10 @@ HEADERS  += MainWindow.h \
     LiveView_Reader.h \
     LiveView_Commands.h \
     LiveView_ReaderThread.h \
-    LiveView_ThreadInfo.h \
     LiveView_Info.h \
-    hfd/Hfd_Calculator.h
+    hfd/Hfd_Calculator.h \
+    LiveView_ImageQueue.h \
+    LiveView_Settings.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

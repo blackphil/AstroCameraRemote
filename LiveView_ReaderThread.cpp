@@ -3,11 +3,10 @@
 
 namespace LiveView {
 
-ReaderThread::ReaderThread(const QString &url, ThreadInfo* threadInfo, QObject *parent)
+ReaderThread::ReaderThread(const QString &url, QObject *parent)
     : QThread(parent)
     , reader(NULL)
     , url(url)
-    , threadInfo(threadInfo)
 {
     setObjectName("ReaderThread");
 }
@@ -24,12 +23,14 @@ ReaderThread::~ReaderThread()
 
 void ReaderThread::run()
 {
-    running = true;
     if(reader)
+    {
+        reader->close();
         delete reader;
+    }
+
     reader = new Reader();
     connect(reader, SIGNAL(newPayload(PayloadPtr)), this, SIGNAL(newPayload(PayloadPtr)));
-    reader->setTargetFps(threadInfo->targetFps);
     reader->open(url);
 
     QThread::run();

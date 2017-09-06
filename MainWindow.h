@@ -15,6 +15,7 @@
 #include "SonyAlphaRemote_Sequencer_SettingsManager.h"
 #include "PostView_Info.h"
 #include "Settings_General.h"
+#include "LiveView_Settings.h"
 
 
 namespace Ui {
@@ -51,6 +52,7 @@ class MainWindow : public QMainWindow
     SonyAlphaRemote::Settings* settings;
     SonyAlphaRemote::Sequencer::SettingsManager* sequencerSettingsManager;
     Settings::General* generalSettings;
+    LiveView::Settings* liveViewSettings;
 
 
     int connectionState;

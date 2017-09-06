@@ -1,22 +1,27 @@
-#include "LiveView_ThreadInfo.h"
+#include "LiveView_ImageQueue.h"
 
 #include <QMutexLocker>
 
 namespace LiveView {
 
-QByteArray ThreadInfo::JpegQueue::pop()
+ImageQueue::ImageQueue(QObject *parent)
+    : QObject(parent)
+{
+
+}
+
+PayloadPtr ImageQueue::pop()
 {
     QMutexLocker lock(&m);
     Q_UNUSED(lock);
 
-    QByteArray data;
     if(0 < q.size())
         return q.takeFirst();
 
-    return QByteArray();
+    return PayloadPtr();
 }
 
-void ThreadInfo::JpegQueue::push(QByteArray data)
+void ImageQueue::push(PayloadPtr data)
 {
     QMutexLocker lock(&m);
     Q_UNUSED(lock);
@@ -27,14 +32,14 @@ void ThreadInfo::JpegQueue::push(QByteArray data)
     q.push_back(data);
 }
 
-int ThreadInfo::JpegQueue::size() const
+int ImageQueue::size() const
 {
     QMutexLocker lock(&m);
     Q_UNUSED(lock);
     return q.size();
 }
 
-void ThreadInfo::JpegQueue::clear()
+void ImageQueue::clear()
 {
     QMutexLocker lock(&m);
     Q_UNUSED(lock);

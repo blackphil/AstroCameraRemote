@@ -7,7 +7,6 @@ namespace PostView {
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , cursor(0)
-
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);

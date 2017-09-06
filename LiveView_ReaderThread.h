@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "LiveView_Reader.h"
-#include "LiveView_ThreadInfo.h"
+#include "LiveView_ImageQueue.h"
 
 namespace LiveView {
 
@@ -15,12 +15,10 @@ class ReaderThread : public QThread
 
     Reader* reader;
     QString url;
-    bool running;
-    ThreadInfo* threadInfo;
 
 
 public :
-    ReaderThread(const QString& url,ThreadInfo* threadInfo, QObject* parent = 0);
+    ReaderThread(const QString& url, QObject* parent = 0);
     ~ReaderThread();
 
 private :

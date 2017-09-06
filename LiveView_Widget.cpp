@@ -16,27 +16,50 @@ void Widget::setSender(SonyAlphaRemote::Sender *value)
     sender = value;
 }
 
+void Widget::setSettings(Settings *value)
+{
+    if(settings)
+        disconnect(settings, SIGNAL(settingChanged()), this, SLOT(updateSettings()));
+    settings = value;
+    if(settings)
+    connect(settings, SIGNAL(settingChanged()), this, SLOT(updateSettings()));
+}
+
+void Widget::updateSettings()
+{
+    if(!settings)
+        return;
+
+    float fps = settings->getFps();
+    SAR_INF("fps: " << fps);
+    pollImageTimer->setInterval(1000 / fps);
+    ui->fpsSpinBox->setValue(fps);
+}
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
+    , settings(NULL)
     , startLiveView(new StartLiveView(this))
     , stopLiveView(new StopLiveView(this))
     , sender(NULL)
+    , imageQueue(new ImageQueue(this))
+    , pollImageTimer(new QTimer(this))
     , readerThread(NULL)
+    , lastTimeStamp(QTime::currentTime())
+    , frameCount(0)
 
 {
     ui->setupUi(this);
     connect(startLiveView, SIGNAL(newLiveViewUrl(QString)), this, SLOT(startReaderThread(QString)));
     connect(stopLiveView, SIGNAL(liveViewStopped()), this, SLOT(stopReaderThread()));
+    connect(pollImageTimer, SIGNAL(timeout()), this, SLOT(updateLiveViewImage()));
 }
 
 Widget::~Widget()
 {
     SAR_INF("dtor");
-    if(threadInfo.running)
-    {
-        stopReaderThread();
-    }
+    stopReaderThread();
     delete ui;
 }
 
@@ -56,21 +79,27 @@ void Widget::stop()
     sender->send(stopLiveView);
 }
 
-void Widget::updateLiveViewImage(const PayloadPtr &data)
+float Widget::calcFps()
 {
-    static float fps = 0;
-    static int frameCount = 0;
 
-    static QTime lastTimeStamp = QTime::currentTime();
-
+    float fps = 0;
     QTime now = QTime::currentTime();
-
-
     fps = (float)(1000.0 / (float)lastTimeStamp.msecsTo(now));
+    lastTimeStamp = QTime::currentTime();
 
-    lastTimeStamp = now;
+    return fps;
+}
+
+void Widget::updateLiveViewImage()
+{
+
+    PayloadPtr data = imageQueue->pop();
+    if(!data)
+        return;
+
+
     Info metaInfo;
-    metaInfo.setFps(fps);
+    metaInfo.setFps(calcFps());
     metaInfo.setFrameCount(frameCount++);
     ui->metaInfo->setText(metaInfo.toHtml());
 
@@ -83,17 +112,22 @@ void Widget::startReaderThread(QString url)
 {
     if(readerThread)
     {
-        SAR_ERR("reader thread already exists!");
-        return;
+        readerThread->quit();
+        readerThread->wait(30 * 1000);
+        delete readerThread;
     }
 
 
-    readerThread = new ReaderThread(url, &threadInfo, this);
-    connect(readerThread, SIGNAL(newPayload(PayloadPtr)), this, SLOT(updateLiveViewImage(PayloadPtr)));
+    readerThread = new ReaderThread(url, this);
+    connect(readerThread, SIGNAL(newPayload(PayloadPtr)), imageQueue, SLOT(push(PayloadPtr)));
 
-    threadInfo.running = true;
-    readerThread->start(QThread::LowestPriority);
+    readerThread->start();
 
+    Q_ASSERT(settings);
+    if(settings)
+        pollImageTimer->start(1000 / settings->getFps());
+    else
+        pollImageTimer->start(200);
 
     SAR_INF("started reader thread URL(" << url << ")");
 
@@ -101,7 +135,8 @@ void Widget::startReaderThread(QString url)
 
 void Widget::stopReaderThread()
 {
-    threadInfo.running = false;
+    pollImageTimer->stop();
+
     if(readerThread)
     {
         readerThread->quit();
@@ -122,3 +157,11 @@ void Widget::stopReaderThread()
 }
 
 } // namespace LiveView
+
+void LiveView::Widget::on_fpsSpinBox_valueChanged(double fps)
+{
+    pollImageTimer->setInterval(1000 / fps);
+    Q_ASSERT(settings);
+    if(settings)
+        settings->setFps(fps);
+}

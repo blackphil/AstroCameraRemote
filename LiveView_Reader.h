@@ -7,23 +7,10 @@
 #include <QSharedPointer>
 #include <QNetworkAccessManager>
 #include <QTime>
-
+#include "LiveView_ImageQueue.h"
 
 namespace LiveView {
 
-struct Payload
-{
-    QByteArray payload;
-    QByteArray paddingData;
-
-    Payload(QByteArray payload, QByteArray paddingData)
-        : payload(payload)
-        , paddingData(paddingData)
-    {
-
-    }
-};
-typedef QSharedPointer<Payload> PayloadPtr;
 
 class Reader : public QObject
 {
@@ -31,9 +18,6 @@ class Reader : public QObject
 
     QNetworkAccessManager* manager;
     QNetworkReply* connection;
-
-    QTime lastFrameTs;
-    float targetFps;
 
     bool ready;
     int jpegSize;
@@ -55,7 +39,8 @@ public:
     bool getReady() const;
 
 
-    void setTargetFps(float value);
+    int getStepSizeMs() const;
+    void setStepSizeMs(int value);
 
 Q_SIGNALS :
     void newPayload(PayloadPtr);

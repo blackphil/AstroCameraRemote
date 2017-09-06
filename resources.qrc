@@ -20,6 +20,7 @@
         <file>Bug.svg</file>
         <file>Record.svg</file>
         <file>Record_off.svg</file>
+        <file>LiveView_NoImage.jpg</file>
     </qresource>
     <qresource prefix="/hfd">
         <file>hfd/focus_test/jpeg/focus_test_596.jpg</file>
