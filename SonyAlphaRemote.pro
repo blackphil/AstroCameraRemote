@@ -49,7 +49,9 @@ SOURCES += main.cpp\
     LiveView_Info.cpp \
     hfd/Hfd_Calculator.cpp \
     LiveView_ImageQueue.cpp \
-    LiveView_Settings.cpp
+    LiveView_Settings.cpp \
+    StarTrack_Marker.cpp \
+    StarTrack_GraphicsScene.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -86,7 +88,9 @@ HEADERS  += MainWindow.h \
     LiveView_Info.h \
     hfd/Hfd_Calculator.h \
     LiveView_ImageQueue.h \
-    LiveView_Settings.h
+    LiveView_Settings.h \
+    StarTrack_Marker.h \
+    StarTrack_GraphicsScene.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

@@ -6,6 +6,8 @@
 #include <QQueue>
 #include <QByteArray>
 #include <QTimer>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsScene>
 
 #include "LiveView_Commands.h"
 #include "LiveView_Reader.h"
@@ -13,6 +15,7 @@
 #include "LiveView_ImageQueue.h"
 #include "LiveView_ReaderThread.h"
 #include "LiveView_Settings.h"
+#include "StarTrack_GraphicsScene.h"
 
 namespace LiveView {
 
@@ -43,6 +46,10 @@ class Widget : public QWidget
 
     float calcFps();
 
+    StarTrack::GraphicsScene* starTrackScene;
+
+
+
 public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
@@ -64,6 +71,7 @@ private Q_SLOTS :
     void stopReaderThread();
     void on_fpsSpinBox_valueChanged(double fps);
     void updateSettings();
+
 };
 
 

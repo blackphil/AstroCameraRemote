@@ -1,3 +1,4 @@
+- Icons werden auf nicht-entwickler-systemen nicht dargestellt (SVG Plugin ggf. nicht gefunden?)
 - long exposure nr ein- ausschaltbar machen
 - gui verriegelungen
 - metadata download

@@ -5,6 +5,9 @@
 
 #include <QMutexLocker>
 #include <QTime>
+#include <QPen>
+#include <QBrush>
+#include <QMouseEvent>
 
 using namespace SonyAlphaRemote;
 
@@ -48,9 +51,16 @@ Widget::Widget(QWidget *parent)
     , readerThread(NULL)
     , lastTimeStamp(QTime::currentTime())
     , frameCount(0)
+    , starTrackScene(new StarTrack::GraphicsScene(this))
 
 {
     ui->setupUi(this);
+
+    ui->graphicsView->setScene(starTrackScene);
+
+
+
+
     connect(startLiveView, SIGNAL(newLiveViewUrl(QString)), this, SLOT(startReaderThread(QString)));
     connect(stopLiveView, SIGNAL(liveViewStopped()), this, SLOT(stopReaderThread()));
     connect(pollImageTimer, SIGNAL(timeout()), this, SLOT(updateLiveViewImage()));
@@ -105,7 +115,11 @@ void Widget::updateLiveViewImage()
     ui->metaInfo->setText(metaInfo.toHtml());
 
     QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data->payload, "JPG"));
-    ui->liveViewImage->setPixmap(pixmap);
+//    ui->liveViewImage->setPixmap(pixmap);
+
+
+    starTrackScene->updateBackground(pixmap);
+
 
 }
 
