@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>hfd/focus_test/jpeg/DSC04581.JPG</file>
+        <file>hfd/focus_test/jpeg/DSC04582.JPG</file>
+        <file>hfd/focus_test/jpeg/DSC04583.JPG</file>
+        <file>hfd/focus_test/jpeg/DSC04584.JPG</file>
+        <file>hfd/focus_test/jpeg/DSC04585.JPG</file>
+        <file>hfd/focus_test/jpeg/DSC04586.JPG</file>
+        <file>hfd/focus_test/jpeg/DSC04587.JPG</file>
+        <file>hfd/focus_test/jpeg/focus_test_596.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_600.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_601.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_602.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_607.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_611.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_617.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_624.jpg</file>
+        <file>hfd/focus_test/jpeg/focus_test_630.jpg</file>
+
+    </qresource>
+</RCC>

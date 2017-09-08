@@ -171,12 +171,13 @@ void Widget::stopReaderThread()
 
 }
 
-} // namespace LiveView
-
-void LiveView::Widget::on_fpsSpinBox_valueChanged(double fps)
+void Widget::on_fpsSpinBox_valueChanged(double fps)
 {
     pollImageTimer->setInterval(1000 / fps);
     Q_ASSERT(settings);
     if(settings)
         settings->setFps(fps);
 }
+
+} // namespace LiveView
+

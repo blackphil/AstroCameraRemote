@@ -2,6 +2,10 @@
 #include "ui_PostView_Widget.h"
 #include "SonyAlphaRemote_Helper.h"
 
+#include <QDir>
+#include <QDirIterator>
+#include <QFile>
+
 namespace PostView {
 
 Widget::Widget(QWidget *parent)
@@ -19,9 +23,13 @@ Widget::~Widget()
 
 void Widget::updatePostViewImage(const QByteArray &data)
 {
-
-    QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data, "JPG"));
+    SAR_INF("start");
+    QImage image = QImage::fromData(data, "JPG");
+    SAR_INF("have image");
+    QPixmap pixmap = QPixmap::fromImage(image);
+    SAR_INF("have pixmap");
     updatePostViewImage(pixmap);
+    SAR_INF("end");
 }
 
 void Widget::updatePostViewImage(const QPixmap &pixmap)
@@ -71,7 +79,7 @@ void Widget::updatePostView()
 
 }
 
-void Widget::newInfo(const PostView::Info &info)
+void Widget::newInfo(const Info &info)
 {
     imageStack.push_back(info);
     if(!info.getImage().isNull())
@@ -98,4 +106,33 @@ void Widget::on_postViewBwd_clicked()
     }
 }
 
+void PostView::Widget::on_loadTestDataBtn_clicked()
+{
+    QDirIterator sequence(":/hfd/sequence", QDirIterator::Subdirectories);
+    int index = 0;
+    while(sequence.hasNext())
+    {
+        QString fn = sequence.next();
+        SAR_INF(fn);
+        QFile f(fn);
+        if(!f.open(QIODevice::ReadOnly))
+        {
+            SAR_ERR("could not open file " << fn);
+            continue;
+        }
+        QByteArray data = f.readAll();
+        if(data.size() == 0)
+        {
+            SAR_ERR("no data read from file " << fn);
+            continue;
+        }
+
+        Info dummyInfo;
+        dummyInfo.setSeqNr(index++);
+        newInfo(dummyInfo);
+        updatePostViewImage(data);
+    }
+}
+
 } // namespace PostView
+

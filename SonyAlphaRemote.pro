@@ -104,4 +104,9 @@ DISTFILES += \
     ToDo.txt
 
 RESOURCES += \
-    resources.qrc
+    resources.qrc \
+    testdata_1.qrc \
+    testdata_2.qrc \
+    testdata_3.qrc \
+    testdata_4.qrc \
+    testdata_5.qrc

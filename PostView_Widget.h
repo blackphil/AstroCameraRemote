@@ -37,6 +37,8 @@ private Q_SLOTS :
     void on_postViewBwd_clicked();
 
 
+    void on_loadTestDataBtn_clicked();
+
 private:
     Ui::Widget *ui;
 };
