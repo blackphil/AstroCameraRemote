@@ -24,6 +24,8 @@ public:
     QStringList getSettingsNames() const;
     Sequencer::Settings* getCurrent() const { return current; }
 
+    static QString getName();
+
 Q_SIGNALS :
     void currentChanged(QString, QStringList);
     void removed(QString);

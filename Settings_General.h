@@ -1,8 +1,8 @@
 #ifndef SETTINGS_GENERAL_H
 #define SETTINGS_GENERAL_H
 
-#include "SonyAlphaRemote_Settings.h"
 
+#include <SonyAlphaRemote_Settings.h>
 
 namespace Settings {
 
@@ -18,6 +18,8 @@ class General : public SonyAlphaRemote::Setting
 
 public:
     General(Setting* parent);
+
+    static QString getName();
 
     void save();
     void load();

@@ -17,13 +17,13 @@ class Setting : public QObject
 
 protected :
     QSettings* qSettings;
-    Setting(Setting *parent = 0);
+    Setting(Setting *parent);
 
 Q_SIGNALS:
     void settingChanged();
 
 public :
-    virtual ~Setting() {}
+    virtual ~Setting();
 
 public Q_SLOTS :
     virtual void save() = 0;
@@ -47,6 +47,8 @@ public :
     QSettings* getQSettings() { return &settings; }
 
     void add(Setting* s);
+
+    Setting* getSettingByName(const QString& name);
 
     static Settings* getInstance();
 

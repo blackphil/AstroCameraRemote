@@ -4,9 +4,11 @@
 #include <QObject>
 #include <QGraphicsRectItem>
 #include <QGraphicsSimpleTextItem>
-#include <QGraphicsScene>
+#include <QGraphicsLineItem>
 #include <QPoint>
 #include <QPen>
+
+#include "StarTrack_GraphicsScene.h"
 
 namespace StarTrack {
 
@@ -14,12 +16,7 @@ class Marker : public QObject
 {
     Q_OBJECT
 
-    QGraphicsScene* scene;
-    QGraphicsRectItem* rectItem;
-    QGraphicsSimpleTextItem* info;
-    QPen rectPen;
-    QPointF startPos;
-
+public :
     enum Status
     {
         Status_Idle
@@ -27,15 +24,34 @@ class Marker : public QObject
         , Status_Finished
     };
 
+    enum Modus
+    {
+        Modus_Rubberband
+        , Modus_FixedRect
+    };
+
+private :
+
+    GraphicsScene* scene;
+    QGraphicsRectItem* rectItem;
+    QGraphicsLineItem* crosshair[2];
+    QGraphicsSimpleTextItem* info;
+    QPen rectPen;
+    QPen crosshairPen;
+    QPointF startPos;
+
     Status status;
+
+    void update(const QRectF &r);
 
 Q_SIGNALS :
     void newMark(QRectF);
 
 public:
-    Marker(QGraphicsScene* scene, QObject* parent);
+    Marker(GraphicsScene* scene, QObject* parent);
 
     QRectF getRect() const;
+
 
 public Q_SLOTS :
     void start(const QPointF &pos);

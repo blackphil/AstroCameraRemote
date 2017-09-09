@@ -42,13 +42,11 @@ class Widget : public QWidget
 
     ReaderThread* readerThread;
     QTime lastTimeStamp;
+    StarTrack::GraphicsScene* starTrackScene;
+
     int frameCount;
 
     float calcFps();
-
-    StarTrack::GraphicsScene* starTrackScene;
-
-
 
 public:
     explicit Widget(QWidget *parent = 0);
@@ -56,8 +54,6 @@ public:
 
     void setSender(SonyAlphaRemote::Sender *value);
 
-
-    void setSettings(Settings *value);
 
 public Q_SLOTS :
     void start();

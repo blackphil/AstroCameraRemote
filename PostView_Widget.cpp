@@ -19,6 +19,7 @@ Widget::Widget(QWidget *parent)
     , starTrackScene(new StarTrack::GraphicsScene(this))
     , ui(new Ui::Widget)
 {
+    SAR_INF("ctor");
     ui->setupUi(this);
     ui->graphicsView->setScene(starTrackScene);
 }

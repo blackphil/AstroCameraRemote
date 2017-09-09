@@ -30,7 +30,7 @@ public:
 
         static const QString* modelItemTypeStrings;
 
-        Log(Level level, const QString& func, int line);
+        Log(Level level, const QString& file, const QString& func, int line);
         ~Log();
 
         void apply(const QString& text);
@@ -60,10 +60,10 @@ public:
 } // namespace SonyAlphaRemote
 
 #ifdef QT_DEBUG
-#define SAR_INF(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Info, __FUNCTION__, __LINE__) << X
-#define SAR_WRN(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Warning, __FUNCTION__,  __LINE__) << X
-#define SAR_ERR(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Error, __FUNCTION__, __LINE__) << X
-#define SAR_NOT_IMPLEMENTED ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Warning, __FUNCTION__, __LINE__) << " not implemented yet!"
+#define SAR_INF(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Info, __FILE__, __FUNCTION__, __LINE__) << X
+#define SAR_WRN(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Warning, __FILE__, __FUNCTION__,  __LINE__) << X
+#define SAR_ERR(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Error, __FILE__, __FUNCTION__, __LINE__) << X
+#define SAR_NOT_IMPLEMENTED ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Warning, __FILE__, __FUNCTION__, __LINE__) << " not implemented yet!"
 #else
 #define SAR_INF(X) qt_noop()
 #define SAR_WRN(X) qt_noop()

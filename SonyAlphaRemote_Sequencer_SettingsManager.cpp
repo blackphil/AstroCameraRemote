@@ -1,5 +1,8 @@
 #include "SonyAlphaRemote_Sequencer_SettingsManager.h"
 
+
+#include "SonyAlphaRemote_Helper.h"
+
 namespace SonyAlphaRemote {
 namespace Sequencer {
 
@@ -9,7 +12,7 @@ SettingsManager::SettingsManager(SonyAlphaRemote::Setting* parent)
     : Setting(parent)
     , current(NULL)
 {
-    setObjectName("sequencer");
+    setObjectName(getName());
 }
 
 void SettingsManager::load()
@@ -26,6 +29,7 @@ void SettingsManager::load()
 
     foreach(QString name, availableSettings)
     {
+        SAR_INF("loading sequencer setting: " << name);
         Sequencer::Settings* s = new Sequencer::Settings(this);
         s->setObjectName(name);
         s->load();
@@ -85,6 +89,11 @@ void SettingsManager::add(Settings *s)
 QStringList SettingsManager::getSettingsNames() const
 {
     return settings.keys();
+}
+
+QString SettingsManager::getName()
+{
+    return "Sequence";
 }
 
 void SettingsManager::setCurrent(const QString &name)

@@ -73,25 +73,20 @@ MainWindow::MainWindow(QWidget *parent)
     , normalShootSequencer(new SonyAlphaRemote::Sequencer::NormalShootSequencer(statusPoller, sender, this))
     , settings(new SonyAlphaRemote::Settings(this))
     , sequencerSettingsManager(new SonyAlphaRemote::Sequencer::SettingsManager(settings))
-    , generalSettings(new Settings::General(settings))
-    , liveViewSettings(new LiveView::Settings(settings))
     , connectionState(State_NotConnected)
     , aboutToClose(false)
     , currentTimeDisplayTimer(new QTimer(this))
 
     , ui(new Ui::MainWindow)
 {
+    SAR_INF("start ...");
 
-//    setWindowFlags(Qt::CustomizeWindowHint);
 
     updateStyle();
     ui->setupUi(this);
 
     settings->add(sequencerSettingsManager);
-    settings->add(generalSettings);
-    settings->add(liveViewSettings);
 
-    ui->liveViewWidget->setSettings(liveViewSettings);
 
     connect(::Settings::General::getInstance(), SIGNAL(settingChanged()), this, SLOT(recalcSequenceDuration()));
 
@@ -627,7 +622,7 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionSettings_triggered()
 {
-    SettingsDialog dlg(generalSettings, this);
+    SettingsDialog dlg(settings, this);
     dlg.exec();
 
 }

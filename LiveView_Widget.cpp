@@ -19,15 +19,6 @@ void Widget::setSender(SonyAlphaRemote::Sender *value)
     sender = value;
 }
 
-void Widget::setSettings(Settings *value)
-{
-    if(settings)
-        disconnect(settings, SIGNAL(settingChanged()), this, SLOT(updateSettings()));
-    settings = value;
-    if(settings)
-    connect(settings, SIGNAL(settingChanged()), this, SLOT(updateSettings()));
-}
-
 void Widget::updateSettings()
 {
     if(!settings)
@@ -50,17 +41,18 @@ Widget::Widget(QWidget *parent)
     , pollImageTimer(new QTimer(this))
     , readerThread(NULL)
     , lastTimeStamp(QTime::currentTime())
-    , frameCount(0)
     , starTrackScene(new StarTrack::GraphicsScene(this))
+    , frameCount(0)
 
 {
+    SAR_INF("ctor");
     ui->setupUi(this);
 
     ui->graphicsView->setScene(starTrackScene);
 
 
-
-
+    settings = qobject_cast<Settings*>(SonyAlphaRemote::Settings::getInstance()->getSettingByName(Settings::getName()));
+    connect(settings, SIGNAL(settingChanged()), this, SLOT(updateSettings()));
     connect(startLiveView, SIGNAL(newLiveViewUrl(QString)), this, SLOT(startReaderThread(QString)));
     connect(stopLiveView, SIGNAL(liveViewStopped()), this, SLOT(stopReaderThread()));
     connect(pollImageTimer, SIGNAL(timeout()), this, SLOT(updateLiveViewImage()));

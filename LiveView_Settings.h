@@ -18,6 +18,8 @@ public:
 
     void load();
     void save();
+
+    static QString getName();
 };
 
 } // namespace LiveView

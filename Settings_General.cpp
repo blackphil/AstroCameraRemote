@@ -36,7 +36,12 @@ General::General(Setting *parent)
     : Setting(parent)
     , lenrEnabled(lenrEnabledDefault)
 {
+    setObjectName(getName());
+}
 
+QString General::getName()
+{
+    return "General";
 }
 
 void General::save()

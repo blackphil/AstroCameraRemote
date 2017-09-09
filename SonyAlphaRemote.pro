@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     LiveView_ImageQueue.cpp \
     LiveView_Settings.cpp \
     StarTrack_Marker.cpp \
-    StarTrack_GraphicsScene.cpp
+    StarTrack_GraphicsScene.cpp \
+    StarTrack_Settings.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -90,7 +91,8 @@ HEADERS  += MainWindow.h \
     LiveView_ImageQueue.h \
     LiveView_Settings.h \
     StarTrack_Marker.h \
-    StarTrack_GraphicsScene.h
+    StarTrack_GraphicsScene.h \
+    StarTrack_Settings.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

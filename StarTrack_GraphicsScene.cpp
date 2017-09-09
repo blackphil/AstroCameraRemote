@@ -3,6 +3,8 @@
 #include "StarTrack_Marker.h"
 #include "SonyAlphaRemote_Helper.h"
 #include "hfd/Hfd_Calculator.h"
+#include "StarTrack_Settings.h"
+
 
 #include <QGraphicsSceneMouseEvent>
 #include <QFile>
@@ -11,10 +13,18 @@
 
 namespace StarTrack {
 
+StarTrack::Settings *GraphicsScene::getSettings() const
+{
+    return settings;
+}
+
 GraphicsScene::GraphicsScene(QObject* parent)
     : QGraphicsScene(parent)
     , marker(new Marker(this, this))
+    , settings(NULL)
 {
+
+    settings = qobject_cast<StarTrack::Settings*>(SonyAlphaRemote::Settings::getInstance()->getSettingByName(Settings::getName()));
 
     connect(marker, SIGNAL(newMark(QRectF)), this, SLOT(newMark(QRectF)));
 
@@ -77,14 +87,15 @@ void GraphicsScene::newMark(QRectF rect)
 
     Hfd::Calculator hfd;
 
-    double mean = hfd.meanValue(imageLayer->pixmap().toImage());
     QImage star = imageLayer->pixmap().copy(rect.toRect()).toImage();
+    double mean = hfd.meanValue(star);
     QImage scaledStar = hfd.scaledImage(star, mean);
 
 
     marker->centerStar(scaledStar);
 
     star = imageLayer->pixmap().copy(marker->getRect().toRect()).toImage();
+    mean = hfd.meanValue(star);
     scaledStar = hfd.scaledImage(star, mean);
 
     helper::debugSaveImage(scaledStar, QString("scaled_%0").arg(imgCount++));

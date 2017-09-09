@@ -6,17 +6,21 @@
 namespace StarTrack {
 
 class Marker;
+class Settings;
 
 class GraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
 
     QGraphicsPixmapItem* imageLayer;
-    StarTrack::Marker* marker;
+    Marker* marker;
+    StarTrack::Settings* settings;
 
 public:
     GraphicsScene(QObject* parent);
     ~GraphicsScene();
+
+    StarTrack::Settings *getSettings() const;
 
 public Q_SLOTS :
     void updateBackground(const QPixmap& pixmap);

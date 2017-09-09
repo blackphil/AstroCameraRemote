@@ -9,7 +9,7 @@ namespace SonyAlphaRemote {
 
 FILE* Helper::Log::logfile(0);
 
-Helper::Log::Log(Level level, const QString& func, int line)
+Helper::Log::Log(Level level, const QString& file, const QString& func, int line)
 {
     if(!logfile)
     {
@@ -17,11 +17,12 @@ Helper::Log::Log(Level level, const QString& func, int line)
     }
 
     static const QString levelStr[] = { "INF", "WRN", "ERR" };
-    QString message = QString("%0 [%1 %2:%3]\t")
-                  .arg(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz"))
-                  .arg(levelStr[qBound((int)Info, (int)level, (int)Error)])
-                .arg(func)
-                .arg(line);
+    QString message = QString("%0 [%1 %2(%3):%4]\t")
+            .arg(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz"))
+            .arg(levelStr[qBound((int)Info, (int)level, (int)Error)])
+            .arg(file)
+            .arg(func)
+            .arg(line);
     fprintf_s(logfile, message.toStdString().c_str());
     if (level < Warning)
         message.clear();

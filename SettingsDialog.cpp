@@ -3,22 +3,29 @@
 
 #include <QSettings>
 
+#include "SonyAlphaRemote_Settings.h"
 #include "Settings_General.h"
+#include "StarTrack_Settings.h"
 
 
-
-SettingsDialog::SettingsDialog(Settings::General* settings,QWidget *parent)
+SettingsDialog::SettingsDialog(SonyAlphaRemote::Settings *settings, QWidget *parent)
     : QDialog(parent)
     , settings(settings)
     , ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-    Q_ASSERT(settings);
-    if(settings)
-    {
-        settings->load();
-        ui->lenrCheckbox->setChecked(settings->getLenrEnabled());
-    }
+    settings->save();
+    settings->load();
+
+    Settings::General* general = qobject_cast<Settings::General*>(settings->getSettingByName(Settings::General::getName()));
+    StarTrack::Settings* starTrack = qobject_cast<StarTrack::Settings*>(settings->getSettingByName(StarTrack::Settings::getName()));
+
+    ui->lenrCheckbox->setChecked(general->getLenrEnabled());
+
+    ui->starTrackMarkerModus->setCurrentIndex(starTrack->getMarkerModus());
+    ui->starTrackFixedBoundingRectSize->setValue(starTrack->getFixedRectSize());
+    ui->starTrackFixedBoundingRectSize->setEnabled(starTrack->getMarkerModus() == StarTrack::Marker::Modus_FixedRect ? true : false);
+
 }
 
 SettingsDialog::~SettingsDialog()
@@ -28,10 +35,18 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::on_buttonBox_accepted()
 {
-    Q_ASSERT(settings);
-    if(!settings)
-        return;
+    Settings::General* general = qobject_cast<Settings::General*>(settings->getSettingByName(Settings::General::getName()));
+    StarTrack::Settings* starTrack = qobject_cast<StarTrack::Settings*>(settings->getSettingByName(StarTrack::Settings::getName()));
 
-    settings->setLenrEnabled(ui->lenrCheckbox->isChecked());
+
+    general->setLenrEnabled(ui->lenrCheckbox->isChecked());
+    starTrack->setFixedRectSize(ui->starTrackFixedBoundingRectSize->value());
+    starTrack->setMarkerModus((StarTrack::Marker::Modus)ui->starTrackMarkerModus->currentIndex());
+
     settings->save();
+}
+
+void SettingsDialog::on_starTrackMarkerModus_activated(int index)
+{
+    ui->starTrackFixedBoundingRectSize->setEnabled(index == StarTrack::Marker::Modus_FixedRect ? true : false);
 }

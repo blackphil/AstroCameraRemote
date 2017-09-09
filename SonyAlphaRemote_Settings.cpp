@@ -1,5 +1,11 @@
 #include "SonyAlphaRemote_Settings.h"
+
 #include <QPointer>
+
+#include "SonyAlphaRemote_Helper.h"
+#include "StarTrack_Settings.h"
+#include "Settings_General.h"
+#include "LiveView_Settings.h"
 
 namespace SonyAlphaRemote {
 
@@ -10,14 +16,25 @@ Setting::Setting(Setting* parent)
 {
 }
 
+Setting::~Setting()
+{
+    SAR_INF("dtor: " << objectName());
+}
+
 QPointer<Settings> Settings::instance(0);
 
 Settings::Settings(QObject *parent)
+    : Setting(NULL)
 {
+    setObjectName("SonyAlphaRemote");
     Q_ASSERT(parent);
     QObject::setParent(parent);
     Setting::qSettings = &settings;
     instance = this;
+
+    add(new ::Settings::General(this));
+    add(new LiveView::Settings(this));
+    add(new StarTrack::Settings(this));
 }
 
 Settings* Settings::getInstance()
@@ -27,9 +44,22 @@ Settings* Settings::getInstance()
 
 void Settings::add(Setting *s)
 {
+    SAR_INF("add setting " << s->objectName());
+
     if(childSettings.contains(s))
         return;
     childSettings << s;
+}
+
+Setting *Settings::getSettingByName(const QString &name)
+{
+    foreach(Setting* child, childSettings)
+    {
+        if(child->objectName() == name)
+            return child;
+    }
+
+    return NULL;
 }
 
 

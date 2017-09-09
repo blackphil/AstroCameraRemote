@@ -3,9 +3,9 @@
 
 #include <QDialog>
 
-namespace Settings
+namespace SonyAlphaRemote
 {
-class General;
+class Settings;
 }
 
 namespace Ui {
@@ -16,16 +16,17 @@ class SettingsDialog : public QDialog
 {
     Q_OBJECT
 
-    Settings::General* settings;
+    SonyAlphaRemote::Settings* settings;
 
 
 public:
-    explicit SettingsDialog(Settings::General* settings, QWidget *parent = 0);
+    explicit SettingsDialog(SonyAlphaRemote::Settings* settings, QWidget *parent = 0);
     ~SettingsDialog();
 
 
-private slots:
+private Q_SLOTS :
     void on_buttonBox_accepted();
+    void on_starTrackMarkerModus_activated(int index);
 
 private:
     Ui::SettingsDialog *ui;
