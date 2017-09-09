@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QGraphicsRectItem>
+#include <QGraphicsSimpleTextItem>
 #include <QGraphicsScene>
 #include <QPoint>
 #include <QPen>
@@ -15,6 +16,7 @@ class Marker : public QObject
 
     QGraphicsScene* scene;
     QGraphicsRectItem* rectItem;
+    QGraphicsSimpleTextItem* info;
     QPen rectPen;
     QPointF startPos;
 
@@ -27,6 +29,9 @@ class Marker : public QObject
 
     Status status;
 
+Q_SIGNALS :
+    void newMark(QRectF);
+
 public:
     Marker(QGraphicsScene* scene, QObject* parent);
 
@@ -36,6 +41,10 @@ public Q_SLOTS :
     void start(const QPointF &pos);
     void finish(const QPointF& pos);
     void mouseMoved(const QPointF& pos);
+
+    void setInfo(const QString& text);
+
+    void centerStar(const QImage& scaledStar);
 };
 
 } // namespace StarTrack

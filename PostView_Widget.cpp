@@ -1,19 +1,26 @@
 #include "PostView_Widget.h"
 #include "ui_PostView_Widget.h"
 #include "SonyAlphaRemote_Helper.h"
+#include "StarTrack_GraphicsScene.h"
+
+#include "hfd/Hfd_Calculator.h"
 
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
+#include <QFileInfo>
+#include <QProgressDialog>
 
 namespace PostView {
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , cursor(0)
+    , starTrackScene(new StarTrack::GraphicsScene(this))
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);
+    ui->graphicsView->setScene(starTrackScene);
 }
 
 Widget::~Widget()
@@ -23,22 +30,22 @@ Widget::~Widget()
 
 void Widget::updatePostViewImage(const QByteArray &data)
 {
-    SAR_INF("start");
+//    SAR_INF("start");
     QImage image = QImage::fromData(data, "JPG");
-    SAR_INF("have image");
+//    SAR_INF("have image");
     QPixmap pixmap = QPixmap::fromImage(image);
-    SAR_INF("have pixmap");
+//    SAR_INF("have pixmap");
     updatePostViewImage(pixmap);
-    SAR_INF("end");
+//    SAR_INF("end");
 }
 
 void Widget::updatePostViewImage(const QPixmap &pixmap)
 {
-    Q_ASSERT(!imageStack.isEmpty());
+//    Q_ASSERT(!imageStack.isEmpty());
     if(imageStack.isEmpty())
     {
         SAR_ERR(tr("post view image stack is empty!!!"));
-        ui->postViewImage->setPixmap(pixmap);
+        starTrackScene->updateBackground(pixmap);
         return;
     }
 
@@ -58,11 +65,11 @@ void Widget::updatePostView()
         ui->postViewMetaInfo->setText(info.toHtml());
         if(!image.isNull())
         {
-            ui->postViewImage->setPixmap(
-                        image.scaled(ui->postViewImage->width()
-                                      , ui->postViewImage->height()
+            starTrackScene->updateBackground(
+                        image.scaled(starTrackScene->sceneRect().toRect().size()
                                       , Qt::KeepAspectRatio
                                       , Qt::SmoothTransformation));
+
         }
 
     }
@@ -108,13 +115,39 @@ void Widget::on_postViewBwd_clicked()
 
 void PostView::Widget::on_loadTestDataBtn_clicked()
 {
-    QDirIterator sequence(":/hfd/sequence", QDirIterator::Subdirectories);
+
+    QDir sequence(":/hfd/sequence");
+    QStringList entries = sequence.entryList(QDir::Files, QDir::Time);
     int index = 0;
-    while(sequence.hasNext())
+
+    QProgressDialog progress(tr("Loading test data ..."), tr("Cancel"), 0, entries.count(), this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.setMinimumDuration(0);
+
+
+
+    foreach(QString fn, entries)
     {
-        QString fn = sequence.next();
-        SAR_INF(fn);
-        QFile f(fn);
+        if(progress.wasCanceled())
+            break;
+
+        QFileInfo fileInfo(sequence, fn);
+        Info dummyInfo;
+        dummyInfo.setShutterSpeed(fileInfo.baseName());
+        dummyInfo.setTimestamp(fileInfo.created());
+        dummyInfo.setSeqNr(index++);
+        newInfo(dummyInfo);
+//        SAR_INF(fn << " (" << dummyInfo.getTimestamp().toString("HH:mm:ss") << ")");
+
+        if(!fileInfo.exists())
+        {
+            SAR_ERR("file " << fn << " doesn't exist!");
+            continue;
+        }
+
+        QString filePath = fileInfo.absoluteFilePath();
+
+        QFile f(filePath);
         if(!f.open(QIODevice::ReadOnly))
         {
             SAR_ERR("could not open file " << fn);
@@ -127,11 +160,13 @@ void PostView::Widget::on_loadTestDataBtn_clicked()
             continue;
         }
 
-        Info dummyInfo;
-        dummyInfo.setSeqNr(index++);
-        newInfo(dummyInfo);
         updatePostViewImage(data);
+
+        progress.setValue(index);
     }
+
+    cursor = 0;
+    updatePostView();
 }
 
 } // namespace PostView

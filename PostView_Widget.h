@@ -7,6 +7,10 @@
 #include "PostView_Info.h"
 
 
+namespace StarTrack {
+    class GraphicsScene;
+}
+
 namespace PostView {
 
 namespace Ui {
@@ -20,6 +24,7 @@ class Widget : public QWidget
     QList<Info> imageStack;
     int cursor;
 
+    StarTrack::GraphicsScene* starTrackScene;
 
 public:
     explicit Widget(QWidget *parent = 0);

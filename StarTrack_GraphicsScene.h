@@ -9,8 +9,9 @@ class Marker;
 
 class GraphicsScene : public QGraphicsScene
 {
+    Q_OBJECT
+
     QGraphicsPixmapItem* imageLayer;
-    QList<QGraphicsItem*> graphicsItemBucket;
     StarTrack::Marker* marker;
 
 public:
@@ -24,6 +25,10 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+private Q_SLOTS :
+    void newMark(QRectF rect);
+
 };
 
 } // namespace StarTrack
