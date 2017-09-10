@@ -1,60 +1,27 @@
 #include "StarTrack_Settings.h"
-#include "SonyAlphaRemote_Helper.h"
+#include <QSettings>
 
 namespace StarTrack {
 
-void Settings::load()
-{
-    SAR_INF("BEGIN");
-    qSettings->beginGroup("StarTrack");
-    markerModus = (Marker::Modus)qSettings->value("MarkerModus", Marker::Modus_Rubberband).toInt();
-    fixedRectSize = (float)qSettings->value("FixedRectSize", 100).toInt();
-    qSettings->endGroup();
 
-    Q_EMIT settingChanged();
+float Settings::getFixedRectSize()
+{
+    return (float)QSettings().value("StarTrack/FixedRectSize", 100).toFloat();
 }
 
-void Settings::save()
+void Settings::setFixedRectSize(float value)
 {
-    SAR_INF("BEGIN");
-    qSettings->beginGroup("StarTrack");
-    qSettings->setValue("MarkerModus", markerModus);
-    qSettings->setValue("FixedRectSize", fixedRectSize);
-    qSettings->endGroup();
+    QSettings().setValue("StarTrack/FixedRectSize", value);
 }
 
-Settings::Settings(Setting *parent)
-    : Setting(parent)
-    , markerModus(Marker::Modus_Rubberband)
-    , fixedRectSize(100)
+Marker::Modus Settings::getMarkerModus()
 {
-    SAR_INF("ctor");
-    setObjectName(getName());
-}
-
-QString Settings::getName()
-{
-    return "StarTrack";
-}
-
-int Settings::getFixedRectSize() const
-{
-    return fixedRectSize;
-}
-
-void Settings::setFixedRectSize(int value)
-{
-    fixedRectSize = value;
-}
-
-Marker::Modus Settings::getMarkerModus() const
-{
-    return markerModus;
+    return (Marker::Modus)QSettings().value("StarTrack/MarkerModus", Marker::Modus_Rubberband).toInt();
 }
 
 void Settings::setMarkerModus(const Marker::Modus &value)
 {
-    markerModus = value;
+    QSettings().setValue("StarTrack/MarkerModus", value);
 }
 
 } // namespace StarTrack

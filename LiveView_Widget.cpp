@@ -19,21 +19,10 @@ void Widget::setSender(SonyAlphaRemote::Sender *value)
     sender = value;
 }
 
-void Widget::updateSettings()
-{
-    if(!settings)
-        return;
-
-    float fps = settings->getFps();
-    SAR_INF("fps: " << fps);
-    pollImageTimer->setInterval(1000 / fps);
-    ui->fpsSpinBox->setValue(fps);
-}
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
-    , settings(NULL)
     , startLiveView(new StartLiveView(this))
     , stopLiveView(new StopLiveView(this))
     , sender(NULL)
@@ -50,9 +39,6 @@ Widget::Widget(QWidget *parent)
 
     ui->graphicsView->setScene(starTrackScene);
 
-
-    settings = qobject_cast<Settings*>(SonyAlphaRemote::Settings::getInstance()->getSettingByName(Settings::getName()));
-    connect(settings, SIGNAL(settingChanged()), this, SLOT(updateSettings()));
     connect(startLiveView, SIGNAL(newLiveViewUrl(QString)), this, SLOT(startReaderThread(QString)));
     connect(stopLiveView, SIGNAL(liveViewStopped()), this, SLOT(stopReaderThread()));
     connect(pollImageTimer, SIGNAL(timeout()), this, SLOT(updateLiveViewImage()));
@@ -82,6 +68,11 @@ void Widget::stop()
     stopReaderThread();
 }
 
+StarTrack::GraphicsScene *Widget::getStarTrackScene() const
+{
+    return starTrackScene;
+}
+
 float Widget::calcFps()
 {
 
@@ -107,12 +98,7 @@ void Widget::updateLiveViewImage()
     ui->metaInfo->setText(metaInfo.toHtml());
 
     QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data->payload, "JPG"));
-//    ui->liveViewImage->setPixmap(pixmap);
-
-
     starTrackScene->updateBackground(pixmap);
-
-
 }
 
 void Widget::startReaderThread(QString url)
@@ -130,11 +116,8 @@ void Widget::startReaderThread(QString url)
 
     readerThread->start();
 
-    Q_ASSERT(settings);
-    if(settings)
-        pollImageTimer->start(1000 / settings->getFps());
-    else
-        pollImageTimer->start(200);
+
+    pollImageTimer->start(1000 / Settings::getFps());
 
     SAR_INF("started reader thread URL(" << url << ")");
 
@@ -166,9 +149,7 @@ void Widget::stopReaderThread()
 void Widget::on_fpsSpinBox_valueChanged(double fps)
 {
     pollImageTimer->setInterval(1000 / fps);
-    Q_ASSERT(settings);
-    if(settings)
-        settings->setFps(fps);
+    Settings::setFps(fps);
 }
 
 } // namespace LiveView

@@ -13,6 +13,11 @@
 
 namespace PostView {
 
+StarTrack::GraphicsScene *Widget::getStarTrackScene() const
+{
+    return starTrackScene;
+}
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , cursor(0)

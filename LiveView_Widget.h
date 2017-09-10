@@ -31,8 +31,6 @@ class Widget : public QWidget
 
     Ui::Widget *ui;
 
-    Settings* settings;
-
     StartLiveView* startLiveView;
     StopLiveView* stopLiveView;
     SonyAlphaRemote::Sender* sender;
@@ -55,6 +53,8 @@ public:
     void setSender(SonyAlphaRemote::Sender *value);
 
 
+    StarTrack::GraphicsScene *getStarTrackScene() const;
+
 public Q_SLOTS :
     void start();
     void stop();
@@ -66,7 +66,6 @@ private Q_SLOTS :
     void startReaderThread(QString url);
     void stopReaderThread();
     void on_fpsSpinBox_valueChanged(double fps);
-    void updateSettings();
 
 };
 

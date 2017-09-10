@@ -42,7 +42,7 @@ private :
 
     Status status;
 
-    void update(const QRectF &r);
+    bool update(const QRectF &r);
 
 Q_SIGNALS :
     void newMark(QRectF);
@@ -61,6 +61,8 @@ public Q_SLOTS :
     void setInfo(const QString& text);
 
     void centerStar(const QImage& scaledStar);
+    void update();
+
 };
 
 } // namespace StarTrack

@@ -30,6 +30,8 @@ public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
 
+    StarTrack::GraphicsScene *getStarTrackScene() const;
+
 public Q_SLOTS :
     void updatePostViewImage(const QByteArray& data);
     void updatePostViewImage(const QPixmap& pixmap);

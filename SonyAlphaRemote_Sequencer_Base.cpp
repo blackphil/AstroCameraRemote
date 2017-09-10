@@ -42,7 +42,7 @@ bool Base::isRunning() const
 int Base::calculateSequenceDuration(int startDelay, int shutterSpeed, int pauseDelay, int numShots)
 {
     int factor = 1;
-    if(::Settings::General::getInstance()->getLenrEnabled())
+    if(::Settings::General::getLenrEnabled())
         factor = 2;
 
     return startDelay + (factor * shutterSpeed + pauseDelay) * numShots - pauseDelay;

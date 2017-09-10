@@ -62,11 +62,9 @@ class MainWindow : public QMainWindow
 
 
     void closeEvent(QCloseEvent *event);
-    void keyPressEvent(QKeyEvent *event);
 
     void connectionStateChanged();
 
-    void updateStyle();
 
 Q_SIGNALS :
     void newPostViewInfo(PostView::Info);
@@ -78,6 +76,9 @@ public:
     ~MainWindow();
 
 private Q_SLOTS:
+
+    void updateHfdValue(float hfd);
+
     void toggleRecordModeBtn(bool on);
 
     void toggleRecordModeBtnStopped();
@@ -125,21 +126,21 @@ private Q_SLOTS:
 
     void updateSequencerStatus(const QString& status);
 
-    void on_actionQuit_triggered();
-
     void on_actionSettings_triggered();
-
-    void on_actionClose_triggered();
-
-    void on_actionMaximize_triggered();
-
-    void on_actionMinimize_triggered();
 
     void on_actionDebug_triggered();
 
     void viewsTabChanged(int index);
 
     void on_testHfdBtn_clicked();
+
+    void on_lenrCheckbox_clicked(bool checked);
+
+    void on_markerModusCombobox_activated(int index);
+
+    void on_markerFixedRectSpinbox_editingFinished();
+
+    void on_viewsTabWidget_currentChanged(int index);
 
 private:
     Ui::MainWindow *ui;

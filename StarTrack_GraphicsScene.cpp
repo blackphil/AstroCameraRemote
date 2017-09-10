@@ -13,18 +13,23 @@
 
 namespace StarTrack {
 
-StarTrack::Settings *GraphicsScene::getSettings() const
+
+bool GraphicsScene::getEnabled() const
 {
-    return settings;
+    return enabled;
+}
+
+void GraphicsScene::setEnabled(bool value)
+{
+    enabled = value;
 }
 
 GraphicsScene::GraphicsScene(QObject* parent)
     : QGraphicsScene(parent)
     , marker(new Marker(this, this))
-    , settings(NULL)
+    , enabled(true)
 {
 
-    settings = qobject_cast<StarTrack::Settings*>(SonyAlphaRemote::Settings::getInstance()->getSettingByName(Settings::getName()));
 
     connect(marker, SIGNAL(newMark(QRectF)), this, SLOT(newMark(QRectF)));
 
@@ -47,22 +52,38 @@ GraphicsScene::~GraphicsScene()
 
 void GraphicsScene::updateBackground(const QPixmap &pixmap)
 {
+    if(!enabled)
+        return;
+
     imageLayer->setPixmap(pixmap);
-    newMark(marker->getRect().toRect());
+    newMark(marker->getRect());
+}
+
+void GraphicsScene::updateMarker()
+{
+    if(!enabled)
+        return;
+    marker->update();
 }
 
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    if(!enabled)
+        return;
     marker->start(event->scenePos());
 }
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    if(!enabled)
+        return;
     marker->mouseMoved(event->scenePos());
 }
 
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    if(!enabled)
+        return;
     marker->finish(event->scenePos());
 
 }
@@ -79,15 +100,23 @@ void debugSaveImage(const QImage& img, const QString& prefix)
 
 void GraphicsScene::newMark(QRectF rect)
 {
+    if(!enabled)
+        return;
     if(rect.isNull())
         return;
+
+    QPixmap pixmap = imageLayer->pixmap();
+    if(pixmap.isNull())
+        return;
+
+    SAR_INF("BEGIN pixmap(" << pixmap.size().width() << ", " << pixmap.size().height() << ")");
 
     static int imgCount = 0;
 
 
     Hfd::Calculator hfd;
 
-    QImage star = imageLayer->pixmap().copy(rect.toRect()).toImage();
+    QImage star = pixmap.copy(rect.toRect()).toImage();
     double mean = hfd.meanValue(star);
     QImage scaledStar = hfd.scaledImage(star, mean);
 
@@ -100,9 +129,16 @@ void GraphicsScene::newMark(QRectF rect)
 
     helper::debugSaveImage(scaledStar, QString("scaled_%0").arg(imgCount++));
 
-    float hfdValue = hfd.calcHfd(scaledStar, qRound(qMin(rect.width(), rect.height())));
+    float outerDiameter = qMin(rect.width(), rect.height());
+    float hfdValue = hfd.calcHfd(scaledStar, qRound(outerDiameter));
+    hfdValue = outerDiameter / hfdValue;
 
     marker->setInfo(QString("hfd(%0)").arg(hfdValue));
+
+    Q_EMIT starCentered(star);
+    Q_EMIT newHfdValue(hfdValue);
+
+    SAR_INF("END");
 
 }
 

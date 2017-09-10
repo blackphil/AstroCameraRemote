@@ -12,8 +12,6 @@
 
 namespace SonyAlphaRemote {
 
-class Sender;
-
 namespace Sequencer {
 
 class Settings : public Setting

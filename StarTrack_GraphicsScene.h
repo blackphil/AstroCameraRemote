@@ -14,16 +14,23 @@ class GraphicsScene : public QGraphicsScene
 
     QGraphicsPixmapItem* imageLayer;
     Marker* marker;
-    StarTrack::Settings* settings;
+
+    bool enabled;
 
 public:
     GraphicsScene(QObject* parent);
     ~GraphicsScene();
 
-    StarTrack::Settings *getSettings() const;
+    bool getEnabled() const;
+    void setEnabled(bool value);
+
+Q_SIGNALS :
+    void starCentered(const QImage&);
+    void newHfdValue(float);
 
 public Q_SLOTS :
     void updateBackground(const QPixmap& pixmap);
+    void updateMarker();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

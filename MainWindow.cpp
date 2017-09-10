@@ -6,6 +6,7 @@
 #include "SettingsDialog.h"
 #include "LiveView_Widget.h"
 #include "hfd/Hfd_Calculator.h"
+#include "StarTrack_LenseGraphcisScene.h"
 
 #include <QMessageBox>
 #include <QRegExp>
@@ -46,17 +47,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-    switch(event->key())
-    {
-    case Qt::Key_F5 :
-        updateStyle();
-        break;
-    default :
-        break;
-    }
-}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -81,14 +71,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     SAR_INF("start ...");
 
-
-    updateStyle();
     ui->setupUi(this);
 
     settings->add(sequencerSettingsManager);
 
-
-    connect(::Settings::General::getInstance(), SIGNAL(settingChanged()), this, SLOT(recalcSequenceDuration()));
+    connect(ui->lenrCheckbox, SIGNAL(toggled(bool)), this, SLOT(recalcSequenceDuration()));
+    ui->lenrCheckbox->setChecked(Settings::General::getLenrEnabled());
 
     connect(ui->shutterSpeed, SIGNAL(currentTextChanged(QString)), this, SLOT(shutterSpeedChanged(QString)));
 
@@ -170,7 +158,22 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(disconnectedFromCamera()), ui->liveViewWidget, SLOT(stop()));
 
     ui->settingsNameCBox->addItems(sequencerSettingsManager->getSettingsNames());
-//    applySequencerSettings(sequencerSettingsManager->getCurrent());
+
+    StarTrack::LenseGraphcisScene* lense = new StarTrack::LenseGraphcisScene(this);
+    connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), lense, SLOT(updateStar(QImage)));
+    connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)), this, SLOT(updateHfdValue(float)));
+    connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), lense, SLOT(updateStar(QImage)));
+    connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)), this, SLOT(updateHfdValue(float)));
+
+    StarTrack::Marker::Modus modus = StarTrack::Settings::getMarkerModus();
+    ui->markerModusCombobox->setCurrentIndex(modus);
+    ui->markerFixedRectSpinbox->setValue(StarTrack::Settings::getFixedRectSize());
+    if(StarTrack::Marker::Modus_FixedRect == modus)
+        ui->markerFixedRectSpinbox->setEnabled(true);
+    else
+        ui->markerFixedRectSpinbox->setEnabled(false);
+    ui->starTrackView->setScene(lense);
+    on_viewsTabWidget_currentChanged(ui->viewsTabWidget->currentIndex());
 
     recalcSequenceDuration();
 
@@ -181,6 +184,11 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::updateHfdValue(float hfd)
+{
+    ui->currentHFDLineEdit->setText(QString::number(hfd));
 }
 
 
@@ -229,26 +237,6 @@ void MainWindow::connectionStateChanged()
         Q_EMIT connectedToCamera();
 }
 
-void MainWindow::updateStyle()
-{
-//    static const QStringList styleLocations =
-//    {
-//        "D:/philipp/qsync/me/astro/dev/SonyAlphaRemote/Night.css"
-//        , ":/stylesheets/Night.css"
-//    };
-
-//    foreach(QFileInfo info, styleLocations)
-//    {
-//        if(!info.exists())
-//            continue;
-//        QFile styleSheetFile(info.absoluteFilePath());
-//        styleSheetFile.open(QIODevice::ReadOnly | QIODevice::Text);
-//        QString styleSheet = styleSheetFile.readAll();
-//        qApp->setStyleSheet(styleSheet);
-//        break;
-//    }
-
-}
 
 void MainWindow::hello()
 {
@@ -612,49 +600,10 @@ void MainWindow::removeSequencerSettings(const QString &name)
     ui->settingsNameCBox->removeItem(ui->settingsNameCBox->findText(name));
 }
 
-
-
-void MainWindow::on_actionQuit_triggered()
-{
-    close();
-}
-
-
 void MainWindow::on_actionSettings_triggered()
 {
     SettingsDialog dlg(settings, this);
     dlg.exec();
-
-}
-
-void MainWindow::on_actionClose_triggered()
-{
-    close();
-}
-
-
-
-void MainWindow::on_actionMaximize_triggered()
-{
-    if(isMaximized())
-        showNormal();
-    else
-        showMaximized();
-
-}
-
-void MainWindow::on_actionMinimize_triggered()
-{
-    static bool wasMaximizedBefore = false;
-    if(!isMinimized())
-    {
-        wasMaximizedBefore = isMaximized();
-        showMinimized();
-    }
-    else if(wasMaximizedBefore)
-        showMaximized();
-    else
-        showNormal();
 
 }
 
@@ -681,6 +630,49 @@ void MainWindow::viewsTabChanged(int index)
 
 void MainWindow::on_testHfdBtn_clicked()
 {
-    Hfd::Calculator hfdTest;
-    hfdTest.test();
+    Hfd::Calculator().test();
+}
+
+void MainWindow::on_lenrCheckbox_clicked(bool checked)
+{
+    Settings::General::setLenrEnabled(checked);
+}
+
+void MainWindow::on_markerModusCombobox_activated(int index)
+{
+    StarTrack::Marker::Modus modus = (StarTrack::Marker::Modus)index;
+    StarTrack::Settings::setMarkerModus(modus);
+    if(StarTrack::Marker::Modus_FixedRect == modus)
+        ui->markerFixedRectSpinbox->setEnabled(true);
+    else
+        ui->markerFixedRectSpinbox->setEnabled(false);
+}
+
+
+
+void MainWindow::on_markerFixedRectSpinbox_editingFinished()
+{
+    float newVal = ui->markerFixedRectSpinbox->value();
+    float currentVal = StarTrack::Settings::getFixedRectSize();
+    SAR_INF("new(" << newVal << "), current(" << currentVal << ")");
+    if(newVal == currentVal)
+        return;
+    StarTrack::Settings::setFixedRectSize(newVal);
+    ui->liveViewWidget->getStarTrackScene()->updateMarker();
+    ui->postViewWidget->getStarTrackScene()->updateMarker();
+}
+
+void MainWindow::on_viewsTabWidget_currentChanged(int index)
+{
+    Q_UNUSED(index);
+    if(ui->viewsTabWidget->currentWidget() == ui->liveViewWidget)
+    {
+        ui->liveViewWidget->getStarTrackScene()->setEnabled(true);
+        ui->postViewWidget->getStarTrackScene()->setEnabled(false);
+    }
+    else if(ui->viewsTabWidget->currentWidget() == ui->postViewWidget)
+    {
+        ui->postViewWidget->getStarTrackScene()->setEnabled(true);
+        ui->liveViewWidget->getStarTrackScene()->setEnabled(false);
+    }
 }

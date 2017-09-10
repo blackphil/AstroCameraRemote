@@ -2,33 +2,17 @@
 #define SETTINGS_GENERAL_H
 
 
-#include <SonyAlphaRemote_Settings.h>
 
 namespace Settings {
 
-class General : public SonyAlphaRemote::Setting
+class General
 {
-    Q_OBJECT
-
-    static QString groupName;
-    static bool lenrEnabledDefault;
-    static QString lenrEnabledName;
-
-    bool lenrEnabled;
 
 public:
-    General(Setting* parent);
 
-    static QString getName();
+    static bool getLenrEnabled();
+    static void setLenrEnabled(bool value);
 
-    void save();
-    void load();
-
-
-    bool getLenrEnabled() const;
-    void setLenrEnabled(bool value);
-
-    static General* getInstance();
 };
 
 } // namespace Settings

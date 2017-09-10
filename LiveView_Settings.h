@@ -1,25 +1,17 @@
 #ifndef LIVEVIEW_SETTINGS_H
 #define LIVEVIEW_SETTINGS_H
 
-#include "SonyAlphaRemote_Settings.h"
 
 namespace LiveView {
 
-class Settings : public SonyAlphaRemote::Setting
+class Settings
 {
-    Q_OBJECT
-
-    float fps;
 
 public:
-    Settings(Setting* parent);
-    float getFps() const;
-    void setFps(float value);
 
-    void load();
-    void save();
+    static float getFps();
+    static void setFps(float value);
 
-    static QString getName();
 };
 
 } // namespace LiveView

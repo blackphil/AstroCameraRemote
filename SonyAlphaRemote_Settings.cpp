@@ -3,9 +3,7 @@
 #include <QPointer>
 
 #include "SonyAlphaRemote_Helper.h"
-#include "StarTrack_Settings.h"
-#include "Settings_General.h"
-#include "LiveView_Settings.h"
+
 
 namespace SonyAlphaRemote {
 
@@ -32,9 +30,6 @@ Settings::Settings(QObject *parent)
     Setting::qSettings = &settings;
     instance = this;
 
-    add(new ::Settings::General(this));
-    add(new LiveView::Settings(this));
-    add(new StarTrack::Settings(this));
 }
 
 Settings* Settings::getInstance()

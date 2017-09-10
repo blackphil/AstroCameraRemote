@@ -51,8 +51,10 @@ void logRect(const QRectF& r, const QString& context)
 }
 }
 
-void Marker::update(const QRectF& r)
+bool Marker::update(const QRectF& r)
 {
+    if(r == rectItem->rect())
+        return false;
 
     rectItem->setRect(r);
 
@@ -60,6 +62,8 @@ void Marker::update(const QRectF& r)
     float w = r.width() / 4.0;
     float h = r.height() / 4.0;
     QRectF chr = r.marginsRemoved(QMarginsF(w, h, w, h));
+
+    SAR_INF("update marker ...");
     helper::logRect(chr, "crosshair");
 
     crosshair[0]->setLine(QLineF(chr.center().x(), chr.top(), chr.center().x(), chr.bottom()));
@@ -67,18 +71,18 @@ void Marker::update(const QRectF& r)
 
     info->setPos(rectItem->rect().topLeft() + QPoint(0, -info->boundingRect().height()));
 
-
+    return true;
 }
 
 void Marker::start(const QPointF &pos)
 {
 
     QRectF r;
-    switch(scene->getSettings()->getMarkerModus())
+    switch(Settings::getMarkerModus())
     {
     case Modus_FixedRect :
     {
-        float rectSize = scene->getSettings()->getFixedRectSize();
+        float rectSize = Settings::getFixedRectSize();
         float rectSizeHalf = rectSize / 2.f;
         r = QRectF(pos.x() - rectSizeHalf, pos.y() - rectSizeHalf, rectSize, rectSize);
         break;
@@ -108,11 +112,11 @@ void Marker::mouseMoved(const QPointF &pos)
 
     QRectF r = rectItem->rect();
 
-    switch(scene->getSettings()->getMarkerModus())
+    switch(Settings::getMarkerModus())
     {
     case Modus_FixedRect :
     {
-        float rectSize = scene->getSettings()->getFixedRectSize();
+        float rectSize = Settings::getFixedRectSize();
         float rectSizeHalf = rectSize / 2.f;
         r = QRectF(pos.x() - rectSizeHalf, pos.y() - rectSizeHalf, rectSize, rectSize);
         break;
@@ -135,10 +139,27 @@ void Marker::setInfo(const QString &text)
     info->setText(text);
 }
 
+namespace helper
+{
+bool checkSize(const QSize& a, const QSize& b)
+{
+    return a.width() == b.width() && a.height() == b.height();
+}
+}
 void Marker::centerStar(const QImage &scaledStar)
 {
+    if(scaledStar.isNull())
+        return;
 
     QRectF rect = rectItem->rect();
+    if(!helper::checkSize(rect.size().toSize(), scaledStar.size()))
+    {
+        SAR_WRN("centering star failed! Sizes of start image and marker rect are different: "
+                << "image(" << scaledStar.width() << ", " << scaledStar.height() << ")"
+                << "marker(" << rect.width() << ", " << rect.height() << ")");
+        return;
+    }
+
     QPointF currentCenter(rect.center());
 
     QPointF newCenterLocal = currentCenter - rect.topLeft();
@@ -174,6 +195,30 @@ void Marker::centerStar(const QImage &scaledStar)
 
     QRectF newRect(newCenter.x() - (rect.width()/2.), newCenter.y() - (rect.height()/2.), rect.width(), rect.height());
     update(newRect);
+
+    SAR_INF("END");
 }
+
+void Marker::update()
+{
+    QRectF r = getRect();    switch(Settings::getMarkerModus())
+    {
+    case Marker::Modus_Rubberband :
+        break;
+    case Marker::Modus_FixedRect :
+    {
+        float size = Settings::getFixedRectSize();
+        float sizeHalf = size / 2.f;
+        QPointF center = r.center();
+        r.setTopLeft(QPointF(center.x()-sizeHalf, center.y()-sizeHalf));
+        r.setSize(QSizeF(size, size));
+        break;
+    }
+    }
+
+    if(update(r))
+        Q_EMIT newMark(r);
+}
+
 
 } // namespace StarTrack
