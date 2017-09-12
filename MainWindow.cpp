@@ -622,7 +622,7 @@ void MainWindow::viewsTabChanged(int index)
 {
 
     QWidget* currentTab = ui->viewsTabWidget->widget(index);
-    if(currentTab == ui->liveViewTab)
+    if(currentTab == ui->liveViewWidget)
         ui->liveViewWidget->start();
     else
         ui->liveViewWidget->stop();
