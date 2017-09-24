@@ -17,6 +17,7 @@ Marker::Marker(GraphicsScene *scene, QObject *parent)
     , rectPen(QPen(QBrush(Qt::green), 1))
     , crosshairPen(QPen(QBrush(Qt::green), 1))
     , status(Status_Idle)
+    , tracking(true )
 {
 
     rectItem = scene->addRect(QRectF(), rectPen);
@@ -49,6 +50,16 @@ void logRect(const QRectF& r, const QString& context)
                 ": center(" << r.center().x() << ", " << r.center().y() << ")"
                 ", size(" << r.width() << ", " << r.height() << ")");
 }
+}
+
+bool Marker::getTracking() const
+{
+    return tracking;
+}
+
+void Marker::setTracking(bool value)
+{
+    tracking = value;
 }
 
 bool Marker::update(const QRectF& r)
@@ -101,8 +112,7 @@ void Marker::start(const QPointF &pos)
 void Marker::finish(const QPointF &pos)
 {
     Q_UNUSED(pos)
-
-    Q_EMIT newMark(getRect());
+    Q_EMIT newMark();
 }
 
 void Marker::mouseMoved(const QPointF &pos)
@@ -146,18 +156,21 @@ bool checkSize(const QSize& a, const QSize& b)
     return a.width() == b.width() && a.height() == b.height();
 }
 }
-void Marker::centerStar(const QImage &scaledStar)
+QRectF Marker::centerStar(const QImage &scaledStar)
 {
     if(scaledStar.isNull())
-        return;
+        return QRectF();
 
     QRectF rect = rectItem->rect();
+    if(!tracking)
+        return rect;
+
     if(!helper::checkSize(rect.size().toSize(), scaledStar.size()))
     {
         SAR_WRN("centering star failed! Sizes of start image and marker rect are different: "
                 << "image(" << scaledStar.width() << ", " << scaledStar.height() << ")"
                 << "marker(" << rect.width() << ", " << rect.height() << ")");
-        return;
+        return QRectF();
     }
 
     QPointF currentCenter(rect.center());
@@ -197,11 +210,15 @@ void Marker::centerStar(const QImage &scaledStar)
     update(newRect);
 
     SAR_INF("END");
+
+    return newRect;
 }
 
 void Marker::update()
 {
-    QRectF r = getRect();    switch(Settings::getMarkerModus())
+    QRectF r = getRect();
+
+    switch(Settings::getMarkerModus())
     {
     case Marker::Modus_Rubberband :
         break;
@@ -217,7 +234,7 @@ void Marker::update()
     }
 
     if(update(r))
-        Q_EMIT newMark(r);
+        Q_EMIT newMark();
 }
 
 

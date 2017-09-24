@@ -39,13 +39,14 @@ private :
     QPen rectPen;
     QPen crosshairPen;
     QPointF startPos;
+    bool tracking;
 
     Status status;
 
     bool update(const QRectF &r);
 
 Q_SIGNALS :
-    void newMark(QRectF);
+    void newMark();
 
 public:
     Marker(GraphicsScene* scene, QObject* parent);
@@ -53,14 +54,17 @@ public:
     QRectF getRect() const;
 
 
+    bool getTracking() const;
+
 public Q_SLOTS :
+    void setTracking(bool value);
     void start(const QPointF &pos);
     void finish(const QPointF& pos);
     void mouseMoved(const QPointF& pos);
 
     void setInfo(const QString& text);
 
-    void centerStar(const QImage& scaledStar);
+    QRectF centerStar(const QImage& scaledStar);
     void update();
 
 };

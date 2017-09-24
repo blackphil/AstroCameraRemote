@@ -18,6 +18,9 @@ public:
     static void setMarkerModus(const Marker::Modus &value);
     static float getFixedRectSize();
     static void setFixedRectSize(float value);
+
+    static void setPublishScaledImage(bool yes);
+    static bool getPublishScaledImage();
 };
 
 } // namespace StarTrack

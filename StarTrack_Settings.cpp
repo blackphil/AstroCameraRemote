@@ -6,12 +6,22 @@ namespace StarTrack {
 
 float Settings::getFixedRectSize()
 {
-    return (float)QSettings().value("StarTrack/FixedRectSize", 100).toFloat();
+    return QSettings().value("StarTrack/FixedRectSize", 100).toFloat();
 }
 
 void Settings::setFixedRectSize(float value)
 {
     QSettings().setValue("StarTrack/FixedRectSize", value);
+}
+
+void Settings::setPublishScaledImage(bool yes)
+{
+    QSettings().setValue("StarTrack/PublishScaledImage", yes);
+}
+
+bool Settings::getPublishScaledImage()
+{
+    return QSettings().value("StarTrack/PublishScaledImage").toBool();
 }
 
 Marker::Modus Settings::getMarkerModus()

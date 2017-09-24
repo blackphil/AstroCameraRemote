@@ -16,6 +16,12 @@ class GraphicsScene : public QGraphicsScene
     Marker* marker;
 
     bool enabled;
+    bool publishScaledImage;
+
+    QImage star, scaledStar;
+
+    bool grabImages(const QRectF &rect);
+    double calcHfd(const QRectF &rect) const;
 
 public:
     GraphicsScene(QObject* parent);
@@ -24,9 +30,13 @@ public:
     bool getEnabled() const;
     void setEnabled(bool value);
 
+    bool getPublishScaledImage() const;
+    void setPublishScaledImage(bool value);
+
 Q_SIGNALS :
     void starCentered(const QImage&);
     void newHfdValue(float);
+    void starTrackingEnabled(bool yes);
 
 public Q_SLOTS :
     void updateBackground(const QPixmap& pixmap);
@@ -38,7 +48,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private Q_SLOTS :
-    void newMark(QRectF rect);
+    void newMark();
 
 };
 

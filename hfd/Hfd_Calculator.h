@@ -49,7 +49,7 @@ public:
  *       system and also on the seeing conditions. The HFD value calculated depends on this
  *       outer diameter value.
  */
-    float calcHfd(const QImage& inImage, unsigned int inOuterDiameter);
+    double calcHfd(const QImage& inImage, unsigned int inOuterDiameter);
 
     double meanValue(const QImage& img) const;
     QImage scaledImage(const QImage& image, const double& mean) const;

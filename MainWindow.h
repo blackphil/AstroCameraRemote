@@ -142,6 +142,8 @@ private Q_SLOTS:
 
     void on_viewsTabWidget_currentChanged(int index);
 
+    void on_scaledImageCheckbox_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
 };

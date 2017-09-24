@@ -162,8 +162,10 @@ MainWindow::MainWindow(QWidget *parent)
     StarTrack::LenseGraphcisScene* lense = new StarTrack::LenseGraphcisScene(this);
     connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), lense, SLOT(updateStar(QImage)));
     connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)), this, SLOT(updateHfdValue(float)));
+    connect(ui->trackStarEnabledCheckbox, SIGNAL(toggled(bool)), ui->postViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));
     connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), lense, SLOT(updateStar(QImage)));
     connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)), this, SLOT(updateHfdValue(float)));
+    connect(ui->trackStarEnabledCheckbox, SIGNAL(toggled(bool)), ui->liveViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));
 
     StarTrack::Marker::Modus modus = StarTrack::Settings::getMarkerModus();
     ui->markerModusCombobox->setCurrentIndex(modus);
@@ -172,6 +174,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->markerFixedRectSpinbox->setEnabled(true);
     else
         ui->markerFixedRectSpinbox->setEnabled(false);
+    ui->scaledImageCheckbox->setChecked(StarTrack::Settings::getPublishScaledImage());
     ui->starTrackView->setScene(lense);
     on_viewsTabWidget_currentChanged(ui->viewsTabWidget->currentIndex());
 
@@ -188,7 +191,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateHfdValue(float hfd)
 {
-    ui->currentHFDLineEdit->setText(QString::number(hfd));
+    ui->currentHFDLineEdit->setText(QString::number(hfd, 'g', 3));
 }
 
 
@@ -646,6 +649,9 @@ void MainWindow::on_markerModusCombobox_activated(int index)
         ui->markerFixedRectSpinbox->setEnabled(true);
     else
         ui->markerFixedRectSpinbox->setEnabled(false);
+
+    ui->liveViewWidget->getStarTrackScene()->updateMarker();
+    ui->postViewWidget->getStarTrackScene()->updateMarker();
 }
 
 
@@ -676,3 +682,11 @@ void MainWindow::on_viewsTabWidget_currentChanged(int index)
         ui->liveViewWidget->getStarTrackScene()->setEnabled(false);
     }
 }
+
+void MainWindow::on_scaledImageCheckbox_toggled(bool checked)
+{
+    StarTrack::Settings::setPublishScaledImage(checked);
+    ui->postViewWidget->getStarTrackScene()->setPublishScaledImage(checked);
+    ui->liveViewWidget->getStarTrackScene()->setPublishScaledImage(checked);
+}
+

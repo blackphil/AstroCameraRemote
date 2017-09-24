@@ -24,14 +24,60 @@ void GraphicsScene::setEnabled(bool value)
     enabled = value;
 }
 
+bool GraphicsScene::getPublishScaledImage() const
+{
+    return publishScaledImage;
+}
+
+void GraphicsScene::setPublishScaledImage(bool value)
+{
+    if(publishScaledImage == value)
+        return;
+    publishScaledImage = value;
+
+    if(!enabled)
+        return;
+
+    if(publishScaledImage)
+        Q_EMIT starCentered(scaledStar);
+    else
+        Q_EMIT starCentered(star);
+
+}
+
+bool GraphicsScene::grabImages(const QRectF& rect)
+{
+    QPixmap pixmap = imageLayer->pixmap();
+    if(pixmap.isNull())
+        return false;
+
+    Hfd::Calculator hfd;
+    star = pixmap.copy(rect.toRect()).toImage();
+    double mean = hfd.meanValue(star);
+    scaledStar = hfd.scaledImage(star, mean);
+
+    return true;
+}
+
+double GraphicsScene::calcHfd(const QRectF& rect) const
+{
+    Hfd::Calculator hfd;
+    double outerDiameter = qMin(rect.width(), rect.height());
+    double hfdValue = hfd.calcHfd(scaledStar, qRound(outerDiameter));
+    hfdValue = outerDiameter / hfdValue;
+    return hfdValue;
+}
+
 GraphicsScene::GraphicsScene(QObject* parent)
     : QGraphicsScene(parent)
     , marker(new Marker(this, this))
     , enabled(true)
+    , publishScaledImage(Settings::getPublishScaledImage())
 {
 
 
-    connect(marker, SIGNAL(newMark(QRectF)), this, SLOT(newMark(QRectF)));
+    connect(marker, SIGNAL(newMark()), this, SLOT(newMark()));
+    connect(this, SIGNAL(starTrackingEnabled(bool)), marker, SLOT(setTracking(bool)));
 
     QRect defaultRect(0, 0, 808, 540);
 
@@ -56,7 +102,7 @@ void GraphicsScene::updateBackground(const QPixmap &pixmap)
         return;
 
     imageLayer->setPixmap(pixmap);
-    newMark(marker->getRect());
+    newMark();
 }
 
 void GraphicsScene::updateMarker()
@@ -98,51 +144,33 @@ void debugSaveImage(const QImage& img, const QString& prefix)
 }
 }
 
-void GraphicsScene::newMark(QRectF rect)
+void GraphicsScene::newMark()
 {
     if(!enabled)
         return;
-    if(rect.isNull())
+
+    QRectF rect = marker->getRect();
+
+    if(!grabImages(rect))
         return;
 
-    QPixmap pixmap = imageLayer->pixmap();
-    if(pixmap.isNull())
+    rect = marker->centerStar(scaledStar);
+
+    if(!grabImages(rect))
         return;
 
-    SAR_INF("BEGIN pixmap(" << pixmap.size().width() << ", " << pixmap.size().height() << ")");
-
-    static int imgCount = 0;
-
-
-    Hfd::Calculator hfd;
-
-    QImage star = pixmap.copy(rect.toRect()).toImage();
-    double mean = hfd.meanValue(star);
-    QImage scaledStar = hfd.scaledImage(star, mean);
+    if(publishScaledImage)
+        Q_EMIT starCentered(scaledStar);
+    else
+        Q_EMIT starCentered(star);
 
 
-    marker->centerStar(scaledStar);
-
-    star = imageLayer->pixmap().copy(marker->getRect().toRect()).toImage();
-    mean = hfd.meanValue(star);
-    scaledStar = hfd.scaledImage(star, mean);
-
-    helper::debugSaveImage(scaledStar, QString("scaled_%0").arg(imgCount++));
-
-    float outerDiameter = qMin(rect.width(), rect.height());
-    float hfdValue = hfd.calcHfd(scaledStar, qRound(outerDiameter));
-    hfdValue = outerDiameter / hfdValue;
-
+    double hfdValue = calcHfd(marker->getRect());
     marker->setInfo(QString("hfd(%0)").arg(hfdValue));
-
-    Q_EMIT starCentered(star);
     Q_EMIT newHfdValue(hfdValue);
 
     SAR_INF("END");
 
 }
-
-
-
 
 } // namespace StarTrack

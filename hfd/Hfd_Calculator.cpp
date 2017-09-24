@@ -59,13 +59,13 @@ bool Calculator::insideCircle(float inX /*pos of x*/, float inY /*pos of y*/, fl
  *       system and also on the seeing conditions. The HFD value calculated depends on this
  *       outer diameter value.
  */
-float Calculator::calcHfd(const QImage& inImage, unsigned int inOuterDiameter)
+double Calculator::calcHfd(const QImage& inImage, unsigned int inOuterDiameter)
 {
     // Sum up all pixel values in whole circle
-    float outerRadius = inOuterDiameter / 2;
-    float sum = 0, sumDist = 0;
-    int centerX = std::ceil(inImage.width() / 2.0);
-    int centerY = std::ceil(inImage.height() / 2.0);
+    double outerRadius = (double)inOuterDiameter / 2.;
+    double sum = 0, sumDist = 0;
+    double centerX = (double)inImage.width() / 2.0;
+    double centerY = (double)inImage.height() / 2.0;
 
     for(int y=0; y<inImage.height(); y++)
     {
@@ -73,9 +73,9 @@ float Calculator::calcHfd(const QImage& inImage, unsigned int inOuterDiameter)
         {
             if(insideCircle(x, y, centerX, centerY, outerRadius))
             {
-                float gray = qGray(inImage.pixel(x, y));
+                double gray = qGray(inImage.pixel(x, y));
                 sum += gray;
-                sumDist += gray * std::sqrt(std::pow((float)x - (float)centerX, 2.0f) + std::pow((float) y - (float)centerY, 2.0f));
+                sumDist += gray * std::sqrt(std::pow((double)x - (double)centerX, 2.0) + std::pow((double) y - (double)centerY, 2.0));
             }
         }
     }
