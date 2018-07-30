@@ -16,8 +16,8 @@ Marker::Marker(GraphicsScene *scene, QObject *parent)
     , info(NULL)
     , rectPen(QPen(QBrush(Qt::green), 1))
     , crosshairPen(QPen(QBrush(Qt::green), 1))
-    , status(Status_Idle)
     , tracking(true )
+    , status(Status_Idle)
 {
 
     rectItem = scene->addRect(QRectF(), rectPen);

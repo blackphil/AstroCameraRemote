@@ -4,9 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui network widgets
 
 TARGET = AstroCameraRemote
 TEMPLATE = app
@@ -105,7 +103,8 @@ FORMS    += MainWindow.ui \
 #DEFINES += DRY_RUN
 
 DISTFILES += \
-    ToDo.txt
+    ToDo.txt \
+    features/win32/setup.prf
 
 RESOURCES += \
     resources.qrc \
