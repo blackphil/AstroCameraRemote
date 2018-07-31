@@ -12,7 +12,9 @@
 #include <QRegExp>
 #include <QFile>
 #include <QFileInfo>
+#include <QFileDialog>
 
+#include "Fits_Repair.h"
 
 namespace helper
 {
@@ -690,3 +692,8 @@ void MainWindow::on_scaledImageCheckbox_toggled(bool checked)
     ui->liveViewWidget->getStarTrackScene()->setPublishScaledImage(checked);
 }
 
+void MainWindow::on_actionFits_repair_triggered()
+{
+    Fits::Repair repair(this);
+    repair.startUi();
+}

@@ -4,12 +4,15 @@
 #include "StarTrack_GraphicsScene.h"
 
 #include "hfd/Hfd_Calculator.h"
+#include "Fits_File.h"
+#include "AstroBase_PersistentDirInfo.h"
 
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
 #include <QProgressDialog>
+#include <QFileDialog>
 
 namespace PostView {
 
@@ -124,20 +127,25 @@ void PostView::Widget::on_loadTestDataBtn_clicked()
 
     QDir sequence(":/hfd/sequence");
     QStringList entries = sequence.entryList(QDir::Files, QDir::Time);
-    int index = 0;
 
-    QProgressDialog progress(tr("Loading test data ..."), tr("Cancel"), 0, entries.count(), this);
+
+    this->loadFiles(entries, sequence);
+}
+
+void PostView::Widget::loadFiles(const QStringList &files, const QDir& mainDir)
+{
+
+    QProgressDialog progress(tr("Loading test data ..."), tr("Cancel"), 0, files.count(), this);
     progress.setWindowModality(Qt::WindowModal);
     progress.setMinimumDuration(0);
+    int index = 0;
 
-
-
-    foreach(QString fn, entries)
+    foreach(QString fn, files)
     {
         if(progress.wasCanceled())
             break;
 
-        QFileInfo fileInfo(sequence, fn);
+        QFileInfo fileInfo(mainDir, fn);
         Info dummyInfo;
         dummyInfo.setShutterSpeed(fileInfo.baseName());
         dummyInfo.setTimestamp(fileInfo.created());
@@ -177,3 +185,12 @@ void PostView::Widget::on_loadTestDataBtn_clicked()
 
 } // namespace PostView
 
+
+void PostView::Widget::on_openFilesBtn_clicked()
+{
+    QStringList files = QFileDialog::getOpenFileNames(
+                this
+                , tr("Open files")
+                , AstroBase::PersistentDirInfo("PostView?LastDir")
+                , "FITS(*.fts, *.fits); JPEG(*.jpg; *.jpeg); All files(*.*)");
+}

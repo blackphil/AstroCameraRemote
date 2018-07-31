@@ -5,6 +5,7 @@
 #include <QPair>
 #include <QString>
 #include <QByteArray>
+#include <QCoreApplication>
 
 class QIODevice;
 
@@ -12,6 +13,7 @@ namespace Fits {
 
 class File
 {
+    Q_DECLARE_TR_FUNCTIONS(Fits::File)
 public:
 
     typedef QList<QPair<QString, QString> > HeaderData;

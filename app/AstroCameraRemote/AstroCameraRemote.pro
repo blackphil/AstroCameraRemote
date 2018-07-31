@@ -4,12 +4,19 @@
 #
 #-------------------------------------------------
 
+
 QT       += core gui network widgets
 
 TARGET = AstroCameraRemote
 TEMPLATE = app
 
 QTPLUGIN += svg
+
+
+DLL_DEPS += \
+    AstroBase \
+    Plugins/Fits \
+    BatchProcess
 
 SOURCES += main.cpp\
         MainWindow.cpp \
@@ -113,3 +120,6 @@ RESOURCES += \
     testdata_3.qrc \
     testdata_4.qrc \
     testdata_5.qrc
+
+include($${top_srcdir}/common_post.pri)
+

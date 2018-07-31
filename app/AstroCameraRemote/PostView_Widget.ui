@@ -29,6 +29,25 @@
    <property name="spacing">
     <number>0</number>
    </property>
+   <item row="1" column="0" rowspan="2">
+    <widget class="QLabel" name="postViewMetaInfo">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Meta info</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="2">
     <widget class="QPushButton" name="postViewFwd">
      <property name="sizePolicy">
@@ -51,6 +70,13 @@
      </property>
      <property name="text">
       <string>&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QPushButton" name="loadTestDataBtn">
+     <property name="text">
+      <string>Load test data</string>
      </property>
     </widget>
    </item>
@@ -79,33 +105,20 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" rowspan="2">
-    <widget class="QLabel" name="postViewMetaInfo">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
+   <item row="2" column="3">
+    <widget class="QPushButton" name="openFilesBtn">
+     <property name="maximumSize">
       <size>
-       <width>0</width>
-       <height>50</height>
+       <width>20</width>
+       <height>16777215</height>
       </size>
      </property>
      <property name="text">
-      <string>Meta info</string>
+      <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QPushButton" name="loadTestDataBtn">
-     <property name="text">
-      <string>Load test data</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="3">
+   <item row="0" column="0" colspan="4">
     <widget class="QGraphicsView" name="graphicsView">
      <property name="minimumSize">
       <size>

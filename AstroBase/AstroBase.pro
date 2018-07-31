@@ -1,15 +1,15 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2018-07-28T15:47:14
+# Project created by QtCreator 2018-07-30T21:08:54
 #
 #-------------------------------------------------
 
-QT       += widgets network opengl sql svg xml xmlpatterns multimedia testlib
+QT       -= gui
 
-TARGET = PluginManager
+TARGET = AstroBase
 TEMPLATE = lib
 
-DEFINES += PLUGINMANAGER_LIBRARY
+DEFINES += ASTROBASE_LIBRARY
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -23,13 +23,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        PluginManager.cpp \
-    PluginManager_IImageFilePlugin.cpp
+        AstroBase.cpp \
+    AstroBase_Exception.cpp \
+    AstroBase_PersistentDirInfo.cpp
 
 HEADERS += \
-        PluginManager.h \
-        pluginmanager_global.h \ 
-    PluginManager_IImageFilePlugin.h
+        AstroBase.h \
+        astrobase_global.h \ 
+    AstroBase_Exception.h \
+    AstroBase_PersistentDirInfo.h
 
 unix {
     target.path = /usr/lib

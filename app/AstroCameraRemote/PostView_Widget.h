@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QByteArray>
+#include <QDir>
 
 #include "PostView_Info.h"
 
@@ -45,6 +46,10 @@ private Q_SLOTS :
 
 
     void on_loadTestDataBtn_clicked();
+
+    void on_openFilesBtn_clicked();
+
+    void loadFiles(const QStringList& files, const QDir &mainDir = QDir());
 
 private:
     Ui::Widget *ui;

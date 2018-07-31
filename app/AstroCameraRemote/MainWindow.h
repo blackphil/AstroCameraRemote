@@ -144,6 +144,8 @@ private Q_SLOTS:
 
     void on_scaledImageCheckbox_toggled(bool checked);
 
+    void on_actionFits_repair_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

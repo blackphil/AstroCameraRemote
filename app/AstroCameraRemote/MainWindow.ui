@@ -761,6 +761,13 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuBatch_processing">
+    <property name="title">
+     <string>Batch processing</string>
+    </property>
+    <addaction name="actionFits_repair"/>
+   </widget>
+   <addaction name="menuBatch_processing"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="ToolBar" name="toolBar_2">
@@ -869,6 +876,11 @@
    </property>
    <property name="toolTip">
     <string>Enable/Disable record mode</string>
+   </property>
+  </action>
+  <action name="actionFits_repair">
+   <property name="text">
+    <string>Fits repair</string>
    </property>
   </action>
  </widget>
