@@ -20,7 +20,7 @@ public:
     PersistentDirInfo(const QString& context, const QString& defaultDir = "");
 
     operator QString() const;
-    void setDir(const QString &value);
+    void operator=(const QString& value);
 };
 
 } // namespace AstroBase

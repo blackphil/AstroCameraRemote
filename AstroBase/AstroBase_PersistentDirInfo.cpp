@@ -30,7 +30,7 @@ PersistentDirInfo::operator QString() const
     return storedDir;
 }
 
-void PersistentDirInfo::setDir(const QString &value)
+void PersistentDirInfo::operator=(const QString &value)
 {
     if(value == defaultDir)
         return;

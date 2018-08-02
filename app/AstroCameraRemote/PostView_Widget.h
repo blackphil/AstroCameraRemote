@@ -9,7 +9,7 @@
 
 
 namespace StarTrack {
-    class GraphicsScene;
+class GraphicsScene;
 }
 
 namespace PostView {
@@ -27,6 +27,12 @@ class Widget : public QWidget
 
     StarTrack::GraphicsScene* starTrackScene;
 
+    enum ImageFormat
+    {
+        ImageFormat_JPG
+        , ImageFormat_FITS
+    };
+
 public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
@@ -34,7 +40,7 @@ public:
     StarTrack::GraphicsScene *getStarTrackScene() const;
 
 public Q_SLOTS :
-    void updatePostViewImage(const QByteArray& data);
+    void updatePostViewImage(const QByteArray& data, ImageFormat format);
     void updatePostViewImage(const QPixmap& pixmap);
     void updatePostView();
 

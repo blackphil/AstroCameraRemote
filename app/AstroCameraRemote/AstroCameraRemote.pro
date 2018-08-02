@@ -123,3 +123,4 @@ RESOURCES += \
 
 include($${top_srcdir}/common_post.pri)
 
+message(QTDIR: $${QTDIR})

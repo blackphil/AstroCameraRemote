@@ -1,16 +1,11 @@
 - Icons werden auf nicht-entwickler-systemen nicht dargestellt (SVG Plugin ggf. nicht gefunden?)
-- long exposure nr ein- ausschaltbar machen
 - gui verriegelungen
 - metadata download
 - ssdp abfrage für kamera suche
 - namespaces neu organisieren ("SonyAlphaRemote" is zu lang und eigentlich überflüssig)
-- stern in der live-view auswählen
-- sternverfolgung nach Auswahl
-- HFD auf verfolgtem Stern live brechnen und Wert anzeigen
-- HFD grafisch anzeigen
-- Bahtinov Stern auswählen
-- Bahtinov Stern verfolgen
-- Bahtinov Stern auswerten (Spikes-Kreuz bewerten)
+- FITS über Qt-Plugin Mechanismus einlesen
+- FITS Image Dimensionen ermitteln, bevor QImage erzeugt wird
+- command source code aufräumen
 
 - WORKSFORME: bugfix: je nach länge/breite des mainwindows wird das preview-image nicht vollständig angezeit.
 - DONE live view
@@ -30,13 +25,20 @@
 - DONE ISO einstellbar machen
 - DONE verfügbare einstellungen (shutter speed etc.) sofort anzeigen
 - DONE normal-shoot sequence
+- DONE stern in der live-view auswählen
+- DONE HFD auf verfolgtem Stern live brechnen und Wert anzeigen
+- DONE HFD grafisch anzeigen
+- DONE sternverfolgung nach Auswahl
+
+
+- DROPPED Bahtinov Stern verfolgen
+- DROPPED Bahtinov Stern auswählen
+- DROPPED Bahtinov Stern auswerten (Spikes-Kreuz bewerten)
 
 
 
 
-- command source code aufräumen
-
-
+- GEHT NICHT (ILCE 6000 unterstützt das nicht) long exposure nr ein- ausschaltbar machen
 - GEHT NICHT (ILCE 6000 unterstützt das nicht) fix still quality selection/display (RAW, JPEG etc.)
 - GEHT NICHT (ILCE 6000 unterstützt das nicht) jpeg download
 - GEHT NICHT (ILCE 6000 unterstützt das nicht) raw download

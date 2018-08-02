@@ -4,37 +4,37 @@
 #include <QIODevice>
 #include <QStringList>
 #include <QDir>
+#include <QBuffer>
+#include <QPainter>
 
 #include "AstroBase_Exception.h"
 
 namespace Fits {
 
-static const int LINE_SIZE = 80;
+
+File File::read(const QByteArray &data)
+{
+    QBuffer buffer;
+    buffer.setData(data);
+    buffer.open(QBuffer::ReadOnly);
+    return read(&buffer);
+}
 
 File File::read(QIODevice *fd)
 {
     File f;
 
 
-    QStringList keyVal;
-    int l=0;
-    do
+    for(int l=0; l<HeaderLineCount; l++)
     {
-        QString line = fd->read(LINE_SIZE);
-        keyVal = line.split("=");
-
-        if(keyVal.count() == 0 || keyVal[0].toUpper().startsWith("END"))
-            break;
-
-        if(keyVal.count() != 2)
+        QString line = fd->read(HeaderLineSize);
+        f.header.lines << line;
+        QStringList keyVal = line.split("=");
+        if(keyVal.count() == 2)
         {
-            throw AstroBase::Exception(tr("Invalid line nr. %0 in fits header").arg(l));
+            f.header.attr[keyVal[0].trimmed()] = keyVal[1].trimmed();
         }
-        f.header << QPair<QString, QString>(keyVal[0].trimmed(), keyVal[1].trimmed());
-
-        l++;
     }
-    while(true);
 
     f.data = fd->readAll();
 
@@ -60,14 +60,21 @@ File File::read(const QString &filePath)
 
 void File::write(QIODevice *fd)
 {
-    for(int l=0; l<header.count(); l++)
+    for(int l=0; l<HeaderLineCount; l++)
     {
-        const QString& key = header[l].first;
-        const QString& value = header[l].second;
-        QString line = QString(key.leftJustified(8, ' ') + "=" + value.rightJustified(21, ' ')).leftJustified(LINE_SIZE, ' ');
+        QString line = header.lines[l];
+        QStringList keyVal = line.split("=");
+        if(keyVal.count() == 2)
+        {
+            QString key = keyVal[0].trimmed();
+            QString val = header.attr.contains(key) ? header.attr[key] : keyVal[1].trimmed();
+            line = QString(key.leftJustified(8, ' ') + "=" + val.rightJustified(21, ' ')).leftJustified(HeaderLineSize, ' ');
+        }
         fd->write(line.toLocal8Bit());
     }
     fd->write("END");
+    int restSize = 2880 - static_cast<int>(fd->size());
+    fd->write(QByteArray(restSize, ' '));
     fd->write(data);
 }
 
@@ -87,4 +94,37 @@ void File::write(const QString &filePath)
 
     write(&f);
 }
+
+int File::HeaderData::getIntAttr(const QString& key) const
+{
+    HeaderData::Attributes::ConstIterator it = attr.find(key);
+    if(attr.end() == it)
+    {
+        throw AstroBase::Exception(tr("Cannot get %0 from fits header data").arg(key));
+    }
+
+    return it->toInt();
+
+}
+
+int File::width() const
+{
+    return header.getIntAttr("NAXIS1");
+}
+
+int File::height() const
+{
+    return header.getIntAttr("NAXIS2");
+}
+
+int File::bitPix() const
+{
+    return header.getIntAttr("BITPIX");
+}
+
+const QByteArray &File::getData() const
+{
+    return data;
+}
+
 } // namespace Fits

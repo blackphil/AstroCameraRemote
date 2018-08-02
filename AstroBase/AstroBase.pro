@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       -= gui
+QT       += gui widgets
 
 TARGET = AstroBase
 TEMPLATE = lib
@@ -25,13 +25,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         AstroBase.cpp \
     AstroBase_Exception.cpp \
-    AstroBase_PersistentDirInfo.cpp
+    AstroBase_PersistentDirInfo.cpp \
+    AstroBase_MessageBox.cpp
 
 HEADERS += \
         AstroBase.h \
-        astrobase_global.h \ 
+        astrobase_global.h \
     AstroBase_Exception.h \
-    AstroBase_PersistentDirInfo.h
+    AstroBase_PersistentDirInfo.h \
+    AstroBase_MessageBox.h
 
 unix {
     target.path = /usr/lib

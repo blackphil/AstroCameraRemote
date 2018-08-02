@@ -1,6 +1,7 @@
 #ifndef FITS_GLOBAL_H
 #define FITS_GLOBAL_H
 
+#include "fits.h"
 #include <QtCore/qglobal.h>
 
 #if defined(FITS_LIBRARY)

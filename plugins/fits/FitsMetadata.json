@@ -1,0 +1,4 @@
+{
+  "Keys": [ "fts", "fit", "fits" ],
+  "MimeTypes": [ "image/fits", "image/fits", "image/fits" ]
+}

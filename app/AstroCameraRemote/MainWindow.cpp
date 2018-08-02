@@ -694,6 +694,6 @@ void MainWindow::on_scaledImageCheckbox_toggled(bool checked)
 
 void MainWindow::on_actionFits_repair_triggered()
 {
-    Fits::Repair repair(this);
-    repair.startUi();
+//    Fits::Repair repair(this);
+//    repair.startUi();
 }

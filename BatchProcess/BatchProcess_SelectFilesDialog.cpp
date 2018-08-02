@@ -44,7 +44,7 @@ void BatchProcess::SelectFilesDialog::on_selectInputFilesBtn_clicked()
 
 
     QFileInfo firstFile(inputFiles[0]);
-    inputDir.setDir(firstFile.absolutePath());
+    inputDir = firstFile.absolutePath();
 
     foreach(QString fp, inputFiles)
     {
@@ -131,5 +131,5 @@ void BatchProcess::SelectFilesDialog::on_selectOutputDirBtn_clicked()
         return;
 
     ui->outputDirLineEdit->setText(outPath);
-    outputDir.setDir(outPath);
+    outputDir = outPath;
 }

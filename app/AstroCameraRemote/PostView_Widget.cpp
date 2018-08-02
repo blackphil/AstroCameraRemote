@@ -6,6 +6,10 @@
 #include "hfd/Hfd_Calculator.h"
 #include "Fits_File.h"
 #include "AstroBase_PersistentDirInfo.h"
+#include "AstroBase_Exception.h"
+#include "Fits_ImageIOPlugin.h"
+#include "Fits_ImageIOHandler.h"
+#include "AstroBase_MessageBox.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -13,6 +17,8 @@
 #include <QFileInfo>
 #include <QProgressDialog>
 #include <QFileDialog>
+#include <QPluginLoader>
+#include <QBuffer>
 
 namespace PostView {
 
@@ -37,20 +43,44 @@ Widget::~Widget()
     delete ui;
 }
 
-void Widget::updatePostViewImage(const QByteArray &data)
+void Widget::updatePostViewImage(const QByteArray &data, ImageFormat format)
 {
-//    SAR_INF("start");
-    QImage image = QImage::fromData(data, "JPG");
-//    SAR_INF("have image");
-    QPixmap pixmap = QPixmap::fromImage(image);
-//    SAR_INF("have pixmap");
+    QPixmap pixmap;
+
+    switch (format) {
+    case ImageFormat_FITS:
+    {
+        if(0)
+        {
+            pixmap = QPixmap::fromImage(QImage::fromData(data, "FITS"));
+        }
+        QPluginLoader loader("F:/philipp/dev/build-AstroImage-Qt5_11_MSVC2017-Debug/plugins/fits/debug/fits");
+        QObject* plugin = loader.instance();
+        Fits::ImageIOPlugin* fitsPlugin = dynamic_cast<Fits::ImageIOPlugin*>(plugin);
+        if(fitsPlugin)
+        {
+            QBuffer buffer;
+            buffer.setData(data);
+            buffer.open(QIODevice::ReadOnly);
+            QImageIOHandler* ioHandler = fitsPlugin->create(&buffer, "FITS");
+
+            QImage fitsImage(800, 600, QImage::Format_RGB16);
+            ioHandler->read(&fitsImage);
+            pixmap = QPixmap::fromImage(fitsImage);
+        }
+
+    }
+        break;
+    case ImageFormat_JPG :
+        pixmap = QPixmap::fromImage(QImage::fromData(data, "JPG"));
+        break;
+    }
     updatePostViewImage(pixmap);
-//    SAR_INF("end");
 }
 
 void Widget::updatePostViewImage(const QPixmap &pixmap)
 {
-//    Q_ASSERT(!imageStack.isEmpty());
+    //    Q_ASSERT(!imageStack.isEmpty());
     if(imageStack.isEmpty())
     {
         SAR_ERR(tr("post view image stack is empty!!!"));
@@ -76,8 +106,8 @@ void Widget::updatePostView()
         {
             starTrackScene->updateBackground(
                         image.scaled(starTrackScene->sceneRect().toRect().size()
-                                      , Qt::KeepAspectRatio
-                                      , Qt::SmoothTransformation));
+                                     , Qt::KeepAspectRatio
+                                     , Qt::SmoothTransformation));
 
         }
 
@@ -122,7 +152,7 @@ void Widget::on_postViewBwd_clicked()
     }
 }
 
-void PostView::Widget::on_loadTestDataBtn_clicked()
+void Widget::on_loadTestDataBtn_clicked()
 {
 
     QDir sequence(":/hfd/sequence");
@@ -132,7 +162,7 @@ void PostView::Widget::on_loadTestDataBtn_clicked()
     this->loadFiles(entries, sequence);
 }
 
-void PostView::Widget::loadFiles(const QStringList &files, const QDir& mainDir)
+void Widget::loadFiles(const QStringList &files, const QDir& mainDir)
 {
 
     QProgressDialog progress(tr("Loading test data ..."), tr("Cancel"), 0, files.count(), this);
@@ -140,42 +170,57 @@ void PostView::Widget::loadFiles(const QStringList &files, const QDir& mainDir)
     progress.setMinimumDuration(0);
     int index = 0;
 
+    QSharedPointer<AstroBase::MessageBox> errorMsgBox(AstroBase::MessageBox::createCritical(&progress, tr("Error on loading files")));
+
     foreach(QString fn, files)
     {
-        if(progress.wasCanceled())
-            break;
-
-        QFileInfo fileInfo(mainDir, fn);
-        Info dummyInfo;
-        dummyInfo.setShutterSpeed(fileInfo.baseName());
-        dummyInfo.setTimestamp(fileInfo.created());
-        dummyInfo.setSeqNr(index++);
-        newInfo(dummyInfo);
-//        SAR_INF(fn << " (" << dummyInfo.getTimestamp().toString("HH:mm:ss") << ")");
-
-        if(!fileInfo.exists())
+        try
         {
-            SAR_ERR("file " << fn << " doesn't exist!");
-            continue;
+
+            if(progress.wasCanceled())
+                break;
+
+            QImage img;
+
+            QFileInfo fileInfo(mainDir, fn);
+            Info dummyInfo;
+            dummyInfo.setShutterSpeed(fileInfo.baseName());
+            dummyInfo.setTimestamp(fileInfo.created());
+            dummyInfo.setSeqNr(index++);
+            newInfo(dummyInfo);
+            //        SAR_INF(fn << " (" << dummyInfo.getTimestamp().toString("HH:mm:ss") << ")");
+
+            if(!fileInfo.exists())
+            {
+                SAR_ERR("file " << fn << " doesn't exist!");
+                continue;
+            }
+
+            QString filePath = fileInfo.absoluteFilePath();
+
+            QFile f(filePath);
+            if(!f.open(QIODevice::ReadOnly))
+            {
+                SAR_ERR("could not open file " << fn);
+                continue;
+            }
+            QByteArray data = f.readAll();
+            if(data.size() == 0)
+            {
+                SAR_ERR("no data read from file " << fn);
+                continue;
+            }
+
+            ImageFormat format = ImageFormat_JPG;
+            if(fileInfo.suffix().toUpper().startsWith("F"))
+                format = ImageFormat_FITS;
+
+            updatePostViewImage(data, format);
         }
-
-        QString filePath = fileInfo.absoluteFilePath();
-
-        QFile f(filePath);
-        if(!f.open(QIODevice::ReadOnly))
+        catch(std::exception& e)
         {
-            SAR_ERR("could not open file " << fn);
-            continue;
+            errorMsgBox->showAgain(e.what());
         }
-        QByteArray data = f.readAll();
-        if(data.size() == 0)
-        {
-            SAR_ERR("no data read from file " << fn);
-            continue;
-        }
-
-        updatePostViewImage(data);
-
         progress.setValue(index);
     }
 
@@ -183,14 +228,22 @@ void PostView::Widget::loadFiles(const QStringList &files, const QDir& mainDir)
     updatePostView();
 }
 
-} // namespace PostView
 
-
-void PostView::Widget::on_openFilesBtn_clicked()
+void Widget::on_openFilesBtn_clicked()
 {
+    AstroBase::PersistentDirInfo dir("PostView?LastDir");
     QStringList files = QFileDialog::getOpenFileNames(
                 this
                 , tr("Open files")
-                , AstroBase::PersistentDirInfo("PostView?LastDir")
-                , "FITS(*.fts, *.fits); JPEG(*.jpg; *.jpeg); All files(*.*)");
+                , dir
+                , "FITS (*.fit *.fts *.fits);;JPEG (*.jpg *.jpeg);;All files(*.*)");
+
+    if(files.isEmpty())
+        return;
+
+    dir = QFileInfo(files[0]).absolutePath();
+    loadFiles(files);
 }
+
+} // namespace PostView
+

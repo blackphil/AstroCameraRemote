@@ -8,7 +8,7 @@ class QWidget;
 
 namespace Fits {
 
-class FITSSHARED_EXPORT Repair : public QObject
+class Repair : public QObject
 {
     Q_OBJECT
 
