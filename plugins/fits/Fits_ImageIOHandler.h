@@ -6,7 +6,7 @@
 
 namespace Fits {
 
-class FITSSHARED_EXPORT ImageIOHandler : public QImageIOHandler
+class ImageIOHandler : public QImageIOHandler
 {
 public:
     ImageIOHandler();

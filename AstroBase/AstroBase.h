@@ -12,8 +12,8 @@
 #endif
 
 #define AB_INF(X) qInfo()     << "INF(" << __FILE__ << ":" << __FUNCTION__ << "(" << __LINE__ << ")" << X
-#define AB_WRN(X) qWarning()  << "INF(" << __FILE__ << ":" << __FUNCTION__ << "(" << __LINE__ << ")" << X
-#define AB_ERR(X) qCritical() << "INF(" << __FILE__ << ":" << __FUNCTION__ << "(" << __LINE__ << ")" << X
+#define AB_WRN(X) qWarning()  << "WRN(" << __FILE__ << ":" << __FUNCTION__ << "(" << __LINE__ << ")" << X
+#define AB_ERR(X) qCritical() << "ERR(" << __FILE__ << ":" << __FUNCTION__ << "(" << __LINE__ << ")" << X
 #define AB_NOT_IMPLEMENTED AB_WRN("not implemented yet!")
 
 

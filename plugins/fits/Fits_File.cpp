@@ -127,4 +127,21 @@ const QByteArray &File::getData() const
     return data;
 }
 
+bool File::isValid(QIODevice *fd)
+{
+    if(!fd || !fd->isReadable())
+        return false;
+
+    QByteArray firstLine = fd->peek(HeaderLineSize);
+    QStringList keyValue = QString(firstLine).split("=");
+    if(2 != keyValue.count())
+        return false;
+
+    if(keyValue[0].trimmed() != "SIMPLE" || keyValue[1].trimmed() != "T")
+        return false;
+
+    return true;
+
+}
+
 } // namespace Fits

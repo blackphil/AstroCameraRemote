@@ -1,3 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS += fits
+SUBDIRS += fits \
+    PluginTest
+
+PluginTest.depends = fits

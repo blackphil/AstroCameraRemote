@@ -1,3 +1,6 @@
+include($${top_srcdir}/common_pre.pri)
+
+
 TEMPLATE=lib
 
 TARGET=fits
@@ -10,25 +13,27 @@ DEFINES += FITS_LIBRARY
 
 
 DLL_DEPS += \
-    AstroBase \
-    BatchProcess
+    AstroBase #\
+    #BatchProcess
 
 
 HEADERS += \
     fits.h \
-    Fits_Repair.h \
     Fits_File.h \
     fits_global.h \
     Fits_ImageIOPlugin.h \
     Fits_ImageIOHandler.h
 
 SOURCES += \
-    Fits_Repair.cpp \
     Fits_File.cpp \
     Fits_ImageIOPlugin.cpp \
     Fits_ImageIOHandler.cpp
 
-include($${top_srcdir}/common_post.pri)
 
 DISTFILES += \
     FitsMetadata.json
+
+target.path += $${ASTRO_INSTALL_PLUGINS}/imageformats
+INSTALLS += target
+
+include($${top_srcdir}/common_post.pri)

@@ -6,12 +6,13 @@
 
 namespace Fits {
 
-class FITSSHARED_EXPORT ImageIOPlugin : public QImageIOPlugin
+class FitsImagePlugin : public QImageIOPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.AstroImage.Fits.ImageIOPlugin" FILE "FitsMetadata.json")
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QImageIOHandlerFactoryInterface" FILE "FitsMetadata.json")
+
 public:
-    ImageIOPlugin();
+    FitsImagePlugin();
 
     QImageIOPlugin::Capabilities capabilities(QIODevice *device, const QByteArray &format) const;
     QImageIOHandler* create(QIODevice *device, const QByteArray &format = QByteArray()) const;

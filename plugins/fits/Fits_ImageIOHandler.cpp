@@ -1,9 +1,11 @@
 #include "Fits_ImageIOHandler.h"
 
-#include "Fits_ImageIOPlugin.h"
 #include "Fits_File.h"
 
+#include <QDataStream>
+
 namespace Fits {
+
 
 ImageIOHandler::ImageIOHandler()
 {
@@ -12,7 +14,7 @@ ImageIOHandler::ImageIOHandler()
 
 bool ImageIOHandler::canRead() const
 {
-    return ImageIOPlugin().capabilities(this->device(), this->format()) & QImageIOPlugin::CanRead;
+    return File::isValid(device());
 }
 
 bool ImageIOHandler::read(QImage* image)
@@ -22,32 +24,26 @@ bool ImageIOHandler::read(QImage* image)
 
     File file = File::read(device());
 
-    uint w = file.width();
-    uint h = file.height();
+    int h = file.height();
+    int w = file.width();
 
-    uint bytesPerPixel = static_cast<uint>(file.bitPix()) / 8;
-    const char* data = file.getData().data();
-    uchar* values = new uchar[bytesPerPixel];
-    for(uint y=0; y<h; y++)
+    *image = QImage(w, h, QImage::Format_RGB888);
+
+    const QByteArray& data = file.getData();
+    QDataStream strm(data);
+
+    qint16 pixel = 0;
+    int index = 0;
+    while(!strm.atEnd())
     {
-        for(uint x=0; x<h; x++)
-        {
-            uint index = bytesPerPixel * ((y * w) + x);
-            int value = 0;
-            for(uint b=0; b<bytesPerPixel; b++)
-            {
-                values[b] = data[index+b];
-                value += values[b] << ((bytesPerPixel-1-b)*8);
-            }
+        int y = index / w;
+        int x = index % w;
+        index++;
 
-            value %= 256;
-
-
-
-            image->setPixel(x, y, qRgb(value, value, value));
-        }
+        strm >> pixel;
+        pixel %= 256;
+        image->setPixel(x, y, qRgb(pixel, pixel, pixel));
     }
-    delete[] values;
 
     return true;
 }

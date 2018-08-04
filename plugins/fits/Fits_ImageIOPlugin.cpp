@@ -3,37 +3,37 @@
 #include <QStringList>
 #include "AstroBase_Exception.h"
 #include "Fits_ImageIOHandler.h"
+#include "Fits_File.h"
 
 namespace Fits {
 
-ImageIOPlugin::ImageIOPlugin()
+FitsImagePlugin::FitsImagePlugin()
 {
 
 }
 
-QImageIOPlugin::Capabilities ImageIOPlugin::capabilities(QIODevice *device, const QByteArray &format) const
+QImageIOPlugin::Capabilities FitsImagePlugin::capabilities(QIODevice *device, const QByteArray &format) const
 {
-    if(format != "fits")
-        throw AstroBase::Exception(tr("Invalid format (%0)").arg(QString(format)));
+    static const QStringList supportedFormats = { "fits", "fts", "fit" };
 
-    if(device == nullptr)
-        return QImageIOPlugin::CanRead;
+    Capabilities cap;
 
-    QStringList nameAndValue = QString(device->peek(HeaderLineSize)).split("=");
-    if(nameAndValue.count() != 2)
-        throw AstroBase::Exception(tr("Invalid fits header"));
+    if (supportedFormats.contains(QString(format)))
+        return Capabilities(CanRead | CanWrite);
+    if (!format.isEmpty())
+        return cap;
+    if (!device->isOpen())
+        return cap;
 
-    QString name = nameAndValue[0].trimmed();
-    QString value = nameAndValue[1].trimmed();
-
-    if(!(name.toUpper() == "SIMPLE" && value.toUpper() == "T"))
-        throw AstroBase::Exception(tr("Invalid fits header"));
-
-    return CanRead | CanWrite;
+    if (device->isReadable() && Fits::File::isValid(device))
+        cap |= CanRead;
+    if (device->isWritable())
+        cap |= CanWrite;
+    return cap;
 
 }
 
-QImageIOHandler *ImageIOPlugin::create(QIODevice *device, const QByteArray &format) const
+QImageIOHandler *FitsImagePlugin::create(QIODevice *device, const QByteArray &format) const
 {
     ImageIOHandler* handler = new ImageIOHandler();
     handler->setDevice(device);

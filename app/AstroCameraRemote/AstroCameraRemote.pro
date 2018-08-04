@@ -3,6 +3,7 @@
 # Project created by QtCreator 2016-07-20T19:54:30
 #
 #-------------------------------------------------
+include($${top_srcdir}/common_pre.pri)
 
 
 QT       += core gui network widgets
@@ -123,4 +124,3 @@ RESOURCES += \
 
 include($${top_srcdir}/common_post.pri)
 
-message(QTDIR: $${QTDIR})

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/fits">
+        <file>Capture_4_0_g_0895_12b.fit</file>
+    </qresource>
+    <qresource prefix="/jpg">
+        <file>DSC03274.JPG</file>
+    </qresource>
+</RCC>

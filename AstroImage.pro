@@ -10,6 +10,6 @@ app.depends += plugins
 
 BatchProcess.depends += AstroBase
 
-plugins.depends += AstroBase
+plugins.depends += AstroBase BatchProcess
 
 

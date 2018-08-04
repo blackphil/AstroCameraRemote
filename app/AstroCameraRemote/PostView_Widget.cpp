@@ -43,39 +43,9 @@ Widget::~Widget()
     delete ui;
 }
 
-void Widget::updatePostViewImage(const QByteArray &data, ImageFormat format)
+void Widget::updatePostViewImage(const QByteArray &data)
 {
-    QPixmap pixmap;
-
-    switch (format) {
-    case ImageFormat_FITS:
-    {
-        if(0)
-        {
-            pixmap = QPixmap::fromImage(QImage::fromData(data, "FITS"));
-        }
-        QPluginLoader loader("F:/philipp/dev/build-AstroImage-Qt5_11_MSVC2017-Debug/plugins/fits/debug/fits");
-        QObject* plugin = loader.instance();
-        Fits::ImageIOPlugin* fitsPlugin = dynamic_cast<Fits::ImageIOPlugin*>(plugin);
-        if(fitsPlugin)
-        {
-            QBuffer buffer;
-            buffer.setData(data);
-            buffer.open(QIODevice::ReadOnly);
-            QImageIOHandler* ioHandler = fitsPlugin->create(&buffer, "FITS");
-
-            QImage fitsImage(800, 600, QImage::Format_RGB16);
-            ioHandler->read(&fitsImage);
-            pixmap = QPixmap::fromImage(fitsImage);
-        }
-
-    }
-        break;
-    case ImageFormat_JPG :
-        pixmap = QPixmap::fromImage(QImage::fromData(data, "JPG"));
-        break;
-    }
-    updatePostViewImage(pixmap);
+    updatePostViewImage(QPixmap::fromImage(QImage::fromData(data)));
 }
 
 void Widget::updatePostViewImage(const QPixmap &pixmap)
@@ -211,11 +181,7 @@ void Widget::loadFiles(const QStringList &files, const QDir& mainDir)
                 continue;
             }
 
-            ImageFormat format = ImageFormat_JPG;
-            if(fileInfo.suffix().toUpper().startsWith("F"))
-                format = ImageFormat_FITS;
-
-            updatePostViewImage(data, format);
+            updatePostViewImage(data);
         }
         catch(std::exception& e)
         {

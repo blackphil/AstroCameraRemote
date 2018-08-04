@@ -41,6 +41,8 @@ public:
 
     const QByteArray& getData() const;
 
+    static bool isValid(QIODevice* fd);
+
 private :
     QString fileName;
     QString path;
