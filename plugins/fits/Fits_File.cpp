@@ -12,6 +12,16 @@
 namespace Fits {
 
 
+File::PixelFormat File::getPixelFormat() const
+{
+    return pixelFormat;
+}
+
+File::ColorFormat File::getColorFormat() const
+{
+    return colorFormat;
+}
+
 File File::read(const QByteArray &data)
 {
     QBuffer buffer;
@@ -35,6 +45,29 @@ File File::read(QIODevice *fd)
             f.header.attr[keyVal[0].trimmed()] = keyVal[1].trimmed();
         }
     }
+
+    if(!f.header.attr.contains("BITPIX"))
+        throw AstroBase::Exception(tr("cannot determine pixel format"));
+
+    f.pixelFormat = static_cast<PixelFormat>(f.header.getIntAttr("BITPIX"));
+
+    if(!f.header.attr.contains("NAXIS"))
+        throw AstroBase::Exception(tr("cannot determine color format"));
+
+    if(f.header.getIntAttr("NAXIS") == 2)
+    {
+        if(f.header.attr.contains("BAYER") && f.header.attr["BAYER"] == "RGGB")
+            f.colorFormat = ColorFormat_BayerRGGB;
+        else
+            f.colorFormat = ColorFormat_Grayscale;
+    }
+    else if(f.header.getIntAttr("NAXIS") == 3)
+    {
+        f.colorFormat = ColorFormat_RGB;
+    }
+    else
+        throw AstroBase::Exception(tr("cannot determine color format"));
+
 
     f.data = fd->readAll();
 

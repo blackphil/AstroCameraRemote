@@ -19,6 +19,29 @@ class File
     Q_DECLARE_TR_FUNCTIONS(Fits::File)
 public:
 
+    enum PixelFormat
+    {
+        PixelFormat_8Bit = 8
+        , PixelFormat_16Bit_Int = 16
+        , PixelFormat_32Bit_Int = 32
+        , PixelFormat_64Bit_Int = 64
+        , PixelFormat_32Bit_Single = -32
+        , PixelFormat_64Bit_Double = -64
+    };
+
+    enum ColorFormat
+    {
+        ColorFormat_Grayscale
+        , ColorFormat_BayerRGGB
+        , ColorFormat_RGB
+    };
+
+private :
+    PixelFormat pixelFormat;
+    ColorFormat colorFormat;
+
+public :
+
     struct HeaderData
     {
         typedef QMap<QString, QString> Attributes;
@@ -42,6 +65,10 @@ public:
     const QByteArray& getData() const;
 
     static bool isValid(QIODevice* fd);
+
+    PixelFormat getPixelFormat() const;
+
+    ColorFormat getColorFormat() const;
 
 private :
     QString fileName;
