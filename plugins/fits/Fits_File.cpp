@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QBuffer>
 #include <QPainter>
+#include <QRegularExpression>
 
 #include "AstroBase_Exception.h"
 
@@ -42,7 +43,7 @@ File File::read(QIODevice *fd)
         QStringList keyVal = line.split("=");
         if(keyVal.count() == 2)
         {
-            f.header.attr[keyVal[0].trimmed()] = keyVal[1].trimmed();
+            f.header.attr[keyVal[0].trimmed()] = keyVal[1].remove(QRegularExpression("/.*$")).trimmed();
         }
     }
 
@@ -170,7 +171,7 @@ bool File::isValid(QIODevice *fd)
     if(2 != keyValue.count())
         return false;
 
-    if(keyValue[0].trimmed() != "SIMPLE" || keyValue[1].trimmed() != "T")
+    if(keyValue[0].trimmed() != "SIMPLE" || keyValue[1].remove(QRegularExpression("/.*$")).trimmed() != "T")
         return false;
 
     return true;

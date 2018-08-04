@@ -14,7 +14,6 @@
 #include <QFileInfo>
 #include <QFileDialog>
 
-#include "Fits_Repair.h"
 
 namespace helper
 {

@@ -213,3 +213,21 @@ void Widget::on_openFilesBtn_clicked()
 
 } // namespace PostView
 
+
+void PostView::Widget::on_clearBtn_clicked()
+{
+    if(QMessageBox::Yes ==
+            QMessageBox::question(
+                this
+                , tr("Clear post view"), tr("Do you really want to clear the post view?")))
+    {
+        imageStack.clear();
+
+        QFile defaultImage(":/images/LiveView_NoImage.jpg");
+        defaultImage.open(QIODevice::ReadOnly);
+        QByteArray imageData = defaultImage.readAll();
+        QRect defaultRect(0, 0, 808, 540);
+
+        starTrackScene->updateBackground(QPixmap::fromImage(QImage::fromData(imageData, "JPG").scaled(defaultRect.size())));
+    }
+}

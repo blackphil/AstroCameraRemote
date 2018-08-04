@@ -40,7 +40,13 @@ private :
     PixelFormat pixelFormat;
     ColorFormat colorFormat;
 
+    double minVal[3];
+    double maxVal[3];
+
 public :
+
+    auto getMinVal(int c) const { return minVal[c]; }
+    auto getMaxVal(int c) const { return maxVal[c]; }
 
     struct HeaderData
     {

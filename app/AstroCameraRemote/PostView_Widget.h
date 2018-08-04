@@ -52,6 +52,8 @@ private Q_SLOTS :
 
     void loadFiles(const QStringList& files, const QDir &mainDir = QDir());
 
+    void on_clearBtn_clicked();
+
 private:
     Ui::Widget *ui;
 };

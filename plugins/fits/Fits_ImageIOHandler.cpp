@@ -19,21 +19,21 @@ bool ImageIOHandler::read(const File &f, QImage *image)
         else if(f.getColorFormat() != File::ColorFormat_Grayscale)
             throw AstroBase::Exception(tr("Pixel format of 16bit integer and non-grayscale not supported for now."));
 
-        break;
+        return read16BitInt(f, image);
     }
     case File::PixelFormat_32Bit_Single :
     {
         if(f.getColorFormat() != File::ColorFormat_RGB)
             throw AstroBase::Exception(tr("32 floating point pixels + RGB supported only for now!"));
-        readRGBFloat(f, image);
-        break;
+        return readRGBFloat(f, image);
     }
     case File::PixelFormat_32Bit_Int :
     case File::PixelFormat_64Bit_Double :
     case File::PixelFormat_64Bit_Int :
     default:
-        throw AstroBase::Exception(tr("unsupported pixel format."));
+        break;
     }
+    throw AstroBase::Exception(tr("unsupported pixel format."));
 }
 
 bool ImageIOHandler::readRGBFloat(const File &file, QImage *image)
@@ -76,7 +76,8 @@ bool ImageIOHandler::readRGBFloat(const File &file, QImage *image)
         int pixel[3] = { 0, 0, 0 };
         for(int c=0; c<3; c++)
         {
-            pixel[c] = static_cast<int>(pixmap[c][i]);
+            const float& pixelF = pixmap[c][i];
+            pixel[c] = static_cast<int>((pixelF / distance[c]) * 256.f);
         }
 
         image->setPixel(x, y, qRgb(pixel[0], pixel[1], pixel[2]));
