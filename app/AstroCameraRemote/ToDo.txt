@@ -3,9 +3,10 @@
 - metadata download
 - ssdp abfrage für kamera suche
 - namespaces neu organisieren ("SonyAlphaRemote" is zu lang und eigentlich überflüssig)
-- FITS über Qt-Plugin Mechanismus einlesen
-- FITS Image Dimensionen ermitteln, bevor QImage erzeugt wird
 - command source code aufräumen
+- FITS Laden der Pixeldaten nach Fits::File verlagern. Plugin Klasse soll nur noch anhand min/max +optionen(?) auf 256er skalieren
+- PostView Laden vieler Dateien parallelisieren
+- PostView soll bei FITS Dateien Einstellmöglichkeiten für Farbskalierung und Gamma bekommen
 
 - WORKSFORME: bugfix: je nach länge/breite des mainwindows wird das preview-image nicht vollständig angezeit.
 - DONE live view
@@ -29,6 +30,8 @@
 - DONE HFD auf verfolgtem Stern live brechnen und Wert anzeigen
 - DONE HFD grafisch anzeigen
 - DONE sternverfolgung nach Auswahl
+- DONE FITS über Qt-Plugin Mechanismus einlesen
+- DONE FITS Image Dimensionen ermitteln, bevor QImage erzeugt wird
 
 
 - DROPPED Bahtinov Stern verfolgen

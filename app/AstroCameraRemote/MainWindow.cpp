@@ -98,7 +98,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->numShots, SIGNAL(valueChanged(int)), sequencerSettingsManager, SLOT(setNumShots(int)));
 
     connect(currentTimeDisplayTimer, SIGNAL(timeout()), this, SLOT(updateCurrentTimeDisplay()));
-    currentTimeDisplayTimer->start(10);
+    currentTimeDisplayTimer->start(200);
 
     connect(sender, SIGNAL(loadedPostViewImage(QByteArray)), ui->postViewWidget, SLOT(updatePostViewImage(QByteArray)));
     connect(this, SIGNAL(newPostViewInfo(PostView::Info)), ui->postViewWidget, SLOT(newInfo(PostView::Info)));
