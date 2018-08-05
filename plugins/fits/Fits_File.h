@@ -14,7 +14,7 @@ class QIODevice;
 
 namespace Fits {
 
-class File
+class FITSSHARED_EXPORT File
 {
     Q_DECLARE_TR_FUNCTIONS(Fits::File)
 public:
@@ -36,6 +36,8 @@ public:
         , ColorFormat_RGB
     };
 
+    char bayerMask[4];
+
 private :
     PixelFormat pixelFormat;
     ColorFormat colorFormat;
@@ -44,6 +46,10 @@ private :
     double maxVal[3];
 
 public :
+
+    File();
+
+    const char* getBayerMask() const { return bayerMask; }
 
     auto getMinVal(int c) const { return minVal[c]; }
     auto getMaxVal(int c) const { return maxVal[c]; }

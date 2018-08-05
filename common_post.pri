@@ -15,4 +15,8 @@ for(DLL_DEP, DLL_DEPS) {
     }
 }
 
+for(INC_DEP, INC_DEPS) {
+    INCLUDEPATH += $${top_srcdir}/$$INC_DEP
+}
+
 #message("after loop DLL_DEPS ...")

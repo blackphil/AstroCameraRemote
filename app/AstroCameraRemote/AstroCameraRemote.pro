@@ -59,7 +59,8 @@ SOURCES += main.cpp\
     StarTrack_Marker.cpp \
     StarTrack_GraphicsScene.cpp \
     StarTrack_Settings.cpp \
-    StarTrack_LenseGraphcisScene.cpp
+    StarTrack_LenseGraphcisScene.cpp \
+    BatchProcess_FitsRepair.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -100,7 +101,8 @@ HEADERS  += MainWindow.h \
     StarTrack_Marker.h \
     StarTrack_GraphicsScene.h \
     StarTrack_Settings.h \
-    StarTrack_LenseGraphcisScene.h
+    StarTrack_LenseGraphcisScene.h \
+    BatchProcess_FitsRepair.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

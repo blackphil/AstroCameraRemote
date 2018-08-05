@@ -15,7 +15,7 @@ bool ImageIOHandler::read(const File &f, QImage *image)
     case File::PixelFormat_16Bit_Int :
     {
         if(f.getColorFormat() == File::ColorFormat_BayerRGGB)
-            AB_WRN("Bayer not supported ... handle as grayscale for now");
+            return read16BitIntBayer(f, image);
         else if(f.getColorFormat() != File::ColorFormat_Grayscale)
             throw AstroBase::Exception(tr("Pixel format of 16bit integer and non-grayscale not supported for now."));
 
@@ -108,6 +108,108 @@ bool ImageIOHandler::read16BitInt(const File &file, QImage *image)
         strm >> pixel;
         pixel %= 256;
         image->setPixel(x, y, qRgb(pixel, pixel, pixel));
+    }
+
+    return true;
+}
+
+bool ImageIOHandler::read16BitIntBayer(const File &file, QImage *image)
+{
+    auto h = file.height();
+    auto w = file.width();
+
+    *image = QImage(w/2, h/2, QImage::Format_RGB888);
+
+    const QByteArray& data = file.getData();
+
+
+    auto expectedDataSize = w * h * 2/*for 16bit integer*/;
+    auto dataSize = data.size();
+    Q_ASSERT(dataSize == expectedDataSize);
+
+    auto numValues = expectedDataSize / 2;
+
+    QDataStream strm(data);
+
+    typedef qint16 Pixel16;
+    typedef qint32 Pixel32;
+
+    Pixel16 pixel16 = 0;
+    Pixel32 pixel32 = 0;
+    int row = 0;
+    int col = 0;
+    int index = 0;
+
+    QVector<Pixel32> pixels[3] = { QVector<Pixel32>((w*h)/4), QVector<Pixel32>((w*h)/4), QVector<Pixel32>((w*h)/4) };
+
+    const char* bayerMask = file.getBayerMask();
+
+    int pixelIndex = 0;
+
+//    Pixel32 maxVal[3] = { std::numeric_limits<Pixel32>::min(), std::numeric_limits<Pixel32>::min(), std::numeric_limits<Pixel32>::min() };
+//    Pixel32 minVal[3] = { std::numeric_limits<Pixel32>::max(), std::numeric_limits<Pixel32>::max(), std::numeric_limits<Pixel32>::max() };
+//    Pixel32 delta[3] = { 0, 0, 0 };
+
+    Pixel32 maxVal = std::numeric_limits<Pixel32>::min();
+    Pixel32 minVal = std::numeric_limits<Pixel32>::max();
+    Pixel32 delta = 0;
+
+    while(!strm.atEnd())
+    {
+        if(index >= numValues)
+            break;
+
+        row = index / w;
+        col = index % w;
+
+        strm >> pixel16;
+        //pixel32 += static_cast<quint32>(pixel16 + std::numeric_limits<qint16>::max());
+        pixel32 = pixel16;
+
+        int c = ((row%2) << 1) | (col%2);
+        c = bayerMask[c];
+
+        if(c==1)
+            pixels[c][pixelIndex] += pixel32/2;
+        else
+            pixels[c][pixelIndex] = pixel32;
+
+//        maxVal[c] = qMax(maxVal[c], pixels[c][pixelIndex]);
+//        minVal[c] = qMin(minVal[c], pixels[c][pixelIndex]);
+//        delta[c] = maxVal[c]-minVal[c];
+
+        maxVal = qMax(maxVal, pixels[c][pixelIndex]);
+        minVal = qMin(minVal, pixels[c][pixelIndex]);
+        delta = maxVal-minVal;
+
+        if(col%2==1)
+        {
+            if(col==(w-1) && row%2==0)
+                pixelIndex-=w/2;
+
+            pixelIndex++;
+        }
+
+        index++;
+    }
+
+    for(auto i=0; i<((w*h)/4); i++)
+    {
+        int x = i % (w/2);
+        int y = i / (w/2);
+
+//        image->setPixel(
+//                    x, y
+//                    , qRgb(
+//                        static_cast<int>((pixels[0][i] * 256) / delta[0])
+//                      , static_cast<int>((pixels[1][i] * 256) / delta[1])
+//                      , static_cast<int>((pixels[2][i] * 256) / delta[2])));
+        image->setPixel(
+                    x, y
+                    , qRgb(
+                        static_cast<int>((pixels[0][i] * 256) / delta)
+                      , static_cast<int>((pixels[1][i] * 256) / delta)
+                      , static_cast<int>((pixels[2][i] * 256) / delta)));
     }
 
     return true;

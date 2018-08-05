@@ -6,15 +6,29 @@
 #include <QMessageBox>
 #include <QCheckBox>
 #include <QProgressDialog>
+#include <QThreadPool>
 
 #include "AstroBase_PersistentDirInfo.h"
+#include "AstroBase_MessageBox.h"
+#include "BatchProcess_Processor.h"
 
 namespace BatchProcess {
 
+TaskInterface *SelectFilesDialog::getTaskPrototype() const
+{
+    return taskPrototype;
+}
+
+void SelectFilesDialog::setTaskPrototype(TaskInterface *value)
+{
+    taskPrototype = value;
+}
+
 SelectFilesDialog::SelectFilesDialog(QWidget *parent, const QString &filter)
     : QDialog(parent)
-    , ui(new Ui::SelectFilesDialog)
     , filter(filter)
+    , progressDlg(Q_NULLPTR)
+    , ui(new Ui::SelectFilesDialog)
 {
     ui->setupUi(this);
     ui->outputDirLineEdit->setText(AstroBase::PersistentDirInfo("BatchProcess?LastOutputDir"));
@@ -25,9 +39,7 @@ SelectFilesDialog::~SelectFilesDialog()
     delete ui;
 }
 
-} // namespace BatchProcess
-
-void BatchProcess::SelectFilesDialog::on_selectInputFilesBtn_clicked()
+void SelectFilesDialog::on_selectInputFilesBtn_clicked()
 {
     AstroBase::PersistentDirInfo inputDir("BatchProcess?LastInputDir");
 
@@ -50,66 +62,53 @@ void BatchProcess::SelectFilesDialog::on_selectInputFilesBtn_clicked()
     {
         ui->inputFilesList->addItem(fp);
     }
+
 }
 
-void BatchProcess::SelectFilesDialog::on_pushButton_clicked()
+void SelectFilesDialog::incProgress()
 {
-    QMessageBox mb(this);
-    mb.setWindowTitle(tr("Batch process ..."));
-    mb.setIcon(QMessageBox::Critical);
-    QCheckBox* cb = new QCheckBox(tr("Don't show again"), this);
-    cb->setChecked(false);
-    mb.setCheckBox(cb);
-
-    bool showInputErrorMsg = true;
-    bool showOutputErrorMsg = true;
-
-    QProgressDialog progressDlg(tr("Batch process ..."), tr("Cancel"), 0, ui->inputFilesList->count()-1, this);
-    progressDlg.setModal(true);
-    progressDlg.show();
-
-    for(int i=0; i<ui->inputFilesList->count(); i++)
+    if(progressDlg)
     {
-        progressDlg.setValue(i);
-        if(progressDlg.wasCanceled())
-            break;
-
-        cb->setChecked(false);
-
-        QFileInfo inputFileInfo = ui->inputFilesList->item(i)->data(Qt::DisplayRole).toString();
-        if(!inputFileInfo.exists())
+        progressDlg->setValue(progressDlg->value()+1);
+        if(progressDlg->value() == progressDlg->maximum())
         {
-            if(showInputErrorMsg)
-            {
-                mb.setText(tr("Input file not found: %0").arg(inputFileInfo.absoluteFilePath()));
-                mb.exec();
-                showInputErrorMsg = !cb->isChecked();
-            }
-            continue;
+            delete progressDlg;
+            progressDlg = Q_NULLPTR;
         }
-
-        QFileInfo outputFileInfo = inputFileInfo;
-        if(!ui->processInPlaceCb->isChecked())
-        {
-            outputFileInfo = QFileInfo(QDir(ui->outputDirLineEdit->text()), inputFileInfo.fileName());
-        }
-
-        if(!outputFileInfo.absoluteDir().exists())
-        {
-            if(showOutputErrorMsg)
-            {
-                mb.setText(tr("Cannot write image file to: %0").arg(outputFileInfo.absoluteFilePath()));
-                mb.exec();
-                showOutputErrorMsg = !cb->isChecked();
-            }
-            continue;
-        }
-
-        Q_EMIT processFile(inputFileInfo.absoluteFilePath(), outputFileInfo.absoluteFilePath());
     }
 }
 
-void BatchProcess::SelectFilesDialog::on_selectOutputDirBtn_clicked()
+void SelectFilesDialog::on_pushButton_clicked()
+{
+    if(progressDlg)
+        delete  progressDlg;
+
+    progressDlg = new QProgressDialog(tr("Batch process ..."), tr("Cancel"), 0, 100, this);
+    progressDlg->setModal(true);
+    progressDlg->setMinimum(0);
+    progressDlg->setMaximum(ui->inputFilesList->count());
+    progressDlg->setValue(0);
+    progressDlg->show();
+
+    for(int i=0; i<ui->inputFilesList->count(); i++)
+    {
+        TaskInterfacePtr task(taskPrototype->clone());
+        QFileInfo inputFile(ui->inputFilesList->item(i)->text());
+
+        task->setInputFile(inputFile.absoluteFilePath());
+        task->setOutputFile(QFileInfo(ui->outputDirLineEdit->text(), inputFile.fileName()).absoluteFilePath());
+        Processor* processor = new Processor(task);
+        connect(processor, SIGNAL(finished()), this, SLOT(incProgress()));
+
+        QThreadPool::globalInstance()->start(processor);
+
+
+        if(progressDlg->wasCanceled())
+            break;
+    }
+}
+
+void SelectFilesDialog::on_selectOutputDirBtn_clicked()
 {
     AstroBase::PersistentDirInfo outputDir("BatchProcess?LastOutputDir");
     QString outPath = outputDir;
@@ -121,6 +120,7 @@ void BatchProcess::SelectFilesDialog::on_selectOutputDirBtn_clicked()
         if(!outPath.isEmpty() && !outDir.exists())
         {
             QMessageBox::critical(this, tr("Select output directory"), tr("Output directory doesn't exist: %0").arg(outputDir));
+            continue;
         }
 
         break;
@@ -133,3 +133,5 @@ void BatchProcess::SelectFilesDialog::on_selectOutputDirBtn_clicked()
     ui->outputDirLineEdit->setText(outPath);
     outputDir = outPath;
 }
+
+} //namespace BatchProcess

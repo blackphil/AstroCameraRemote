@@ -16,6 +16,7 @@ class ImageIOHandler : public QImageIOHandler
     bool read(const File& f, QImage* image);
     bool readRGBFloat(const File& file, QImage* image);
     bool read16BitInt(const File& file, QImage* image);
+    bool read16BitIntBayer(const File& file, QImage* image);
 
 public:
     ImageIOHandler();

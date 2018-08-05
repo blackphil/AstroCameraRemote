@@ -7,6 +7,7 @@
 #include <QBuffer>
 #include <QPainter>
 #include <QRegularExpression>
+#include <QSettings>
 
 #include "AstroBase_Exception.h"
 
@@ -21,6 +22,34 @@ File::PixelFormat File::getPixelFormat() const
 File::ColorFormat File::getColorFormat() const
 {
     return colorFormat;
+}
+
+File::File()
+{
+    QSettings s;
+    s.beginGroup("Plugins/Fits");
+    QStringList bayerMaskStr = s.value("bayerMask", "r g g b").toString().split(" ");
+
+    if(bayerMaskStr.length() == 4)
+    {
+        for(auto i=0; i<4; i++)
+        {
+            char val = bayerMaskStr[i].toLatin1()[0];
+            switch(val)
+            {
+            case 'r' : bayerMask[i] = 0; break;
+            case 'g' : bayerMask[i] = 1; break;
+            case 'b' : bayerMask[i] = 2; break;
+            }
+        }
+    }
+    else
+    {
+        static const char defaultBayerMask[4] = { 0, 1, 1, 2 };
+        memcpy(bayerMask, defaultBayerMask, 4);
+
+        s.setValue("bayerMask", "r g g b");
+    }
 }
 
 File File::read(const QByteArray &data)
@@ -106,7 +135,6 @@ void File::write(QIODevice *fd)
         }
         fd->write(line.toLocal8Bit());
     }
-    fd->write("END");
     int restSize = 2880 - static_cast<int>(fd->size());
     fd->write(QByteArray(restSize, ' '));
     fd->write(data);

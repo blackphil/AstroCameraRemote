@@ -9,7 +9,7 @@ QT       += widgets
 TARGET = BatchProcess
 TEMPLATE = lib
 
-DLL_DEPS += AstroBase
+DLL_DEPS += AstroBase plugins/Fits
 
 DEFINES += BATCHPROCESS_LIBRARY
 
@@ -26,12 +26,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         BatchProcess.cpp \
-    BatchProcess_SelectFilesDialog.cpp
+    BatchProcess_SelectFilesDialog.cpp \
+    BatchProcess_Processor.cpp
 
 HEADERS += \
         BatchProcess.h \
-        batchprocess_global.h \ 
-    BatchProcess_SelectFilesDialog.h
+        batchprocess_global.h \
+    BatchProcess_SelectFilesDialog.h \
+    BatchProcess_Processor.h \
+    BatchProcess_TaskInterface.h
 
 unix {
     target.path = /usr/lib

@@ -7,6 +7,8 @@
 #include "LiveView_Widget.h"
 #include "hfd/Hfd_Calculator.h"
 #include "StarTrack_LenseGraphcisScene.h"
+#include "BatchProcess_FitsRepair.h"
+#include "BatchProcess_SelectFilesDialog.h"
 
 #include <QMessageBox>
 #include <QRegExp>
@@ -693,6 +695,8 @@ void MainWindow::on_scaledImageCheckbox_toggled(bool checked)
 
 void MainWindow::on_actionFits_repair_triggered()
 {
-//    Fits::Repair repair(this);
-//    repair.startUi();
+    BatchProcess::SelectFilesDialog dlg(this, "FITS (*.fits *.fts *.fit)");
+    BatchProcess::FitsRepair repairProcessor;
+    dlg.setTaskPrototype(&repairProcessor);
+    dlg.exec();
 }
