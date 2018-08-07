@@ -1,11 +1,4 @@
-#message(top_srcdir: $${top_srcdir})
-#message(top_builddir: $${top_builddir})
-
-#message("before loop DLL_DEPS ...")
 for(DLL_DEP, DLL_DEPS) {
-#    message(DLL_DEP: $$DLL_DEP)
-#    message(DLL: $$basename(DLL_DEP))
-
     INCLUDEPATH += $${top_srcdir}/$$DLL_DEP
 
     build_pass:CONFIG(debug, debug|release) {
@@ -19,4 +12,10 @@ for(INC_DEP, INC_DEPS) {
     INCLUDEPATH += $${top_srcdir}/$$INC_DEP
 }
 
-#message("after loop DLL_DEPS ...")
+
+target.path += $$INSTALL_DEST_DIR
+
+INSTALLS *= $$INSTALL_FILES
+
+QMAKE_EXTRA_TARGETS += setup
+

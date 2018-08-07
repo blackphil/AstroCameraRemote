@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Astro Camera Remote</Name>
+    <Version>1.0.0</Version>
+    <Title>Astro Camera Rermote Installer</Title>
+    <Publisher>AstroImages</Publisher>
+    <StartMenuDir>Astro Images</StartMenuDir>
+    <TargetDir>@HomeDir@/AstroImages/AstroCameraRemote</TargetDir>
+</Installer>

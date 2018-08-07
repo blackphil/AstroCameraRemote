@@ -33,7 +33,7 @@ SOURCES += \
 DISTFILES += \
     FitsMetadata.json
 
-target.path += $${ASTRO_INSTALL_PLUGINS}/imageformats
-INSTALLS += target
+target.path += $$INSTALL_DEST_DIR/imageformats
+INSTALL_FILES = target
 
 include($${top_srcdir}/common_post.pri)

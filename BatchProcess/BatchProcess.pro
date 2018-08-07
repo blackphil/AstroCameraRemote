@@ -4,6 +4,9 @@
 #
 #-------------------------------------------------
 
+include($${top_srcdir}/common_pre.pri)
+
+
 QT       += widgets
 
 TARGET = BatchProcess
@@ -36,13 +39,10 @@ HEADERS += \
     BatchProcess_Processor.h \
     BatchProcess_TaskInterface.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 FORMS += \
     BatchProcess_SelectFilesDialog.ui
+
+INSTALL_FILES = target
 
 include($${top_srcdir}/common_post.pri)
 

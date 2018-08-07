@@ -9,7 +9,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    a.addLibraryPath(PLUGIN_DIR);
+
+    if(QDir(PLUGIN_DIR).exists())
+        a.addLibraryPath(PLUGIN_DIR);
 
     a.setOrganizationName("AstroPhotoHelpers");
 

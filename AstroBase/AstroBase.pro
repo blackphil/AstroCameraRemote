@@ -3,6 +3,7 @@
 # Project created by QtCreator 2018-07-30T21:08:54
 #
 #-------------------------------------------------
+include($${top_srcdir}/common_pre.pri)
 
 QT       += gui widgets
 
@@ -35,7 +36,8 @@ HEADERS += \
     AstroBase_PersistentDirInfo.h \
     AstroBase_MessageBox.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
+INSTALL_FILES = target
+
+
+
+include($${top_srcdir}/common_post.pri)

@@ -124,5 +124,7 @@ RESOURCES += \
     testdata_4.qrc \
     testdata_5.qrc
 
+INSTALL_FILES = target
+
 include($${top_srcdir}/common_post.pri)
 
