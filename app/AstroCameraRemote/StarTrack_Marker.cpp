@@ -82,7 +82,7 @@ bool Marker::update(const QRectF& r)
     crosshair[0]->setLine(QLineF(chr.center().x(), chr.top(), chr.center().x(), chr.bottom()));
     crosshair[1]->setLine(QLineF(chr.left(), chr.center().y(), chr.right(), chr.center().y()));
 
-    info->setPos(rectItem->rect().topLeft() + QPoint(0, -info->boundingRect().height()));
+    info->setPos(rectItem->rect().topLeft() + QPointF(0, -info->boundingRect().height()));
 
     return true;
 }
@@ -96,7 +96,7 @@ void Marker::start(const QPointF &pos)
     case Modus_FixedRect :
     {
         auto rectSize = Settings::getFixedRectSize();
-        auto rectSizeHalf = rectSize / 2.f;
+        auto rectSizeHalf = rectSize / 2.;
         r = QRectF(pos.x() - rectSizeHalf, pos.y() - rectSizeHalf, rectSize, rectSize);
         break;
     }
@@ -128,8 +128,8 @@ void Marker::mouseMoved(const QPointF &pos)
     {
     case Modus_FixedRect :
     {
-        float rectSize = Settings::getFixedRectSize();
-        float rectSizeHalf = rectSize / 2.f;
+        qreal rectSize = Settings::getFixedRectSize();
+        qreal rectSizeHalf = rectSize / 2.;
         r = QRectF(pos.x() - rectSizeHalf, pos.y() - rectSizeHalf, rectSize, rectSize);
         break;
     }
@@ -179,13 +179,13 @@ QRectF Marker::centerStar(const QImage &scaledStar)
 
     QPointF newCenterLocal = currentCenter - rect.topLeft();
 
-    double c = 0;
-    double x = 0, y = 0;
-    for(double i=0; i<rect.height(); i+=0.1)
+    qreal c = 0;
+    qreal x = 0, y = 0;
+    for(auto i=0.; i<rect.height(); i+=0.1)
     {
-        for(double j=0; j<rect.width(); j+=0.1)
+        for(auto j=0.; j<rect.width(); j+=0.1)
         {
-            double pixel = (double)qGray(scaledStar.pixel(j, i)) / 255.;
+            auto pixel = qGray(scaledStar.pixel(static_cast<int>(j), static_cast<int>(i))) / 255.;
             c += pixel;
             x += j * pixel;
             y += i * pixel;
@@ -206,6 +206,7 @@ QRectF Marker::centerStar(const QImage &scaledStar)
     SAR_INF("newcenter(" << newCenter.x() << ", " << newCenter.y() << ")");
 
     QPointF toMove = newCenter - currentCenter;
+    Q_UNUSED(toMove)
     SAR_INF("toMove(" << toMove.x() << ", " << toMove.y() << ")");
 
     QRectF newRect(newCenter.x() - (rect.width()/2.), newCenter.y() - (rect.height()/2.), rect.width(), rect.height());
@@ -226,8 +227,8 @@ void Marker::update()
         break;
     case Marker::Modus_FixedRect :
     {
-        float size = Settings::getFixedRectSize();
-        float sizeHalf = size / 2.f;
+        qreal size = Settings::getFixedRectSize();
+        qreal sizeHalf = size / 2.;
         QPointF center = r.center();
         r.setTopLeft(QPointF(center.x()-sizeHalf, center.y()-sizeHalf));
         r.setSize(QSizeF(size, size));

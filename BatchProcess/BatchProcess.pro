@@ -30,14 +30,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         BatchProcess.cpp \
     BatchProcess_SelectFilesDialog.cpp \
-    BatchProcess_Processor.cpp
+    BatchProcess_Processor.cpp \
+    BatchProcess_Visual_GraphicsScene.cpp \
+    BatchProcess_Visual_Task.cpp
 
 HEADERS += \
         BatchProcess.h \
         batchprocess_global.h \
     BatchProcess_SelectFilesDialog.h \
     BatchProcess_Processor.h \
-    BatchProcess_TaskInterface.h
+    BatchProcess_TaskInterface.h \
+    BatchProcess_Visual_GraphicsScene.h \
+    BatchProcess_Visual_Task.h
 
 FORMS += \
     BatchProcess_SelectFilesDialog.ui
