@@ -4,9 +4,9 @@
 namespace StarTrack {
 
 
-float Settings::getFixedRectSize()
+qreal Settings::getFixedRectSize()
 {
-    return QSettings().value("StarTrack/FixedRectSize", 100).toFloat();
+    return QSettings().value("StarTrack/FixedRectSize", 100).toReal();
 }
 
 void Settings::setFixedRectSize(float value)
@@ -26,7 +26,7 @@ bool Settings::getPublishScaledImage()
 
 Marker::Modus Settings::getMarkerModus()
 {
-    return (Marker::Modus)QSettings().value("StarTrack/MarkerModus", Marker::Modus_Rubberband).toInt();
+    return static_cast<Marker::Modus>(QSettings().value("StarTrack/MarkerModus", Marker::Modus_Rubberband).toInt());
 }
 
 void Settings::setMarkerModus(const Marker::Modus &value)

@@ -35,7 +35,7 @@ public:
  * Get all pixels inside a radius: http://stackoverflow.com/questions/14487322/get-all-pixel-array-inside-circle
  * Algorithm: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
  */
-    bool insideCircle(float inX /*pos of x*/, float inY /*pos of y*/, float inCenterX, float inCenterY, float inRadius) const;
+    bool insideCircle(qreal inX /*pos of x*/, qreal inY /*pos of y*/, qreal inCenterX, qreal inCenterY, qreal inRadius) const;
 
     /**
  * Expects star centered in the middle of the image (in x and y) and mean background subtracted from image.
@@ -49,7 +49,7 @@ public:
  *       system and also on the seeing conditions. The HFD value calculated depends on this
  *       outer diameter value.
  */
-    double calcHfd(const QImage& inImage, unsigned int inOuterDiameter);
+    qreal calcHfd(const QImage& inImage, unsigned int inOuterDiameter);
 
     double meanValue(const QImage& img) const;
     QImage scaledImage(const QImage& image, const double& mean) const;

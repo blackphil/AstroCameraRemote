@@ -12,8 +12,8 @@ namespace StarTrack {
 Marker::Marker(GraphicsScene *scene, QObject *parent)
     : QObject(parent)
     , scene(scene)
-    , rectItem(NULL)
-    , info(NULL)
+    , rectItem(Q_NULLPTR)
+    , info(Q_NULLPTR)
     , rectPen(QPen(QBrush(Qt::green), 1))
     , crosshairPen(QPen(QBrush(Qt::green), 1))
     , tracking(true )
@@ -45,6 +45,8 @@ namespace helper
 {
 void logRect(const QRectF& r, const QString& context)
 {
+    Q_UNUSED(r)
+    Q_UNUSED(context)
     SAR_INF(
                 context <<
                 ": center(" << r.center().x() << ", " << r.center().y() << ")"
@@ -70,8 +72,8 @@ bool Marker::update(const QRectF& r)
     rectItem->setRect(r);
 
     helper::logRect(r, "bounding");
-    float w = r.width() / 4.0;
-    float h = r.height() / 4.0;
+    auto w = r.width() / 4.0;
+    auto h = r.height() / 4.0;
     QRectF chr = r.marginsRemoved(QMarginsF(w, h, w, h));
 
     SAR_INF("update marker ...");
@@ -93,8 +95,8 @@ void Marker::start(const QPointF &pos)
     {
     case Modus_FixedRect :
     {
-        float rectSize = Settings::getFixedRectSize();
-        float rectSizeHalf = rectSize / 2.f;
+        auto rectSize = Settings::getFixedRectSize();
+        auto rectSizeHalf = rectSize / 2.f;
         r = QRectF(pos.x() - rectSizeHalf, pos.y() - rectSizeHalf, rectSize, rectSize);
         break;
     }

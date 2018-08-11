@@ -42,7 +42,7 @@ QImage Calculator::readFile(const QString& inFilename)
  * Get all pixels inside a radius: http://stackoverflow.com/questions/14487322/get-all-pixel-array-inside-circle
  * Algorithm: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
  */
-bool Calculator::insideCircle(float inX /*pos of x*/, float inY /*pos of y*/, float inCenterX, float inCenterY, float inRadius) const
+bool Calculator::insideCircle(qreal inX /*pos of x*/, qreal inY /*pos of y*/, qreal inCenterX, qreal inCenterY, qreal inRadius) const
 {
     return (pow(inX - inCenterX, 2.0) + pow(inY - inCenterY, 2.0) <= pow(inRadius, 2.0));
 }
@@ -59,13 +59,13 @@ bool Calculator::insideCircle(float inX /*pos of x*/, float inY /*pos of y*/, fl
  *       system and also on the seeing conditions. The HFD value calculated depends on this
  *       outer diameter value.
  */
-double Calculator::calcHfd(const QImage& inImage, unsigned int inOuterDiameter)
+qreal Calculator::calcHfd(const QImage& inImage, unsigned int inOuterDiameter)
 {
     // Sum up all pixel values in whole circle
-    double outerRadius = (double)inOuterDiameter / 2.;
-    double sum = 0, sumDist = 0;
-    double centerX = (double)inImage.width() / 2.0;
-    double centerY = (double)inImage.height() / 2.0;
+    qreal outerRadius = inOuterDiameter / 2.;
+    qreal sum = 0, sumDist = 0;
+    qreal centerX = inImage.width() / 2.0;
+    qreal centerY = inImage.height() / 2.0;
 
     for(int y=0; y<inImage.height(); y++)
     {
@@ -75,7 +75,7 @@ double Calculator::calcHfd(const QImage& inImage, unsigned int inOuterDiameter)
             {
                 double gray = qGray(inImage.pixel(x, y));
                 sum += gray;
-                sumDist += gray * std::sqrt(std::pow((double)x - (double)centerX, 2.0) + std::pow((double) y - (double)centerY, 2.0));
+                sumDist += gray * std::sqrt(std::pow(x - centerX, 2.0) + std::pow(y - centerY, 2.0));
             }
         }
     }
@@ -151,8 +151,8 @@ int Calculator::test(/* int argc, char *argv[]*/)
 
         // Calc the HFD
         const unsigned int outerDiameter = 60;
-        float hfd = calcHfd(colorScaledImage, outerDiameter /*outer diameter in px*/);
-
+        auto hfd = calcHfd(colorScaledImage, outerDiameter /*outer diameter in px*/);
+        Q_UNUSED(hfd)
         SAR_INF(fileName << "--> hfd: " << hfd);
     }
 

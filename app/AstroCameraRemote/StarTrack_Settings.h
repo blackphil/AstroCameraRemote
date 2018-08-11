@@ -16,7 +16,7 @@ public:
 
     static Marker::Modus getMarkerModus();
     static void setMarkerModus(const Marker::Modus &value);
-    static float getFixedRectSize();
+    static qreal getFixedRectSize();
     static void setFixedRectSize(float value);
 
     static void setPublishScaledImage(bool yes);
