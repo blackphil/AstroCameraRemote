@@ -230,7 +230,7 @@ bool ImageIOHandler::read(QImage* image)
     if(!device())
         return false;
 
-    File file = File::read(device());
+    File file = File::fromDevice(device());
 
     return read(file, image);
 }

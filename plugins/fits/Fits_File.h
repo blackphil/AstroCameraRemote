@@ -63,11 +63,12 @@ public :
         int getIntAttr(const QString& key) const;
     };
 
-    static File read(const QByteArray& data);
-    static File read(QIODevice* fd);
-    static File read(const QString& filePath);
+    static File fromByteArray(const QByteArray& data);
+    static File fromDevice(QIODevice* fd);
+    static File fromFile(const QString& filePath);
 
     void write(QIODevice* fd);
+    void write(QByteArray& ba);
     void write(const QString& filePath);
 
     int width() const;
@@ -79,7 +80,6 @@ public :
     static bool isValid(QIODevice* fd);
 
     PixelFormat getPixelFormat() const;
-
     ColorFormat getColorFormat() const;
 
 private :

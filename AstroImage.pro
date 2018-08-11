@@ -15,7 +15,7 @@ BatchProcess.depends += AstroBase plugins
 
 plugins.depends += AstroBase
 
-setup.depends += app AstroBae BatchProcess plugins
+setup.depends += app AstroBase BatchProcess plugins
 
 include($${top_srcdir}/common_post.pri)
 

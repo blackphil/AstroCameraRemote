@@ -28,7 +28,7 @@ bool FitsRepair::process()
     if(!inFile.isReadable())
         return false;
 
-    Fits::File f = Fits::File::read(input);
+    Fits::File f = Fits::File::fromFile(input);
 
     QFileInfo outFile(output);
     f.write(output);

@@ -52,15 +52,15 @@ File::File()
     }
 }
 
-File File::read(const QByteArray &data)
+File File::fromByteArray(const QByteArray &data)
 {
     QBuffer buffer;
     buffer.setData(data);
     buffer.open(QBuffer::ReadOnly);
-    return read(&buffer);
+    return fromDevice(&buffer);
 }
 
-File File::read(QIODevice *fd)
+File File::fromDevice(QIODevice *fd)
 {
     File f;
 
@@ -104,7 +104,7 @@ File File::read(QIODevice *fd)
     return f;
 }
 
-File File::read(const QString &filePath)
+File File::fromFile(const QString &filePath)
 {
     QFileInfo info(filePath);
     if(!info.isReadable())
@@ -118,7 +118,7 @@ File File::read(const QString &filePath)
         throw AstroBase::Exception(tr("Cannot open file for reading: %0").arg(filePath));
     }
 
-    return read(&in);
+    return fromDevice(&in);
 }
 
 void File::write(QIODevice *fd)
@@ -138,6 +138,13 @@ void File::write(QIODevice *fd)
     int restSize = 2880 - static_cast<int>(fd->size());
     fd->write(QByteArray(restSize, ' '));
     fd->write(data);
+}
+
+void File::write(QByteArray &ba)
+{
+    QBuffer buffer(&ba);
+    buffer.open(QIODevice::WriteOnly);
+    write(&buffer);
 }
 
 void File::write(const QString &filePath)
