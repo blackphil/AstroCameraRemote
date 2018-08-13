@@ -26,7 +26,7 @@ void StatusPoller::simCamReady()
 StatusPoller::StatusPoller(Sender *sender, QObject *parent)
     : QObject(parent)
     , sender(sender)
-    , trigger(NULL)
+    , trigger(Q_NULLPTR)
     , cameraStatus(tr("not connected"))
     , getEvent(new Json::GetEvent(this))
     , waitingForEventReply(false)
@@ -42,7 +42,7 @@ void StatusPoller::start(double interval)
     trigger = new QTimer(this);
     connect(trigger, SIGNAL(timeout()), this, SLOT(poll()));
 
-    int msec = (int)trunc(interval * 1000.);
+    int msec = static_cast<int>(trunc(interval * 1000.));
     getEvent->setCallbackImmedialetyEnabled(true);
     trigger->start(msec);
 
@@ -53,7 +53,7 @@ void StatusPoller::stop()
 {
     if(trigger)
         delete trigger;
-    trigger = NULL;
+    trigger = Q_NULLPTR;
 
     SAR_INF("status poller stopped");
 }

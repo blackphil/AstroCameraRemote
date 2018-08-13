@@ -1,5 +1,7 @@
 #include "Fits_File.h"
 
+#include "AstroBase.h"
+
 #include <QFileInfo>
 #include <QIODevice>
 #include <QStringList>
@@ -101,6 +103,7 @@ File File::fromDevice(QIODevice *fd)
 
     f.data = fd->readAll();
 
+    AB_DBG("have" << f.data.count() << "bytes of pixel data");
     return f;
 }
 
@@ -189,6 +192,94 @@ int File::height() const
 int File::bitPix() const
 {
     return header.getIntAttr("BITPIX");
+}
+
+int File::numPixels() const
+{
+    int numPixels = width() * height();
+    if(colorFormat == ColorFormat_RGB)
+        numPixels *= 3;
+    return numPixels;
+}
+
+namespace helper
+{
+template<typename T> T getPixel(const QByteArray& data, int pixelIndex)
+{
+    T result = 0;
+    const int size = sizeof(T);
+    char* bytes = reinterpret_cast<char*>(&result);
+    for(int b=0; b<size; b++)
+    {
+        bytes[size-b-1] = data[int(pixelIndex*size+b)];
+    }
+    return result;
+}
+}
+double File::getPixel(int pixelIndex) const
+{
+    double result = 0;
+
+    switch(pixelFormat)
+    {
+    case PixelFormat_8Bit         :
+        result = double(helper::getPixel<qint8>(data, pixelIndex));
+        break;
+    case PixelFormat_16Bit_Int    :
+        result = double(helper::getPixel<qint16>(data, pixelIndex));
+        break;
+    case PixelFormat_32Bit_Int    :
+        result = double(helper::getPixel<qint32>(data, pixelIndex));
+        break;
+    case PixelFormat_64Bit_Int    :
+        result = double(helper::getPixel<qint64>(data, pixelIndex));
+        break;
+    case PixelFormat_32Bit_Single :
+        result = double(helper::getPixel<float>(data, pixelIndex));
+        break;
+    case PixelFormat_64Bit_Double :
+        result = double(helper::getPixel<double>(data, pixelIndex));
+        break;
+    }
+
+    return result;
+}
+
+void File::setPixel(int pixelIndex, const double &value)
+{
+    int baIndex = pixelIndex * bitPix() / 8;
+    if(baIndex >= data.count())
+        throw AstroBase::IndexOutOfBoundsException(tr("pixel index(%0)").arg(pixelIndex));
+
+    switch(pixelFormat)
+    {
+    case PixelFormat_8Bit         :
+    case PixelFormat_16Bit_Int    :
+    case PixelFormat_32Bit_Int    :
+    case PixelFormat_64Bit_Int    :
+    {
+        qint64 intVal = qint64(value); //assume, thate the incoming double value is - in fact - an integer
+        int numBytes = pixelFormat / 8;
+        char* bytes = reinterpret_cast<char*>(&intVal);
+        for(int b=0; b<numBytes; b++)
+        {
+            data[baIndex+b] = bytes[b];
+        }
+        break;
+    }
+    case PixelFormat_32Bit_Single :
+    case PixelFormat_64Bit_Double :
+    {
+        int numBytes = pixelFormat / 8;
+        const char* bytes = reinterpret_cast<const char*>(&value);
+        for(int b=0; b<numBytes; b++)
+        {
+            data[baIndex+b] = bytes[numBytes-b-1];
+        }
+        break;
+    }
+    }
+
 }
 
 const QByteArray &File::getData() const

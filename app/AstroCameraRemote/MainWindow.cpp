@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+#include "AstroBase.h"
+
 #include "SonyAlphaRemote_Helper.h"
 #include "SonyAlphaRemote_Sender.h"
 #include "SettingsDialog.h"
@@ -25,9 +27,9 @@ int shutterSpeedStrToMilliseconds(QString shutterSpeedStr)
     QRegExp rx2("(\\d+)\"");
     int milliSeconds = 0;
     if(rx1.exactMatch(shutterSpeedStr))
-        milliSeconds = (int)(1000. / rx1.cap(1).toDouble());
+        milliSeconds = static_cast<int>(1000. / rx1.cap(1).toDouble());
     else if(rx2.exactMatch(shutterSpeedStr))
-        milliSeconds = 1000 * rx2.cap(1).toDouble();
+        milliSeconds = static_cast<int>(1000. * rx2.cap(1).toDouble());
 
     return milliSeconds;
 }
@@ -646,7 +648,7 @@ void MainWindow::on_lenrCheckbox_clicked(bool checked)
 
 void MainWindow::on_markerModusCombobox_activated(int index)
 {
-    StarTrack::Marker::Modus modus = (StarTrack::Marker::Modus)index;
+    StarTrack::Marker::Modus modus = static_cast<StarTrack::Marker::Modus>(index);
     StarTrack::Settings::setMarkerModus(modus);
     if(StarTrack::Marker::Modus_FixedRect == modus)
         ui->markerFixedRectSpinbox->setEnabled(true);
@@ -661,10 +663,10 @@ void MainWindow::on_markerModusCombobox_activated(int index)
 
 void MainWindow::on_markerFixedRectSpinbox_editingFinished()
 {
-    float newVal = ui->markerFixedRectSpinbox->value();
-    float currentVal = StarTrack::Settings::getFixedRectSize();
+    qreal newVal = ui->markerFixedRectSpinbox->value();
+    qreal currentVal = StarTrack::Settings::getFixedRectSize();
     SAR_INF("new(" << newVal << "), current(" << currentVal << ")");
-    if(newVal == currentVal)
+    if(AB_COMPARE(newVal, currentVal))
         return;
     StarTrack::Settings::setFixedRectSize(newVal);
     ui->liveViewWidget->getStarTrackScene()->updateMarker();

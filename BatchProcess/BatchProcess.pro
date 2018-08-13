@@ -32,7 +32,10 @@ SOURCES += \
     BatchProcess_SelectFilesDialog.cpp \
     BatchProcess_Processor.cpp \
     BatchProcess_Visual_GraphicsScene.cpp \
-    BatchProcess_Visual_Task.cpp
+    BatchProcess_Visual_Task.cpp \
+    BatchProcess_ImageSignal.cpp \
+    BatchProcess_Task.cpp \
+    BatchProcess_StackImagesTask.cpp
 
 HEADERS += \
         BatchProcess.h \
@@ -41,7 +44,10 @@ HEADERS += \
     BatchProcess_Processor.h \
     BatchProcess_TaskInterface.h \
     BatchProcess_Visual_GraphicsScene.h \
-    BatchProcess_Visual_Task.h
+    BatchProcess_Visual_Task.h \
+    BatchProcess_ImageSignal.h \
+    BatchProcess_Task.h \
+    BatchProcess_StackImagesTask.h
 
 FORMS += \
     BatchProcess_SelectFilesDialog.ui

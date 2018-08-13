@@ -27,7 +27,7 @@ class   StatusPoller : public QObject
     void getBatteryInfo(QJsonArray status);
 
 public:
-    explicit StatusPoller(Sender* sender, QObject *parent = 0);
+    explicit StatusPoller(Sender* sender, QObject *parent = Q_NULLPTR);
 
     void start(double interval);
     void stop();

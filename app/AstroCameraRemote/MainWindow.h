@@ -72,7 +72,7 @@ Q_SIGNALS :
     void disconnectedFromCamera();
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = Q_NULLPTR);
     ~MainWindow();
 
 private Q_SLOTS:

@@ -3,6 +3,7 @@
 
 #include "fits_global.h"
 
+#include <QSharedPointer>
 #include <QList>
 #include <QPair>
 #include <QString>
@@ -13,6 +14,9 @@
 class QIODevice;
 
 namespace Fits {
+
+class File;
+typedef QSharedPointer<File> FilePtr;
 
 class FITSSHARED_EXPORT File
 {
@@ -74,6 +78,10 @@ public :
     int width() const;
     int height() const;
     int bitPix() const;
+    int numPixels() const;
+
+    double getPixel(int pixelIndex) const;
+    void setPixel(int pixelIndex, const double& value);
 
     const QByteArray& getData() const;
 

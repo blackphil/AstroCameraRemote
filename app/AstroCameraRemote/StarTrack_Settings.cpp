@@ -9,7 +9,7 @@ qreal Settings::getFixedRectSize()
     return QSettings().value("StarTrack/FixedRectSize", 100).toReal();
 }
 
-void Settings::setFixedRectSize(float value)
+void Settings::setFixedRectSize(qreal value)
 {
     QSettings().setValue("StarTrack/FixedRectSize", value);
 }

@@ -45,7 +45,8 @@ Widget::~Widget()
 
 void Widget::updatePostViewImage(const QByteArray &data)
 {
-    updatePostViewImage(QPixmap::fromImage(QImage::fromData(data)));
+    QImage img = QImage::fromData(data);
+    updatePostViewImage(QPixmap::fromImage(img));
 }
 
 void Widget::updatePostViewImage(const QPixmap &pixmap)
@@ -202,7 +203,10 @@ void Widget::on_openFilesBtn_clicked()
                 this
                 , tr("Open files")
                 , dir
-                , "FITS (*.fit *.fts *.fits);;JPEG (*.jpg *.jpeg);;All files(*.*)");
+                , "FITS (*.fit *.fts *.fits)"
+                  ";;JPEG (*.jpg *.jpeg)"
+                  ";;TIFF (*.tif)"
+                  ";;All files(*.*)");
 
     if(files.isEmpty())
         return;
