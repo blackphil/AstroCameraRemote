@@ -9,7 +9,7 @@
 #include <QDir>
 
 #include "AstroBase.h"
-#include "Fits_ImageIOPlugin.h"
+#include "FitsImagePlugin_ImageIOPlugin.h"
 
 #define xstr(a) str(a)
 #define str(a) #a

@@ -1,4 +1,4 @@
-#include "Fits_ImageIOHandler.h"
+#include "FitsImagePlugin_ImageIOHandler.h"
 #include "AstroBase.h"
 #include "AstroBase_Exception.h"
 #include "Fits_File.h"

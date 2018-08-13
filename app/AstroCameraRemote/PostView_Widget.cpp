@@ -7,8 +7,6 @@
 #include "Fits_File.h"
 #include "AstroBase_PersistentDirInfo.h"
 #include "AstroBase_Exception.h"
-#include "Fits_ImageIOPlugin.h"
-#include "Fits_ImageIOHandler.h"
 #include "AstroBase_MessageBox.h"
 
 #include <QDir>

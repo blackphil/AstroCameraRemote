@@ -10,7 +10,7 @@
 
 namespace BatchProcess {
 
-class BATCHPROCESSSHARED_EXPORT StackImagesTask : public QObject, public Task
+class BATCHPROCESSSHARED_EXPORT StackImagesTask : public QObject, public BatchProcess::Task
 {
     Q_OBJECT
 

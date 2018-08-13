@@ -14,7 +14,7 @@ CONFIG += c++11
 
 DLL_DEPS += \
     AstroBase \
-    Plugins/Fits \
+    DataFormat/Fits \
     BatchProcess
 
 SOURCES += \

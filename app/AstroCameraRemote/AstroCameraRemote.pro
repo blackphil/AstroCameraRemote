@@ -16,8 +16,8 @@ QTPLUGIN += svg
 
 DLL_DEPS += \
     AstroBase \
-    Plugins/Fits \
-    BatchProcess
+    BatchProcess \
+    DataFormat/Fits
 
 SOURCES += main.cpp\
         MainWindow.cpp \

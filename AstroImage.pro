@@ -5,17 +5,22 @@ TEMPLATE = subdirs
 SUBDIRS += app \
     AstroBase \
     BatchProcess \
-    Setup
+    Setup \
+    DataFormat
 SUBDIRS += plugins
 
-app.depends += AstroBase BatchProcess
+app.depends += AstroBase BatchProcess DataFormat
 app.depends += plugins
 
-BatchProcess.depends += AstroBase plugins
+BatchProcess.depends += AstroBase plugins DataFormat
 
-plugins.depends += AstroBase
+plugins.depends += AstroBase DataFormat
 
-setup.depends += app AstroBase BatchProcess plugins
+DataFormat.depends += AstroBase
+
+setup.depends += app AstroBase BatchProcess plugins DataFormat
+
+
 
 include($${top_srcdir}/common_post.pri)
 

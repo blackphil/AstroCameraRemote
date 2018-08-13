@@ -1,18 +1,21 @@
-
+#-------------------------------------------------
+#
+# Project created by QtCreator 2018-08-13T17:18:15
+#
+#-------------------------------------------------
 include($${top_srcdir}/common_pre.pri)
 
-#QT -= gui
 
-CONFIG += c++11 console
-CONFIG -= app_bundle
 
-DLL_DEPS += \
-            AstroBase \
-            Plugins/FitsImagePlugin
+TARGET = Fits
+TEMPLATE = lib
 
+DEFINES += FITS_LIBRARY
+
+DLL_DEPS += AstroBase
 
 # The following define makes your compiler emit warnings if you use
-# any feature of Qt which as been marked deprecated (the exact warnings
+# any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -23,14 +26,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        main.cpp
+        fits.cpp \
+        Fits_File.cpp
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+HEADERS += \
+        fits.h \
+        fits_global.h \
+        Fits_File.h
+
+INSTALL_FILES = target
 
 include($${top_srcdir}/common_post.pri)
-
-RESOURCES += \
-    testimages.qrc

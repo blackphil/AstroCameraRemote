@@ -1,0 +1,2 @@
+#include "fits.h"
+

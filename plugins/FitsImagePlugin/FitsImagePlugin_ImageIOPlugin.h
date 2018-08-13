@@ -1,7 +1,7 @@
 #ifndef FITS_IMAGEIOPLUGIN_H
 #define FITS_IMAGEIOPLUGIN_H
 
-#include "fits_global.h"
+#include "fitsimageplugin_global.h"
 #include <QImageIOPlugin>
 
 namespace Fits {
@@ -9,7 +9,7 @@ namespace Fits {
 class FitsImagePlugin : public QImageIOPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QImageIOHandlerFactoryInterface" FILE "FitsMetadata.json")
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QImageIOHandlerFactoryInterface" FILE "FitsImagePluginMetadata.json")
 
 public:
     FitsImagePlugin();

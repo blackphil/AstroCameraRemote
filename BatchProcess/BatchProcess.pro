@@ -12,7 +12,7 @@ QT       += widgets
 TARGET = BatchProcess
 TEMPLATE = lib
 
-DLL_DEPS += AstroBase plugins/Fits
+DLL_DEPS += AstroBase DataFormat/Fits
 
 DEFINES += BATCHPROCESS_LIBRARY
 

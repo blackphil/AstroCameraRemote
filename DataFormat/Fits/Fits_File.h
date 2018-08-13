@@ -15,6 +15,10 @@ class QIODevice;
 
 namespace Fits {
 
+static const int HeaderLineSize = 80;
+static const int HeaderLineCount = 36;
+
+
 class File;
 typedef QSharedPointer<File> FilePtr;
 
