@@ -3,8 +3,11 @@
 
 #include "batchprocess_global.h"
 
+#include "BatchProcess_Signal.h"
+
 #include "Fits_File.h"
 
+#include <QObject>
 #include <QList>
 #include <QSharedPointer>
 
@@ -13,12 +16,14 @@ namespace BatchProcess {
 class ImageSignal;
 typedef QSharedPointer<ImageSignal> ImageSignalPtr;
 
-class BATCHPROCESSSHARED_EXPORT ImageSignal
+class BATCHPROCESSSHARED_EXPORT ImageSignal : public Signal
 {
+    Q_DECLARE_TR_FUNCTIONS(BatchProcess::ImageSignal)
+
     ImageSignal(const ImageSignal& rhs, bool deep = false);
     bool operator=(const ImageSignal& rhs);
 
-    QString name;
+    QStringList files;
     QList<Fits::FilePtr> images;
 
 public:
@@ -29,8 +34,13 @@ public:
     int numImages() const;
     const QList<Fits::FilePtr>& getImages() const;
     void setImages(const QList<Fits::FilePtr> &value);
-    QString getName() const;
-    void setName(const QString &value);
+
+    double getPixel(int imageIndex, int pixelIndex) const;
+    void setPixel(int imageIndex, int pixelIndex, const double& value);
+
+    QString getTitle() const;
+
+    bool edit();
 };
 
 } // namespace BatchProcess

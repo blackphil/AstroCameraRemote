@@ -32,10 +32,15 @@ SOURCES += \
     BatchProcess_SelectFilesDialog.cpp \
     BatchProcess_Processor.cpp \
     BatchProcess_Visual_GraphicsScene.cpp \
-    BatchProcess_Visual_Task.cpp \
     BatchProcess_ImageSignal.cpp \
     BatchProcess_Task.cpp \
-    BatchProcess_StackImagesTask.cpp
+    BatchProcess_StackImagesTask.cpp \
+    BatchProcess_PixelMathTask.cpp \
+    BatchProcess_Visual_TaskBox.cpp \
+    BatchProcess_Signal.cpp \
+    BatchProcess_NumericSignal.cpp \
+    BatchProcess_Manager.cpp \
+    BatchProcess_NumericValueDialog.cpp
 
 HEADERS += \
         BatchProcess.h \
@@ -44,13 +49,19 @@ HEADERS += \
     BatchProcess_Processor.h \
     BatchProcess_TaskInterface.h \
     BatchProcess_Visual_GraphicsScene.h \
-    BatchProcess_Visual_Task.h \
     BatchProcess_ImageSignal.h \
     BatchProcess_Task.h \
-    BatchProcess_StackImagesTask.h
+    BatchProcess_StackImagesTask.h \
+    BatchProcess_PixelMathTask.h \
+    BatchProcess_Visual_TaskBox.h \
+    BatchProcess_Signal.h \
+    BatchProcess_NumericSignal.h \
+    BatchProcess_Manager.h \
+    BatchProcess_NumericValueDialog.h
 
 FORMS += \
-    BatchProcess_SelectFilesDialog.ui
+    BatchProcess_SelectFilesDialog.ui \
+    BatchProcess_NumericValueDialog.ui
 
 INSTALL_FILES = target
 

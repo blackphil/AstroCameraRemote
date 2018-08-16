@@ -1,9 +1,15 @@
 #include "BatchProcess_ImageSignal.h"
 
+#include "AstroBase_Exception.h"
+#include "AstroBase_PersistentDirInfo.h"
+#include "BatchProcess_Manager.h"
+
+#include <QFileDialog>
+
 namespace BatchProcess {
 
 ImageSignal::ImageSignal(const QString &name)
-    : name(name)
+    : Signal(name)
 {
 
 }
@@ -45,14 +51,35 @@ bool ImageSignal::operator=(const ImageSignal &rhs)
     return false;
 }
 
-QString ImageSignal::getName() const
+double ImageSignal::getPixel(int imageIndex, int pixelIndex) const
 {
-    return name;
+    if(0 > imageIndex || images.count() <= imageIndex)
+        throw AstroBase::IndexOutOfBoundsException(tr("image index (%0)").arg(imageIndex));
+
+    return images[imageIndex]->getPixel(pixelIndex);
 }
 
-void ImageSignal::setName(const QString &value)
+void ImageSignal::setPixel(int imageIndex, int pixelIndex, const double& value)
 {
-    name = value;
+    if(0 > imageIndex || images.count() <= imageIndex)
+        throw AstroBase::IndexOutOfBoundsException(tr("image index (%0)").arg(imageIndex));
+
+    images[imageIndex]->setPixel(pixelIndex, value);
+}
+
+QString ImageSignal::getTitle() const
+{
+    return tr("%0 (%1 files)").arg(getName()).arg(files.count());
+}
+
+bool ImageSignal::edit()
+{
+    QStringList files = Manager::get()->getImageFilesGui();
+    if(files.isEmpty())
+        return false;
+
+    this->files = files;
+    return true;
 }
 
 const QList<Fits::FilePtr> &ImageSignal::getImages() const

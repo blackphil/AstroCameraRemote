@@ -60,7 +60,8 @@ SOURCES += main.cpp\
     StarTrack_GraphicsScene.cpp \
     StarTrack_Settings.cpp \
     StarTrack_LenseGraphcisScene.cpp \
-    BatchProcess_FitsRepair.cpp
+    BatchProcess_FitsRepair.cpp \
+    PostView_ImageLoader.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -102,7 +103,8 @@ HEADERS  += MainWindow.h \
     StarTrack_GraphicsScene.h \
     StarTrack_Settings.h \
     StarTrack_LenseGraphcisScene.h \
-    BatchProcess_FitsRepair.h
+    BatchProcess_FitsRepair.h \
+    PostView_ImageLoader.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

@@ -3,28 +3,23 @@
 #include "AstroBase_Exception.h"
 
 namespace BatchProcess {
+#if 0
 
 StackImagesTask::StackImagesTask()
     : in(new ImageSignal("images"))
     , out(new ImageSignal("result"))
-//    , visual(new Visual::Task())
 {
 
 }
 
-void StackImagesTask::getInputs(QList<ImageSignalPtr>& inputs) const
+void StackImagesTask::getInputs(QList<SignalPtr>& inputs) const
 {
     inputs << in;
 }
 
-void StackImagesTask::getOutputs(QList<ImageSignalPtr>& outputs) const
+void StackImagesTask::getOutputs(QList<SignalPtr>& outputs) const
 {
     outputs << out;
-}
-
-Visual::Task *StackImagesTask::getVisual()
-{
-    return visual;
 }
 
 int StackImagesTask::execute(int imageIndex, int pixelIndex)
@@ -49,5 +44,6 @@ int StackImagesTask::execute(int imageIndex, int pixelIndex)
 
     return 0;
 }
+#endif
 
 } // namespace BatchProcess
