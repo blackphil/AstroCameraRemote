@@ -3,7 +3,7 @@
 
 #include "batchprocess_global.h"
 
-
+#include "BatchProcess_Signal.h"
 
 #include <QGraphicsObject>
 #include <QSharedDataPointer>
@@ -27,53 +27,13 @@ namespace Visual {
 class TaskBox;
 typedef QPointer<TaskBox> TaskBoxPtr;
 
-class BATCHPROCESSSHARED_EXPORT Pin : public QGraphicsObject
-{
-
-public :
-    enum Direction
-    {
-        Direction_Up
-        , Direction_Down
-        , Direction_Left
-        , Direction_Right
-    };
-
-private :
-
-    QPointer<TaskBox> taskBox;
-    SignalPtr signal;
-
-    QGraphicsEllipseItem* point;
-    QGraphicsLineItem* line;
-
-    QGraphicsTextItem* title;
-
-    int position;
-    Direction direction;
-
-    void privateUpdate();
-
-protected:
-
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
-
-public :
-    Pin(SignalPtr signal, TaskBox* taskBox);
-
-    void move(int pos, Direction direction);
-
-    QRectF boundingRect() const;
-
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
-
-};
+class Pin;
 typedef QPointer<Pin> PinPtr;
 
 class BATCHPROCESSSHARED_EXPORT TaskBox : public QGraphicsObject
 {
 
-  //  Q_OBJECT
+    Q_OBJECT
 
     QGraphicsScene* scene;
     QGraphicsRectItem* body;
@@ -90,12 +50,12 @@ class BATCHPROCESSSHARED_EXPORT TaskBox : public QGraphicsObject
     void addInputPin(SignalPtr s);
     void addOutputPin(SignalPtr s);
 
+Q_SIGNALS :
+    void moved(QPointF);
+
 protected :
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event);
-#if 0
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
-#endif
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
 
 public:
@@ -111,6 +71,9 @@ public:
     void setTitle(const QString &value);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+
+    PinPtr touchedPin(const QPointF& p, Signal::Direction directionFilter) const;
 };
 
 typedef QPointer<TaskBox> TaskBoxPtr;

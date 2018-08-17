@@ -10,7 +10,7 @@ PixelMathTask PixelMathTask::plus(Op_Plus);
 PixelMathTask::PixelMathTask(const PixelMathTask &rhs)
     : Task(rhs)
     , op(rhs.op)
-    , out(new ImageSignal("out"))
+    , out(new ImageSignal(Signal::Direction_Out, "out"))
 {
 
 }
@@ -18,7 +18,7 @@ PixelMathTask::PixelMathTask(const PixelMathTask &rhs)
 PixelMathTask::PixelMathTask(Operator op, QObject* parent)
     : Task(OperatorString[op], parent)
     , op(op)
-    , out(new ImageSignal("out"))
+    , out(new ImageSignal(Signal::Direction_Out, "out"))
 {
 
 }

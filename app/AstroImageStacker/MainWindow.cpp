@@ -37,8 +37,16 @@ void MainWindow::on_actionExecuteTasks_triggered()
 void MainWindow::on_actionAddTask_triggered()
 {
     BatchProcess::PixelMathTask* myTask = new BatchProcess::PixelMathTask(BatchProcess::PixelMathTask::Op_Plus, this);
-    myTask->setLhs(BatchProcess::SignalPtr(new BatchProcess::ImageSignal("image")));
-    myTask->setRhs(BatchProcess::SignalPtr(new BatchProcess::NumericSignal("numVal", 5)));
+    myTask->setLhs(
+                BatchProcess::SignalPtr(
+                    new BatchProcess::ImageSignal(
+                        BatchProcess::Signal::Direction_In, "image")));
+
+    myTask->setRhs(
+                BatchProcess::SignalPtr(
+                    new BatchProcess::NumericSignal(
+                        BatchProcess::Signal::Direction_In, "numVal", 5)));
+
     BatchProcess::TaskPtr task = BatchProcess::TaskPtr(myTask);
     scene->addTask(task);
     BatchProcess::Manager::get()->addTask(task);

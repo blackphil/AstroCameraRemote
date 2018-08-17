@@ -8,13 +8,14 @@
 
 namespace BatchProcess {
 
-ImageSignal::ImageSignal(const QString &name)
-    : Signal(name)
+ImageSignal::ImageSignal(Direction direction, const QString &name)
+    : Signal(direction, name)
 {
 
 }
 
 ImageSignal::ImageSignal(const ImageSignal &rhs, bool deep)
+    : Signal(rhs)
 {
     if(deep)
     {
@@ -70,6 +71,16 @@ void ImageSignal::setPixel(int imageIndex, int pixelIndex, const double& value)
 QString ImageSignal::getTitle() const
 {
     return tr("%0 (%1 files)").arg(getName()).arg(files.count());
+}
+
+void ImageSignal::connectToSignal(SignalPtr other)
+{
+    ImageSignalPtr otherImageSignal = other.dynamicCast<ImageSignal>();
+    if(!otherImageSignal)
+        throw AstroBase::Exception(tr("Cannot connect signal %0 to %1: invalid type").arg(getName()).arg(other->getName()));
+
+    otherImageSignal->setImages(images);
+    setConnectedTo(otherImageSignal);
 }
 
 bool ImageSignal::edit()

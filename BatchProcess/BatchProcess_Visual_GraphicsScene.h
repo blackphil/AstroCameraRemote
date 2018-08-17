@@ -14,6 +14,9 @@ namespace BatchProcess {
 
 namespace Visual {
 
+class Connection;
+typedef QPointer<Connection> ConnectionPtr;
+
 class TaskBox;
 typedef QPointer<TaskBox> TaskBoxPtr;
 
@@ -22,6 +25,12 @@ class BATCHPROCESSSHARED_EXPORT GraphicsScene : public QGraphicsScene
     Q_OBJECT
 
     QList<TaskBoxPtr> tasks;
+    QList<ConnectionPtr> connections;
+
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+    PinPtr grippedPin;
 
 public:
     GraphicsScene(QObject* parent);
@@ -29,6 +38,7 @@ public:
 
 public Q_SLOTS :
     void addTask(TaskPtr t);
+    void connectPins(PinPtr a, PinPtr b);
 };
 
 } // namespace Visual

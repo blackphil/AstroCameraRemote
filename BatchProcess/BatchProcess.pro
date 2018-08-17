@@ -40,7 +40,9 @@ SOURCES += \
     BatchProcess_Signal.cpp \
     BatchProcess_NumericSignal.cpp \
     BatchProcess_Manager.cpp \
-    BatchProcess_NumericValueDialog.cpp
+    BatchProcess_NumericValueDialog.cpp \
+    BatchProcess_Visual_Connection.cpp \
+    BatchProcess_Visual_Pin.cpp
 
 HEADERS += \
         BatchProcess.h \
@@ -57,7 +59,9 @@ HEADERS += \
     BatchProcess_Signal.h \
     BatchProcess_NumericSignal.h \
     BatchProcess_Manager.h \
-    BatchProcess_NumericValueDialog.h
+    BatchProcess_NumericValueDialog.h \
+    BatchProcess_Visual_Connection.h \
+    BatchProcess_Visual_Pin.h
 
 FORMS += \
     BatchProcess_SelectFilesDialog.ui \

@@ -12,7 +12,7 @@ class BATCHPROCESSSHARED_EXPORT NumericSignal : public Signal
 {
     double value;
 public:
-    NumericSignal(const QString& name, const double& value);
+    NumericSignal(Direction direction, const QString& name, const double& value);
 
     void setPixel(int imageIndex, int pixelIndex, const double& value);
     double getPixel(int imageIndex, int pixelIndex) const;

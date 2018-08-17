@@ -4,8 +4,8 @@
 
 namespace BatchProcess {
 
-NumericSignal::NumericSignal(const QString &name, const double &value)
-    : Signal(name)
+NumericSignal::NumericSignal(Direction direction, const QString &name, const double &value)
+    : Signal(direction, name)
     , value(value)
 {
 

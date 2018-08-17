@@ -27,7 +27,7 @@ class BATCHPROCESSSHARED_EXPORT ImageSignal : public Signal
     QList<Fits::FilePtr> images;
 
 public:
-    ImageSignal(const QString& name);
+    ImageSignal(Direction direction, const QString& name);
     virtual ~ImageSignal();
 
     virtual ImageSignalPtr clone() const;
@@ -39,6 +39,8 @@ public:
     void setPixel(int imageIndex, int pixelIndex, const double& value);
 
     QString getTitle() const;
+
+    void connectToSignal(SignalPtr other);
 
     bool edit();
 };

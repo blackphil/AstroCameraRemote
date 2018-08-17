@@ -9,112 +9,14 @@
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 
+#include "BatchProcess.h"
 #include "BatchProcess_Task.h"
 #include "BatchProcess_Signal.h"
-#include "BatchProcess_TaskWidget.h"
-
-#define PIN_DISTANCE_HALF 20.
-#define PIN_DISTANCE PIN_DISTANCE_HALF * 2.
-#define PIN_LENGTH 20.
-#define PIN_POINT_SIZE 8.
-
-#define TASK_BODY_HEIGHT_MIN PIN_DISTANCE
-#define TASK_BODY_WIDTH_MIN PIN_DISTANCE
+#include "BatchProcess_Visual_Pin.h"
 
 namespace BatchProcess {
 namespace Visual {
 
-
-QRectF Pin::boundingRect() const
-{
-    return childrenBoundingRect();
-}
-
-void Pin::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    Q_UNUSED(option)
-    Q_UNUSED(widget)
-
-    if(0)
-    {
-        painter->fillRect(boundingRect(), QBrush(Qt::blue));
-    }
-
-}
-
-void Pin::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
-    AB_DBG("VISIT");
-    if(signal->edit())
-        privateUpdate();
-
-    QGraphicsObject::mouseDoubleClickEvent(event);
-}
-
-Pin::Pin(SignalPtr signal, TaskBox *task)
-    : QGraphicsObject(task)
-    , taskBox(task)
-    , signal(signal)
-    , direction(Direction_Left)
-{
-    line = task->getScene()->addLine(0, 0., 0., 0.);
-    line->setParentItem(this);
-    point = task->getScene()->addEllipse(0, 0., PIN_POINT_SIZE, PIN_POINT_SIZE);
-    point->setParentItem(this);
-    this->title = task->getScene()->addText(signal->getTitle());
-    this->title->setParentItem(this);
-
-}
-
-void Pin::move(int pos, Direction direction)
-{
-    position = pos;
-    this->direction = direction;
-    privateUpdate();
-}
-
-void Pin::privateUpdate()
-{
-    QPointF pixelPos;
-    QRectF bounding = taskBox->bodyRect();
-    QPointF offsetLine, offsetPoint, offsetText;
-
-    title->setPlainText(signal->getTitle());
-
-    double pinLength = qMax(PIN_LENGTH, title->boundingRect().width());
-
-    switch(direction)
-    {
-    case Direction_Left :
-        pixelPos = QPointF(bounding.left(), bounding.top()+PIN_DISTANCE_HALF+(position*PIN_DISTANCE));
-        offsetLine.setX(-pinLength);
-        offsetPoint = QPointF(-pinLength-PIN_POINT_SIZE, -PIN_POINT_SIZE/2.);
-        offsetText = QPointF(offsetLine.x(), -title->boundingRect().height());
-        break;
-    case Direction_Right :
-        pixelPos = QPointF(bounding.right(), bounding.top()+PIN_DISTANCE_HALF+(position*PIN_DISTANCE));
-        offsetLine.setX(+pinLength);
-        offsetPoint = QPointF(+pinLength, -PIN_POINT_SIZE/2.);
-        offsetText.setY(-title->boundingRect().height());
-        break;
-    case Direction_Up :
-        pixelPos = QPointF(bounding.left()+PIN_DISTANCE_HALF+(position*PIN_DISTANCE), bounding.top());
-        offsetLine.setY(-pinLength);
-        offsetPoint.setY(-pinLength-PIN_POINT_SIZE);
-        offsetText.setX(+title->boundingRect().width());
-        break;
-    case Direction_Down :
-        pixelPos = QPointF(bounding.left()+PIN_DISTANCE_HALF+(position*PIN_DISTANCE), bounding.bottom());
-        offsetLine.setY(+pinLength);
-        offsetPoint.setY(+pinLength+PIN_POINT_SIZE);
-        offsetText.setX(+title->boundingRect().width());
-        break;
-    }
-
-    line->setLine(QLineF(pixelPos+offsetLine, pixelPos));
-    point->setPos(pixelPos+offsetPoint);
-    title->setPos(pixelPos+offsetText);
-}
 
 QGraphicsScene *TaskBox::getScene() const
 {
@@ -142,6 +44,29 @@ void TaskBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     {
         painter->fillRect(boundingRect(), QBrush(Qt::magenta));
     }
+}
+
+PinPtr TaskBox::touchedPin(const QPointF &p, Signal::Direction directionFilter) const
+{
+    if(directionFilter & Signal::Direction_In)
+    {
+        foreach(PinPtr pin, inputs)
+        {
+            if(pin->touchedPin(p))
+                return pin;
+        }
+    }
+
+    if(directionFilter & Signal::Direction_Out)
+    {
+        foreach(PinPtr pin, outputs)
+        {
+            if(pin->touchedPin(p))
+                return pin;
+        }
+    }
+
+    return PinPtr();
 }
 
 TaskBox::TaskBox(QGraphicsScene *scene, const QString &title)
@@ -232,26 +157,15 @@ void TaskBox::addOutputPin(SignalPtr out)
 
 void TaskBox::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    AB_DBG("VISIT");
-    //QGraphicsObject::mousePressEvent(event);
-//    event->accept();
+    Q_UNUSED(event)
 }
-#if 0
-
-void TaskBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    AB_DBG("VISIT");
-    //    QGraphicsObject::mouseReleaseEvent(event);
-    event->accept();
-}
-#endif
 
 void TaskBox::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    AB_DBG("VISIT");
+//    AB_DBG("VISIT");
     QPointF d = event->scenePos() - event->lastScenePos();
     moveBy(d.x(), d.y());
-    // QGraphicsObject::mouseMoveEvent(event);
+    Q_EMIT moved(d);
 }
 
 
