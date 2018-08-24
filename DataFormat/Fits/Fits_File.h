@@ -44,24 +44,6 @@ public:
         , ColorFormat_RGB
     };
 
-    char bayerMask[4];
-
-private :
-    PixelFormat pixelFormat;
-    ColorFormat colorFormat;
-
-    double minVal[3];
-    double maxVal[3];
-
-public :
-
-    File();
-
-    const char* getBayerMask() const { return bayerMask; }
-
-    auto getMinVal(int c) const { return minVal[c]; }
-    auto getMaxVal(int c) const { return maxVal[c]; }
-
     struct HeaderData
     {
         typedef QMap<QString, QString> Attributes;
@@ -71,13 +53,51 @@ public :
         int getIntAttr(const QString& key) const;
     };
 
-    static File fromByteArray(const QByteArray& data);
-    static File fromDevice(QIODevice* fd);
-    static File fromFile(const QString& filePath);
+private :
+    QString filePath;
+    HeaderData header;
+    QByteArray data;
 
-    void write(QIODevice* fd);
-    void write(QByteArray& ba);
-    void write(const QString& filePath);
+    PixelFormat pixelFormat;
+    ColorFormat colorFormat;
+
+    bool loaded;
+
+    char bayerMask[4];
+    double minVal[3];
+    double maxVal[3];
+
+    void init();
+
+public :
+
+    File();
+    File(int w, int h, PixelFormat pf, ColorFormat cf);
+    File(const QString& filePath, bool loadNow);
+
+    bool load();
+    bool load(QIODevice* device);
+    bool loadHeader();
+    bool loadHeader(QIODevice* fd);
+    bool isHeaderLoaded() const;
+    bool isLoaded() const { return loaded; }
+
+    const char* getBayerMask() const { return bayerMask; }
+
+    auto getMinVal(int c) const { return minVal[c]; }
+    auto getMaxVal(int c) const { return maxVal[c]; }
+
+
+    static FilePtr fromByteArray(const QByteArray& data);
+    static FilePtr fromDevice(QIODevice* fd);
+    static FilePtr fromFile(const QString& filePath);
+
+    void save();
+    void save(QIODevice* fd) const;
+    void save(QByteArray& ba);
+    void save(const QString& filePath);
+
+    void saveAs(const QString& filePath) const;
 
     int width() const;
     int height() const;
@@ -94,11 +114,8 @@ public :
     PixelFormat getPixelFormat() const;
     ColorFormat getColorFormat() const;
 
-private :
-    QString fileName;
-    QString path;
-    HeaderData header;
-    QByteArray data;
+    QString getFilePath() const;
+    void setFilePath(const QString &value);
 };
 
 } // namespace Fits

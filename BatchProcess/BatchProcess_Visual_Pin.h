@@ -40,13 +40,13 @@ private :
     int position;
     Direction direction;
 
-    void privateUpdate();
 
 Q_SIGNALS :
     void pinPosChanged(QPointF);
 
 private Q_SLOTS :
     void onPosChange(qreal);
+    void privateUpdate();
 
 protected:
 

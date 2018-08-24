@@ -1,6 +1,8 @@
 #ifndef BATCHPROCESS_SIGNAL_H
 #define BATCHPROCESS_SIGNAL_H
 
+#include "batchprocess_global.h"
+#include <QObject>
 #include <QString>
 #include <QSharedPointer>
 
@@ -8,11 +10,10 @@ class QWidget;
 
 namespace BatchProcess {
 
-class Signal;
-typedef QSharedPointer<Signal> SignalPtr;
-
-class Signal
+class BATCHPROCESSSHARED_EXPORT Signal : public QObject
 {
+    Q_OBJECT
+
 public :
 
     enum Direction
@@ -22,36 +23,42 @@ public :
         , Direction_InOut = 0x04
     };
 
+Q_SIGNALS :
+    void signalChanged();
+
+public Q_SLOTS :
+    virtual void connectedSignalChanged() {}
+
 private :
     Direction direction;
     QString name;
 
-    SignalPtr connectedTo;
+    Signal* connectedTo;
 
 protected :
-    Signal(Direction direction, const QString& name = "") : direction(direction), name(name) {}
-    Signal(const Signal& rhs) : direction(rhs.direction), name(rhs.name) {}
+    Signal(Direction direction, const QString& name, QObject* parent) : QObject(parent), direction(direction), name(name) {}
+    Signal(const Signal&) {}
 
-    void setConnectedTo(const SignalPtr &value);
+    void setConnectedTo(Signal *&value);
 public:
     virtual ~Signal() {}
 
     virtual double getPixel(int imageIndex, int pixelIndex) const = 0;
     virtual void setPixel(int imageIndex, int pixelIndex, const double& value) = 0;
 
-    void setName(const QString& value) { name = value; }
+    void setName(const QString& value);
     QString getName() const { return name; }
 
     virtual QString getTitle() const { return getName(); }
 
-    virtual bool edit() { return false; }
+    virtual bool edit();
     Direction getDirection() const;
 
-    virtual void connectToSignal(SignalPtr other) { Q_UNUSED(other); }
-    SignalPtr getConnectedTo() const;
+    virtual void connectToSignal(Signal* other);
+    Signal* getConnectedTo() const;
 };
 
-typedef QSharedPointer<Signal> SignalPtr;
+typedef QPointer<Signal> SignalPtr;
 
 } // namespace BatchProcess
 

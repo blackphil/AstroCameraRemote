@@ -8,22 +8,22 @@
 namespace Fits {
 
 
-bool ImageIOHandler::read(const File &f, QImage *image)
+bool ImageIOHandler::read(FilePtr f, QImage *image)
 {
-    switch(f.getPixelFormat())
+    switch(f->getPixelFormat())
     {
     case File::PixelFormat_16Bit_Int :
     {
-        if(f.getColorFormat() == File::ColorFormat_BayerRGGB)
+        if(f->getColorFormat() == File::ColorFormat_BayerRGGB)
             return read16BitIntBayer(f, image);
-        else if(f.getColorFormat() != File::ColorFormat_Grayscale)
+        else if(f->getColorFormat() != File::ColorFormat_Grayscale)
             throw AstroBase::Exception(tr("Pixel format of 16bit integer and non-grayscale not supported for now."));
 
         return read16BitInt(f, image);
     }
     case File::PixelFormat_32Bit_Single :
     {
-        if(f.getColorFormat() != File::ColorFormat_RGB)
+        if(f->getColorFormat() != File::ColorFormat_RGB)
             throw AstroBase::Exception(tr("32 floating point pixels + RGB supported only for now!"));
         return readRGBFloat(f, image);
     }
@@ -36,14 +36,14 @@ bool ImageIOHandler::read(const File &f, QImage *image)
     throw AstroBase::Exception(tr("unsupported pixel format."));
 }
 
-bool ImageIOHandler::readRGBFloat(const File &file, QImage *image)
+bool ImageIOHandler::readRGBFloat(FilePtr file, QImage *image)
 {
-    int h = file.height();
-    int w = file.width();
+    int h = file->height();
+    int w = file->width();
 
     *image = QImage(w, h, QImage::Format_RGB888);
 
-    const QByteArray& data = file.getData();
+    const QByteArray& data = file->getData();
     QDataStream strm(data);
 
     int numPixels = w*h;
@@ -56,7 +56,7 @@ bool ImageIOHandler::readRGBFloat(const File &file, QImage *image)
     {
         for(int i=0; i<numPixels; i++)
         {
-            float pixel = float(file.getPixel(pixelIndex));
+            float pixel = float(file->getPixel(pixelIndex));
             pixmap[c][i] = pixel;
             minVal = qMin(minVal, pixel);
             maxVal = qMax(maxVal, pixel);
@@ -85,29 +85,29 @@ bool ImageIOHandler::readRGBFloat(const File &file, QImage *image)
     return true;
 }
 
-bool ImageIOHandler::read16BitInt(const File &file, QImage *image)
+bool ImageIOHandler::read16BitInt(FilePtr file, QImage *image)
 {
-    int h = file.height();
-    int w = file.width();
+    int h = file->height();
+    int w = file->width();
 
     *image = QImage(w, h, QImage::Format_Grayscale8);
 
-    for(int i=0; i<file.numPixels(); i++)
+    for(int i=0; i<file->numPixels(); i++)
     {
         int y = i / w;
         int x = i % w;
 
-        qint16 pixel = qint16(file.getPixel(i));
+        qint16 pixel = qint16(file->getPixel(i));
         image->setPixel(x, y, qRgb(pixel, pixel, pixel));
     }
 
     return true;
 }
 
-bool ImageIOHandler::read16BitIntBayer(const File &file, QImage *image)
+bool ImageIOHandler::read16BitIntBayer(FilePtr file, QImage *image)
 {
-    auto h = file.height();
-    auto w = file.width();
+    auto h = file->height();
+    auto w = file->width();
 
     *image = QImage(w/2, h/2, QImage::Format_RGB888);
 
@@ -117,7 +117,7 @@ bool ImageIOHandler::read16BitIntBayer(const File &file, QImage *image)
 
     QVector<qint16> pixels[3] = { QVector<qint16>((w*h)/4), QVector<qint16>((w*h)/4), QVector<qint16>((w*h)/4) };
 
-    const char* bayerMask = file.getBayerMask();
+    const char* bayerMask = file->getBayerMask();
 
     int pixelIndex = 0;
 
@@ -125,12 +125,12 @@ bool ImageIOHandler::read16BitIntBayer(const File &file, QImage *image)
     qint16 minVal = std::numeric_limits<qint16>::max();
     qint16 delta = 0;
 
-    for(int index=0; index<file.numPixels(); index++)
+    for(int index=0; index<file->numPixels(); index++)
     {
         row = index / w;
         col = index % w;
 
-        qint16 pixel = qint16(file.getPixel(index));
+        qint16 pixel = qint16(file->getPixel(index));
 
         int c = ((row%2) << 1) | (col%2);
         c = bayerMask[c];
@@ -183,7 +183,7 @@ bool ImageIOHandler::read(QImage* image)
     if(!device())
         return false;
 
-    File file = File::fromDevice(device());
+    FilePtr file = File::fromDevice(device());
 
     return read(file, image);
 }

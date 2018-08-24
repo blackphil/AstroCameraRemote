@@ -9,29 +9,33 @@
 
 #include <QObject>
 #include <QList>
-#include <QSharedPointer>
+#include <QPointer>
 
 namespace BatchProcess {
 
 class ImageSignal;
-typedef QSharedPointer<ImageSignal> ImageSignalPtr;
+typedef QPointer<ImageSignal> ImageSignalPtr;
 
 class BATCHPROCESSSHARED_EXPORT ImageSignal : public Signal
 {
-    Q_DECLARE_TR_FUNCTIONS(BatchProcess::ImageSignal)
+    Q_OBJECT
 
-    ImageSignal(const ImageSignal& rhs, bool deep = false);
-    bool operator=(const ImageSignal& rhs);
+    ImageSignal(const ImageSignal& rhs) : Signal(rhs) {}
+    bool operator=(const ImageSignal&) { return false; }
 
-    QStringList files;
     QList<Fits::FilePtr> images;
 
+public Q_SLOTS :
+    void connectedSignalChanged();
+
 public:
-    ImageSignal(Direction direction, const QString& name);
+    explicit ImageSignal(Direction direction, const QString& name, QObject *parent);
     virtual ~ImageSignal();
 
     virtual ImageSignalPtr clone() const;
     int numImages() const;
+    int numPixels() const;
+
     const QList<Fits::FilePtr>& getImages() const;
     void setImages(const QList<Fits::FilePtr> &value);
 
@@ -40,10 +44,11 @@ public:
 
     QString getTitle() const;
 
-    void connectToSignal(SignalPtr other);
+    void connectToSignal(Signal* other);
 
     bool edit();
 };
+typedef QPointer<ImageSignal> ImageSignalPtr;
 
 } // namespace BatchProcess
 

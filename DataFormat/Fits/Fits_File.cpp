@@ -26,8 +26,31 @@ File::ColorFormat File::getColorFormat() const
     return colorFormat;
 }
 
-File::File()
+QString File::getFilePath() const
 {
+    return filePath;
+}
+
+void File::setFilePath(const QString &value)
+{
+    filePath = value;
+}
+
+void File::init()
+{
+
+
+    pixelFormat = PixelFormat_16Bit_Int;
+    colorFormat = ColorFormat_Grayscale;
+
+    for(int i=0; i<3; i++)
+    {
+        minVal[i] = std::numeric_limits<double>::max();
+        maxVal[i] = std::numeric_limits<double>::min();
+    }
+
+    loaded = false;
+
     QSettings s;
     s.beginGroup("Plugins/Fits");
     QStringList bayerMaskStr = s.value("bayerMask", "r g g b").toString().split(" ");
@@ -54,7 +77,121 @@ File::File()
     }
 }
 
-File File::fromByteArray(const QByteArray &data)
+File::File()
+{
+    init();
+}
+
+File::File(int w, int h, File::PixelFormat pf, File::ColorFormat cf)
+{
+    init();
+
+    header.attr["SIMPLE"] = "T";
+    header.attr["NAXIS1"] = QString::number(w);
+    header.attr["NAXIS2"] = QString::number(h);
+
+    switch(cf)
+    {
+    case ColorFormat_BayerRGGB :
+    case ColorFormat_Grayscale :
+        header.attr["NAXIS"] = "2";
+        break;
+    case ColorFormat_RGB :
+        header.attr["NAXIS3"] = "3";
+        header.attr["NAXIS"] = "3";
+        break;
+    }
+
+    header.attr["BITPIX"] = QString::number(int(pf));
+
+    data.resize(numPixels() * bitPix() / 8);
+
+}
+
+File::File(const QString &filePath, bool loadNow)
+    : filePath(filePath)
+{
+    init();
+
+    if(loadNow)
+        load();
+}
+
+bool File::load()
+{
+    QFile f(filePath);
+    if(!f.open(QIODevice::ReadOnly))
+        return false;
+
+    return load(&f);
+}
+
+bool File::load(QIODevice* fd)
+{
+    if(!loadHeader(fd))
+        return false;
+
+    data = fd->readAll();
+
+    AB_DBG("have" << data.count() << "bytes of pixel data");
+    return true;
+
+}
+
+bool File::loadHeader()
+{
+
+    QFile f(filePath);
+    if(!f.open(QIODevice::ReadOnly))
+        return false;
+
+    return loadHeader(&f);
+}
+
+bool File::loadHeader(QIODevice *fd)
+{
+    for(int l=0; l<HeaderLineCount; l++)
+    {
+        QString line = fd->read(HeaderLineSize);
+        header.lines << line;
+        QStringList keyVal = line.split("=");
+        if(keyVal.count() == 2)
+        {
+            header.attr[keyVal[0].trimmed()] = keyVal[1].remove(QRegularExpression("/.*$")).trimmed();
+        }
+    }
+
+    if(!header.attr.contains("BITPIX"))
+        throw AstroBase::Exception(tr("cannot determine pixel format"));
+
+    pixelFormat = static_cast<PixelFormat>(header.getIntAttr("BITPIX"));
+
+    if(!header.attr.contains("NAXIS"))
+        throw AstroBase::Exception(tr("cannot determine color format"));
+
+    if(header.getIntAttr("NAXIS") == 2)
+    {
+        if(header.attr.contains("BAYER") && header.attr["BAYER"] == "RGGB")
+            colorFormat = ColorFormat_BayerRGGB;
+        else
+            colorFormat = ColorFormat_Grayscale;
+    }
+    else if(header.getIntAttr("NAXIS") == 3)
+    {
+        colorFormat = ColorFormat_RGB;
+    }
+    else
+        throw AstroBase::Exception(tr("cannot determine color format"));
+
+    return true;
+}
+
+bool File::isHeaderLoaded() const
+{
+    return header.attr.contains("SIMPLE") && header.attr["SIMPLE"] == "T";
+}
+
+FilePtr File::fromByteArray(const QByteArray &data)
 {
     QBuffer buffer;
     buffer.setData(data);
@@ -62,52 +199,14 @@ File File::fromByteArray(const QByteArray &data)
     return fromDevice(&buffer);
 }
 
-File File::fromDevice(QIODevice *fd)
+FilePtr File::fromDevice(QIODevice *fd)
 {
-    File f;
-
-
-    for(int l=0; l<HeaderLineCount; l++)
-    {
-        QString line = fd->read(HeaderLineSize);
-        f.header.lines << line;
-        QStringList keyVal = line.split("=");
-        if(keyVal.count() == 2)
-        {
-            f.header.attr[keyVal[0].trimmed()] = keyVal[1].remove(QRegularExpression("/.*$")).trimmed();
-        }
-    }
-
-    if(!f.header.attr.contains("BITPIX"))
-        throw AstroBase::Exception(tr("cannot determine pixel format"));
-
-    f.pixelFormat = static_cast<PixelFormat>(f.header.getIntAttr("BITPIX"));
-
-    if(!f.header.attr.contains("NAXIS"))
-        throw AstroBase::Exception(tr("cannot determine color format"));
-
-    if(f.header.getIntAttr("NAXIS") == 2)
-    {
-        if(f.header.attr.contains("BAYER") && f.header.attr["BAYER"] == "RGGB")
-            f.colorFormat = ColorFormat_BayerRGGB;
-        else
-            f.colorFormat = ColorFormat_Grayscale;
-    }
-    else if(f.header.getIntAttr("NAXIS") == 3)
-    {
-        f.colorFormat = ColorFormat_RGB;
-    }
-    else
-        throw AstroBase::Exception(tr("cannot determine color format"));
-
-
-    f.data = fd->readAll();
-
-    AB_DBG("have" << f.data.count() << "bytes of pixel data");
+    FilePtr f(new File());
+    f->load(fd);
     return f;
 }
 
-File File::fromFile(const QString &filePath)
+FilePtr File::fromFile(const QString &filePath)
 {
     QFileInfo info(filePath);
     if(!info.isReadable())
@@ -124,7 +223,12 @@ File File::fromFile(const QString &filePath)
     return fromDevice(&in);
 }
 
-void File::write(QIODevice *fd)
+void File::save()
+{
+    save(filePath);
+}
+
+void File::save(QIODevice *fd) const
 {
     for(int l=0; l<HeaderLineCount; l++)
     {
@@ -143,14 +247,20 @@ void File::write(QIODevice *fd)
     fd->write(data);
 }
 
-void File::write(QByteArray &ba)
+void File::save(QByteArray &ba)
 {
     QBuffer buffer(&ba);
     buffer.open(QIODevice::WriteOnly);
-    write(&buffer);
+    save(&buffer);
 }
 
-void File::write(const QString &filePath)
+void File::save(const QString &filePath)
+{
+    saveAs(filePath);
+    this->filePath = filePath;
+}
+
+void File::saveAs(const QString &filePath) const
 {
     QFileInfo info(filePath);
     if(info.exists() && !info.isWritable())
@@ -164,7 +274,8 @@ void File::write(const QString &filePath)
         throw AstroBase::Exception(tr("Cannot open file for writing: %0").arg(filePath));
     }
 
-    write(&f);
+    save(&f);
+
 }
 
 int File::HeaderData::getIntAttr(const QString& key) const

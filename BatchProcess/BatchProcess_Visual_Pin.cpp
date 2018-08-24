@@ -34,7 +34,7 @@ void Pin::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
 
 void Pin::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    AB_DBG("VISIT");
+//    AB_DBG("VISIT");
     if(signal->edit())
         privateUpdate();
 
@@ -56,9 +56,11 @@ Pin::Pin(SignalPtr signal, TaskBox *task)
 
     setAcceptDrops(true);
 
-    connect(this, SIGNAL(xChanged(qreal)), this, SLOT(onPosChange(qreal)));
-    connect(this, SIGNAL(yChanged(qreal)), this, SLOT(onPosChange(qreal)));
-    connect(this, SIGNAL(zChanged(qreal)), this, SLOT(onPosChange(qreal)));
+//    connect(this, SIGNAL(xChanged(qreal)), this, SLOT(onPosChange(qreal)));
+//    connect(this, SIGNAL(yChanged(qreal)), this, SLOT(onPosChange(qreal)));
+//    connect(this, SIGNAL(zChanged(qreal)), this, SLOT(onPosChange(qreal)));
+
+    connect(signal, SIGNAL(signalChanged()), this, SLOT(privateUpdate()));
 
 }
 
@@ -85,6 +87,8 @@ QPointF Pin::pinPos() const
 
 void Pin::privateUpdate()
 {
+    AB_DBG("VISIT" << taskBox->getTitle() << "/" << signal->getName() << "(" << signal->getTitle() << ")");
+
     QPointF pixelPos;
     QRectF bounding = taskBox->bodyRect();
     QPointF offsetLine, offsetPoint, offsetText;

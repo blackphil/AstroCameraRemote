@@ -91,6 +91,15 @@ TaskBox::~TaskBox()
 
 void TaskBox::setTask(TaskPtr task)
 {
+    if(this->task)
+        disconnect(this->task, SIGNAL(statusChanged(Task::Status)), this, SLOT(statusChanged(Task::Status)));
+    this->task = task;
+    if(!this->task)
+        return;
+
+    connect(this->task, SIGNAL(statusChanged(Task::Status)), this, SLOT(statusChanged(Task::Status)));
+
+
     QList<SignalPtr> signals_;
     task->getInputs(signals_);
     foreach(SignalPtr in, signals_)
@@ -153,6 +162,30 @@ void TaskBox::addInputPin(SignalPtr in)
 void TaskBox::addOutputPin(SignalPtr out)
 {
     addPin(out, false);
+}
+
+void TaskBox::statusChanged(Task::Status status)
+{
+    AB_DBG("status changed for" << title->toPlainText() << ":" << status);
+    switch(status)
+    {
+    case Task::Status_Idle :
+        body->setPen(QPen(Qt::black));
+        break;
+    case Task::Status_Execution :
+        body->setPen(QPen(Qt::blue));
+        break;
+    case Task::Status_Error :
+        body->setPen(QPen(Qt::red));
+        break;
+    }
+
+    body->update();
+}
+
+void TaskBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    task->edit();
 }
 
 void TaskBox::mousePressEvent(QGraphicsSceneMouseEvent *event)

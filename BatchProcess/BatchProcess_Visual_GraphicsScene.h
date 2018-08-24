@@ -3,8 +3,9 @@
 
 #include "batchprocess_global.h"
 
-#include "BatchProcess_Task.h"
-
+#include "BatchProcess_Visual_TaskBox.h"
+#include "BatchProcess_Visual_Pin.h"
+#include "BatchProcess_Visual_Connection.h"
 
 #include <QGraphicsScene>
 #include <QList>
@@ -14,11 +15,6 @@ namespace BatchProcess {
 
 namespace Visual {
 
-class Connection;
-typedef QPointer<Connection> ConnectionPtr;
-
-class TaskBox;
-typedef QPointer<TaskBox> TaskBoxPtr;
 
 class BATCHPROCESSSHARED_EXPORT GraphicsScene : public QGraphicsScene
 {

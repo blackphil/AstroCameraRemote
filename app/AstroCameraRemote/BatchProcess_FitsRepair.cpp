@@ -28,10 +28,10 @@ bool FitsRepair::process()
     if(!inFile.isReadable())
         return false;
 
-    Fits::File f = Fits::File::fromFile(input);
+    Fits::FilePtr f = Fits::File::fromFile(input);
 
     QFileInfo outFile(output);
-    f.write(output);
+    f->save(output);
 
     return true;
 

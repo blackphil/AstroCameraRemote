@@ -17,6 +17,6 @@
 #define AB_NOT_IMPLEMENTED AB_WRN("not implemented yet!")
 
 #define AB_EPSILON 0.000001
-#define AB_COMPARE(lhs, rhs) ((qAbs(lhs-rhs) < AB_EPSILON) ? true : false)
+#define AB_EQUAL(lhs, rhs) ((qAbs(lhs-rhs) < AB_EPSILON) ? true : false)
 
 #endif // ASTROBASE_H

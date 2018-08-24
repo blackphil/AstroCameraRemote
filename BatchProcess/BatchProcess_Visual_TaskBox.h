@@ -4,6 +4,7 @@
 #include "batchprocess_global.h"
 
 #include "BatchProcess_Signal.h"
+#include "BatchProcess_Task.h"
 
 #include <QGraphicsObject>
 #include <QSharedDataPointer>
@@ -16,11 +17,9 @@
 
 namespace BatchProcess {
 
-class Task;
-typedef QPointer<Task> TaskPtr;
 
 class Signal;
-typedef QSharedPointer<Signal> SignalPtr;
+typedef QPointer<Signal> SignalPtr;
 
 namespace Visual {
 
@@ -34,6 +33,8 @@ class BATCHPROCESSSHARED_EXPORT TaskBox : public QGraphicsObject
 {
 
     Q_OBJECT
+
+    TaskPtr task;
 
     QGraphicsScene* scene;
     QGraphicsRectItem* body;
@@ -53,8 +54,12 @@ class BATCHPROCESSSHARED_EXPORT TaskBox : public QGraphicsObject
 Q_SIGNALS :
     void moved(QPointF);
 
+private Q_SLOTS :
+    void statusChanged(Task::Status);
+
 protected :
 
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
     void mousePressEvent(QGraphicsSceneMouseEvent* event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
 

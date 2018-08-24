@@ -4,19 +4,21 @@
 #include "fits_global.h"
 #include <QImageIOHandler>
 #include <QCoreApplication>
+#include <QSharedPointer>
 
 namespace Fits {
 
 class File;
+typedef QSharedPointer<File> FilePtr;
 
 class ImageIOHandler : public QImageIOHandler
 {
     Q_DECLARE_TR_FUNCTIONS(Fits::ImageIOHandler)
 
-    bool read(const File& f, QImage* image);
-    bool readRGBFloat(const File& file, QImage* image);
-    bool read16BitInt(const File& file, QImage* image);
-    bool read16BitIntBayer(const File& file, QImage* image);
+    bool read(FilePtr f, QImage* image);
+    bool readRGBFloat(FilePtr file, QImage* image);
+    bool read16BitInt(FilePtr file, QImage* image);
+    bool read16BitIntBayer(FilePtr file, QImage* image);
 
 public:
     ImageIOHandler();

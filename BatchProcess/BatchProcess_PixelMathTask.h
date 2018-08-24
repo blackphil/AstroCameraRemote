@@ -13,6 +13,8 @@ namespace BatchProcess {
 
 class BATCHPROCESSSHARED_EXPORT PixelMathTask : public Task
 {
+    Q_OBJECT
+
 public :
 
     enum Operator
@@ -20,27 +22,39 @@ public :
         Op_Plus, Op_Minus, Op_Multiply, Op_Divide
     };
 
+    enum SummandType
+    {
+        Summand_Image, Summand_Numeric
+    };
+
 private :
     Operator op;
     SignalPtr lhs, rhs, out;
 
-    static PixelMathTask plus;
+    SummandType l, r, o;
+
 
     PixelMathTask(const PixelMathTask& rhs);
 
-public:
-    PixelMathTask(Operator op, QObject* parent = Q_NULLPTR);
+    void setupOutput();
 
-    void setLhs(SignalPtr s);
-    void setRhs(SignalPtr s);
+private Q_SLOTS :
+    void imageInputSignalChanged();
+
+public:
+    PixelMathTask(Operator op, SummandType leftSummand, SummandType rightSummand, QObject* parent = Q_NULLPTR);
 
     void getInputs(QList<SignalPtr>& inputs) const;
     void getOutputs(QList<SignalPtr>& outputs) const;
 
+    int preExecute();
     int execute(int imageIndex, int pixelIndex);
 
     Task* clone() const;
     QString getDictionaryPath() const;
+
+    int numPixelsPerImage() const;
+    int numImages() const;
 
 };
 

@@ -25,7 +25,9 @@ private slots:
 
     void on_actionExecuteTasks_triggered();
 
-    void on_actionAddTask_triggered();
+    void on_actionSave_images_triggered();
+
+    void on_actionPlus_Operator_triggered();
 
 private:
     Ui::MainWindow *ui;

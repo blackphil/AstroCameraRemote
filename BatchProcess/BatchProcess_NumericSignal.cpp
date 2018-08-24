@@ -2,10 +2,14 @@
 
 #include "BatchProcess_Manager.h"
 
+#include "AstroBase.h"
+
+#include <cmath>
+
 namespace BatchProcess {
 
-NumericSignal::NumericSignal(Direction direction, const QString &name, const double &value)
-    : Signal(direction, name)
+NumericSignal::NumericSignal(Direction direction, const QString &name, const double &value, QObject* parent)
+    : Signal(direction, name, parent)
     , value(value)
 {
 
@@ -35,9 +39,10 @@ QString NumericSignal::getTitle() const
 bool NumericSignal::edit()
 {
     double newVal = Manager::get()->getNumericValueGui(value);
-    if(std::numeric_limits<double>::signaling_NaN() != newVal)
+    if(!std::isnan(newVal))
     {
         value = newVal;
+        Signal::edit();
         return true;
     }
 

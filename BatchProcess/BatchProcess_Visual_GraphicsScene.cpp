@@ -54,14 +54,14 @@ void GraphicsScene::connectPins(PinPtr a, PinPtr b)
 
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    AB_DBG("VISIT");
+//    AB_DBG("VISIT");
 
     foreach(TaskBoxPtr tb, tasks)
     {
         PinPtr pin = tb->touchedPin(event->scenePos(), Signal::Direction_In);
         if(pin)
         {
-            AB_DBG("touched input:" << pin->getSignal()->getTitle());
+//            AB_DBG("touched input:" << pin->getSignal()->getTitle());
             grippedPin = pin;
         }
     }
@@ -71,14 +71,14 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    AB_DBG("VISIT");
+//    AB_DBG("VISIT");
 
     foreach(TaskBoxPtr tb, tasks)
     {
         PinPtr pin = tb->touchedPin(event->scenePos(), Signal::Direction_Out);
         if(pin)
         {
-            AB_DBG("touched output:" << pin->getSignal()->getTitle());
+//            AB_DBG("touched output:" << pin->getSignal()->getTitle());
             connectPins(grippedPin, pin);
         }
     }

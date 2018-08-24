@@ -117,7 +117,10 @@ void Manager::execute()
 
 void Manager::execute(TaskPtr task)
 {
-    AB_DBG("would execute task" << task->getTitle() << "(" << task->getId() << ") now");
+    AB_DBG("execute task" << task->getTitle() << "(" << task->getId() << ") now");
+    task->preExecute();
+    task->execute();
+    task->postExecute();
 }
 
 void Manager::registerTaskPrototype(TaskPtr prototype, const QString &path)

@@ -666,7 +666,7 @@ void MainWindow::on_markerFixedRectSpinbox_editingFinished()
     qreal newVal = ui->markerFixedRectSpinbox->value();
     qreal currentVal = StarTrack::Settings::getFixedRectSize();
     SAR_INF("new(" << newVal << "), current(" << currentVal << ")");
-    if(AB_COMPARE(newVal, currentVal))
+    if(AB_EQUAL(newVal, currentVal))
         return;
     StarTrack::Settings::setFixedRectSize(newVal);
     ui->liveViewWidget->getStarTrackScene()->updateMarker();

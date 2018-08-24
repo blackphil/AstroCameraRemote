@@ -1,5 +1,6 @@
 #include "BatchProcess_ImageSignal.h"
 
+#include "AstroBase.h"
 #include "AstroBase_Exception.h"
 #include "AstroBase_PersistentDirInfo.h"
 #include "BatchProcess_Manager.h"
@@ -8,28 +9,21 @@
 
 namespace BatchProcess {
 
-ImageSignal::ImageSignal(Direction direction, const QString &name)
-    : Signal(direction, name)
+void ImageSignal::connectedSignalChanged()
+{
+    ImageSignalPtr con = qobject_cast<ImageSignal*>(getConnectedTo());
+    if(con)
+    {
+        setImages(con->getImages());
+    }
+}
+
+ImageSignal::ImageSignal(Direction direction, const QString &name, QObject* parent)
+    : Signal(direction, name, parent)
 {
 
 }
 
-ImageSignal::ImageSignal(const ImageSignal &rhs, bool deep)
-    : Signal(rhs)
-{
-    if(deep)
-    {
-        foreach(Fits::FilePtr file, rhs.images)
-        {
-            images << Fits::FilePtr(new Fits::File(*file.data()));
-        }
-    }
-    else
-    {
-        images.reserve(rhs.images.count());
-        std::copy(rhs.images.begin(), rhs.images.end(), images.begin());
-    }
-}
 
 ImageSignal::~ImageSignal()
 {
@@ -46,10 +40,16 @@ int ImageSignal::numImages() const
     return images.count();
 }
 
-bool ImageSignal::operator=(const ImageSignal &rhs)
+int ImageSignal::numPixels() const
 {
-    Q_UNUSED(rhs);
-    return false;
+    if(0 < images.count())
+    {
+        Fits::FilePtr image = images[0];
+        if(image)
+            return image->numPixels();
+    }
+
+    return 0;
 }
 
 double ImageSignal::getPixel(int imageIndex, int pixelIndex) const
@@ -70,17 +70,18 @@ void ImageSignal::setPixel(int imageIndex, int pixelIndex, const double& value)
 
 QString ImageSignal::getTitle() const
 {
-    return tr("%0 (%1 files)").arg(getName()).arg(files.count());
+    return tr("%0 (%1 files)").arg(getName()).arg(images.count());
 }
 
-void ImageSignal::connectToSignal(SignalPtr other)
+void ImageSignal::connectToSignal(Signal *other)
 {
-    ImageSignalPtr otherImageSignal = other.dynamicCast<ImageSignal>();
+    ImageSignalPtr otherImageSignal = qobject_cast<ImageSignal*>(other);
     if(!otherImageSignal)
         throw AstroBase::Exception(tr("Cannot connect signal %0 to %1: invalid type").arg(getName()).arg(other->getName()));
 
     otherImageSignal->setImages(images);
-    setConnectedTo(otherImageSignal);
+    connect(otherImageSignal, SIGNAL(signalChanged()), this, SLOT(connectedSignalChanged()));
+    setConnectedTo(other);
 }
 
 bool ImageSignal::edit()
@@ -89,7 +90,11 @@ bool ImageSignal::edit()
     if(files.isEmpty())
         return false;
 
-    this->files = files;
+    foreach(QString fileName, files)
+        images << Fits::FilePtr(new Fits::File(fileName, false));
+
+    AB_DBG("signal \"" << getName() << "\" has" << numImages() << "images");
+    Signal::edit();
     return true;
 }
 
@@ -101,6 +106,7 @@ const QList<Fits::FilePtr> &ImageSignal::getImages() const
 void ImageSignal::setImages(const QList<Fits::FilePtr> &value)
 {
     images = value;
+    Q_EMIT signalChanged();
 }
 
 } // namespace BatchProcess

@@ -42,7 +42,9 @@ SOURCES += \
     BatchProcess_Manager.cpp \
     BatchProcess_NumericValueDialog.cpp \
     BatchProcess_Visual_Connection.cpp \
-    BatchProcess_Visual_Pin.cpp
+    BatchProcess_Visual_Pin.cpp \
+    BatchProcess_SaveImagesTask.cpp \
+    BatchProcess_SaveImagesEditDlg.cpp
 
 HEADERS += \
         BatchProcess.h \
@@ -61,11 +63,14 @@ HEADERS += \
     BatchProcess_Manager.h \
     BatchProcess_NumericValueDialog.h \
     BatchProcess_Visual_Connection.h \
-    BatchProcess_Visual_Pin.h
+    BatchProcess_Visual_Pin.h \
+    BatchProcess_SaveImagesTask.h \
+    BatchProcess_SaveImagesEditDlg.h
 
 FORMS += \
     BatchProcess_SelectFilesDialog.ui \
-    BatchProcess_NumericValueDialog.ui
+    BatchProcess_NumericValueDialog.ui \
+    BatchProcess_SaveImagesEditDlg.ui
 
 INSTALL_FILES = target
 

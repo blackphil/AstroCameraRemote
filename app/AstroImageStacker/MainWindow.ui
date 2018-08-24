@@ -48,7 +48,14 @@
     <property name="title">
      <string>Task</string>
     </property>
-    <addaction name="actionAddTask"/>
+    <widget class="QMenu" name="menuAdd">
+     <property name="title">
+      <string>Add</string>
+     </property>
+     <addaction name="actionPlus_Operator"/>
+     <addaction name="actionSave_images"/>
+    </widget>
+    <addaction name="menuAdd"/>
     <addaction name="actionRemoveTask"/>
     <addaction name="separator"/>
     <addaction name="actionExecuteTasks"/>
@@ -69,14 +76,19 @@
     <string>Execute</string>
    </property>
   </action>
-  <action name="actionAddTask">
-   <property name="text">
-    <string>Add</string>
-   </property>
-  </action>
   <action name="actionRemoveTask">
    <property name="text">
     <string>Remove</string>
+   </property>
+  </action>
+  <action name="actionSave_images">
+   <property name="text">
+    <string>Save images</string>
+   </property>
+  </action>
+  <action name="actionPlus_Operator">
+   <property name="text">
+    <string>Plus Operator</string>
    </property>
   </action>
  </widget>

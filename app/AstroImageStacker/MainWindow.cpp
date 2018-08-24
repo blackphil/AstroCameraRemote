@@ -2,11 +2,13 @@
 #include "ui_MainWindow.h"
 
 #include <QGraphicsView>
+#include <QMessageBox>
 
 #include "BatchProcess_Manager.h"
 #include "BatchProcess_Visual_GraphicsScene.h"
 #include "BatchProcess_PixelMathTask.h"
 #include "BatchProcess_NumericSignal.h"
+#include "BatchProcess_SaveImagesTask.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -31,23 +33,35 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionExecuteTasks_triggered()
 {
-    BatchProcess::Manager::get()->execute();
+    try
+    {
+        BatchProcess::Manager::get()->execute();
+        QMessageBox::information(this, tr("Execute tasks"), tr("Finished"));
+    }
+    catch(std::exception& e)
+    {
+        QMessageBox::critical(this, tr("Execute tasks"), tr("Error: %0").arg(e.what()));
+    }
 }
 
-void MainWindow::on_actionAddTask_triggered()
+void MainWindow::on_actionSave_images_triggered()
 {
-    BatchProcess::PixelMathTask* myTask = new BatchProcess::PixelMathTask(BatchProcess::PixelMathTask::Op_Plus, this);
-    myTask->setLhs(
-                BatchProcess::SignalPtr(
-                    new BatchProcess::ImageSignal(
-                        BatchProcess::Signal::Direction_In, "image")));
+    BatchProcess::SaveImagesTask* myTask = new BatchProcess::SaveImagesTask(this);
+    BatchProcess::TaskPtr task = BatchProcess::TaskPtr(myTask);
+    scene->addTask(task);
+    BatchProcess::Manager::get()->addTask(task);
+}
 
-    myTask->setRhs(
-                BatchProcess::SignalPtr(
-                    new BatchProcess::NumericSignal(
-                        BatchProcess::Signal::Direction_In, "numVal", 5)));
+void MainWindow::on_actionPlus_Operator_triggered()
+{
+    BatchProcess::PixelMathTask* myTask = new BatchProcess::PixelMathTask(
+                BatchProcess::PixelMathTask::Op_Plus
+                , BatchProcess::PixelMathTask::Summand_Image
+                , BatchProcess::PixelMathTask::Summand_Numeric
+                , this);
 
     BatchProcess::TaskPtr task = BatchProcess::TaskPtr(myTask);
     scene->addTask(task);
     BatchProcess::Manager::get()->addTask(task);
+
 }
