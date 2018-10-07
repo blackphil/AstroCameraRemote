@@ -43,6 +43,7 @@ class BATCHPROCESSSHARED_EXPORT TaskBox : public QGraphicsObject
     QList<PinPtr> outputs;
 
     QGraphicsTextItem* title;
+    QGraphicsTextItem* info;
 
     QPointF mousePos;
     Qt::MouseButton mouseButton;
@@ -56,6 +57,8 @@ Q_SIGNALS :
 
 private Q_SLOTS :
     void statusChanged(Task::Status);
+    void infoUpdate(QString text);
+    void errorUpdate(QString text);
 
 protected :
 

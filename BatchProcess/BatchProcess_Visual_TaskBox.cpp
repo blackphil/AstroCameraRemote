@@ -82,6 +82,9 @@ TaskBox::TaskBox(QGraphicsScene *scene, const QString &title)
     QRectF bodyRect = body->boundingRect();
     this->title->setPos(bodyRect.left(), bodyRect.top()-this->title->boundingRect().height());
 
+    info = scene->addText(tr("INFO"));
+    info->setHtml("<b>INFO</b>");
+    info->setParentItem(this);
 
 }
 
@@ -89,16 +92,31 @@ TaskBox::~TaskBox()
 {
 }
 
+void TaskBox::infoUpdate(QString text)
+{
+    info->setHtml(QString("<p style=\"font-weight:bold\">%0</p>").arg(text));
+}
+
+void TaskBox::errorUpdate(QString text)
+{
+    info->setHtml(QString("<p style=\"font-weight:bold; color:red\">%0</p>").arg(text));
+}
+
 void TaskBox::setTask(TaskPtr task)
 {
     if(this->task)
+    {
         disconnect(this->task, SIGNAL(statusChanged(Task::Status)), this, SLOT(statusChanged(Task::Status)));
+        disconnect(this->task, SIGNAL(infoUpdate(QString)), this, SLOT(infoUpdate(QString)));
+        disconnect(this->task, SIGNAL(errorUpdate(QStirng)), this, SLOT(errorUpdate(QString)));
+    }
     this->task = task;
     if(!this->task)
         return;
 
     connect(this->task, SIGNAL(statusChanged(Task::Status)), this, SLOT(statusChanged(Task::Status)));
-
+    connect(this->task, SIGNAL(infoUpdate(QString)), this, SLOT(infoUpdate(QString)));
+    connect(this->task, SIGNAL(errorUpdate(QString)), this, SLOT(errorUpdate(QString)));
 
     QList<SignalPtr> signals_;
     task->getInputs(signals_);

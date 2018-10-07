@@ -3,6 +3,7 @@
 
 #include <QGraphicsView>
 #include <QMessageBox>
+#include <QMdiSubWindow>
 
 #include "BatchProcess_Manager.h"
 #include "BatchProcess_Visual_GraphicsScene.h"
@@ -20,7 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     BatchProcess::Manager::createInstance(gv);
 
-    ui->mdiArea->addSubWindow(gv);
+    QMdiSubWindow* subWin = ui->mdiArea->addSubWindow(gv);
+    subWin->showMaximized();
     gv->setScene(scene);
 
 

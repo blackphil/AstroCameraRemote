@@ -53,6 +53,8 @@ protected :
 
 Q_SIGNALS :
     void statusChanged(Task::Status);
+    void infoUpdate(QString);
+    void errorUpdate(QString);
 
 public:
     Task(const QString& title = "unknown", ExecutionType execType = Execute_PerImageAndPixel, QObject* parent = Q_NULLPTR);
@@ -77,6 +79,7 @@ public:
 
     virtual QString getDictionaryPath() const = 0;
     ExecutionType getExecutionType() const;
+
 
     virtual bool edit();
 };

@@ -40,6 +40,7 @@ void SaveImagesTask::setUsePattern(bool value)
     usePattern = value;
 }
 
+
 SaveImagesTask::SaveImagesTask(QObject* parent)
     : Task(tr("Save images"), Task::Execute_PerImage, parent)
     , inImages(new ImageSignal(Signal::Direction_In, "images", this))
@@ -88,6 +89,7 @@ int SaveImagesTask::execute(int imageIndex, int pixelIndex)
     if(!targetDir.exists())
     {
         AB_ERR("target dir \"" << targetPath << "\" doesn't exist!");
+        Q_EMIT errorUpdate(tr("target dir \"%0\" doesn't exist!").arg(targetPath));
         return -1;
     }
 
@@ -95,12 +97,14 @@ int SaveImagesTask::execute(int imageIndex, int pixelIndex)
     if(!rxFileName.match(fileName).hasMatch())
     {
         AB_ERR("target file name invalid: \"" << fileName << "\"");
+        Q_EMIT errorUpdate(tr("target file name invalid: \"%0\"").arg(fileName));
         return -2;
     }
 
     QFileInfo targetFilePath(targetDir, fileName);
 
     image->saveAs(targetFilePath.absoluteFilePath());
+    Q_EMIT infoUpdate(tr("Saved \"%0\"").arg(fileName));
 
     return true;
 }
@@ -127,8 +131,12 @@ bool SaveImagesTask::edit()
 {
     SaveImagesEditDlg dlg(this, Manager::get()->getParentWidget());
     if(dlg.exec())
+    {
+        QString text = tr("path: %0<br/>file name: %1").arg(getTargetPath()).arg(getTargetFilePattern());
+        AB_DBG(text);
+        Q_EMIT infoUpdate(text);
         return Task::edit();
-
+    }
     return false;
 }
 
