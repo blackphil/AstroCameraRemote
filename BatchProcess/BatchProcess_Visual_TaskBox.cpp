@@ -40,7 +40,7 @@ void TaskBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
-    if(0)
+    if(/* DISABLES CODE */ (0))
     {
         painter->fillRect(boundingRect(), QBrush(Qt::magenta));
     }
@@ -203,6 +203,7 @@ void TaskBox::statusChanged(Task::Status status)
 
 void TaskBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
+    Q_UNUSED(event)
     task->edit();
 }
 
