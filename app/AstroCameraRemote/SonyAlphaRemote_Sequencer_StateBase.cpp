@@ -1,6 +1,6 @@
 #include "SonyAlphaRemote_Sequencer_StateBase.h"
 
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 
 #include <QFile>
 #include <QStateMachine>
@@ -15,8 +15,8 @@ StateBase::StateBase(const QString& entryMessage, const QString& exitMessage, QT
     : entryMessage(entryMessage)
     , exitMessage(exitMessage)
     , t(t)
-    , countDownTimer(NULL != t ? new QTimer(this) : NULL)
-    , countDown(NULL != t ? t->interval() / 1000 : 0)
+    , countDownTimer(nullptr != t ? new QTimer(this) : nullptr)
+    , countDown(nullptr != t ? t->interval() / 1000 : 0)
 {
 
     QFile countdownMsgFile(":/sequencer/Countdown_Msg.html");
@@ -35,7 +35,7 @@ StateBase::StateBase(const QString& entryMessage, const QString& exitMessage, QT
 
 StateBase::~StateBase()
 {
-    SAR_INF("[DTOR] state: " << objectName());
+    AB_INF("[DTOR] state: " << objectName());
 }
 
 
@@ -43,7 +43,7 @@ void StateBase::onEntry(QEvent*)
 {   
     if(!entryMessage.isEmpty())
     {
-        SAR_INF(entryMessage);
+        AB_INF(entryMessage);
         Q_EMIT message(entryMessage);
     }
 
@@ -64,7 +64,7 @@ void StateBase::onExit(QEvent*)
 {
     if(!exitMessage.isEmpty())
     {
-        SAR_INF(exitMessage);
+        AB_INF(exitMessage);
         Q_EMIT message(exitMessage);
     }
 

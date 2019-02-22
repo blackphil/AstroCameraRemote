@@ -1,7 +1,7 @@
 #include "StarTrack_GraphicsScene.h"
 
 #include "StarTrack_Marker.h"
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 #include "hfd/Hfd_Calculator.h"
 #include "StarTrack_Settings.h"
 
@@ -169,7 +169,7 @@ void GraphicsScene::newMark()
     marker->setInfo(QString("hfd(%0)").arg(hfdValue));
     Q_EMIT newHfdValue(hfdValue);
 
-    SAR_INF("END");
+    AB_INF("END");
 
 }
 

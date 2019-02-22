@@ -2,7 +2,7 @@
 
 #include <QPointer>
 
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 
 
 namespace SonyAlphaRemote {
@@ -16,13 +16,13 @@ Setting::Setting(Setting* parent)
 
 Setting::~Setting()
 {
-    SAR_INF("dtor: " << objectName());
+    AB_INF("dtor: " << objectName());
 }
 
-QPointer<Settings> Settings::instance(0);
+QPointer<Settings> Settings::instance(nullptr);
 
 Settings::Settings(QObject *parent)
-    : Setting(NULL)
+    : Setting(nullptr)
 {
     setObjectName("SonyAlphaRemote");
     Q_ASSERT(parent);
@@ -39,7 +39,7 @@ Settings* Settings::getInstance()
 
 void Settings::add(Setting *s)
 {
-    SAR_INF("add setting " << s->objectName());
+    AB_INF("add setting " << s->objectName());
 
     if(childSettings.contains(s))
         return;
@@ -54,7 +54,7 @@ Setting *Settings::getSettingByName(const QString &name)
             return child;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 

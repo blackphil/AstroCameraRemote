@@ -1,6 +1,6 @@
 #include "SonyAlphaRemote_Sequencer_Base.h"
 
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 #include "SonyAlphaRemote_Settings.h"
 #include "Settings_General.h"
 #include "SonyAlphaRemote_Sequencer_StateBase.h"
@@ -12,7 +12,7 @@ Base::Base(StatusPoller *statusPoller, Sender *sender, QObject *parent)
   : QObject(parent)
   , statusPoller(statusPoller)
   , sender(sender)
-  , stateMachine(NULL)
+  , stateMachine(nullptr)
   , count(0)
   , numShots(0)
 {
@@ -54,7 +54,7 @@ void Base::start()
     {
         if(stateMachine->active())
         {
-            SAR_ERR("cannot start, sequence still active");
+            AB_ERR("cannot start, sequence still active");
             return;
         }
 

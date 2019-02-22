@@ -1,6 +1,6 @@
 #include "LiveView_Widget.h"
 #include "ui_LiveView_Widget.h"
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 #include "LiveView_Info.h"
 
 #include <QMutexLocker>
@@ -34,7 +34,7 @@ Widget::Widget(QWidget *parent)
     , frameCount(0)
 
 {
-    SAR_INF("ctor");
+    AB_INF("ctor");
     ui->setupUi(this);
 
     ui->graphicsView->setScene(starTrackScene);
@@ -46,7 +46,7 @@ Widget::Widget(QWidget *parent)
 
 Widget::~Widget()
 {
-    SAR_INF("dtor");
+    AB_INF("dtor");
     stopReaderThread();
     delete ui;
 }
@@ -55,7 +55,7 @@ void Widget::start()
 {
     Q_ASSERT(sender);
     if(!sender)
-        SAR_ERR("no sender available!!!");
+        AB_ERR("no sender available!!!");
     sender->send(startLiveView);
 }
 
@@ -63,7 +63,7 @@ void Widget::stop()
 {
     Q_ASSERT(sender);
     if(!sender)
-        SAR_ERR("no sender available!!!");
+        AB_ERR("no sender available!!!");
     sender->send(stopLiveView);
     stopReaderThread();
 }
@@ -78,7 +78,7 @@ float Widget::calcFps()
 
     float fps = 0;
     QTime now = QTime::currentTime();
-    fps = (float)(1000.0 / (float)lastTimeStamp.msecsTo(now));
+    fps = 1000.0f / lastTimeStamp.msecsTo(now);
     lastTimeStamp = QTime::currentTime();
 
     return fps;
@@ -119,7 +119,7 @@ void Widget::startReaderThread(QString url)
 
     pollImageTimer->start(1000 / Settings::getFps());
 
-    SAR_INF("started reader thread URL(" << url << ")");
+    AB_INF("started reader thread URL(" << url << ")");
 
 }
 
@@ -131,9 +131,9 @@ void Widget::stopReaderThread()
     {
         readerThread->quit();
         if(!readerThread->wait(30 * 1000))
-            SAR_WRN("could not stop reader thread!");
+            AB_WRN("could not stop reader thread!");
         else
-            SAR_INF("stopped reader thread");
+            AB_INF("stopped reader thread");
 
         delete readerThread;
         readerThread = 0;
@@ -141,7 +141,7 @@ void Widget::stopReaderThread()
     }
     else
     {
-        SAR_ERR("no reader thread exists!");
+        AB_ERR("no reader thread exists!");
     }
 
 }

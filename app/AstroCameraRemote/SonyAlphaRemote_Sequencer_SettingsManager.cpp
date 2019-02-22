@@ -1,7 +1,7 @@
 #include "SonyAlphaRemote_Sequencer_SettingsManager.h"
 
 
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 
 namespace SonyAlphaRemote {
 namespace Sequencer {
@@ -10,7 +10,7 @@ namespace Sequencer {
 
 SettingsManager::SettingsManager(SonyAlphaRemote::Setting* parent)
     : Setting(parent)
-    , current(NULL)
+    , current(nullptr)
 {
     setObjectName(getName());
 }
@@ -29,7 +29,7 @@ void SettingsManager::load()
 
     foreach(QString name, availableSettings)
     {
-        SAR_INF("loading sequencer setting: " << name);
+        AB_INF("loading sequencer setting: " << name);
         Sequencer::Settings* s = new Sequencer::Settings(this);
         s->setObjectName(name);
         s->load();

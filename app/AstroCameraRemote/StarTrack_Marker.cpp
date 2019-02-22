@@ -3,7 +3,7 @@
 #include <QBrush>
 #include <QRect>
 
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 #include "StarTrack_Settings.h"
 
 namespace StarTrack {
@@ -47,7 +47,7 @@ void logRect(const QRectF& r, const QString& context)
 {
     Q_UNUSED(r)
     Q_UNUSED(context)
-    SAR_INF(
+    AB_INF(
                 context <<
                 ": center(" << r.center().x() << ", " << r.center().y() << ")"
                 ", size(" << r.width() << ", " << r.height() << ")");
@@ -76,7 +76,7 @@ bool Marker::update(const QRectF& r)
     auto h = r.height() / 4.0;
     QRectF chr = r.marginsRemoved(QMarginsF(w, h, w, h));
 
-    SAR_INF("update marker ...");
+    AB_INF("update marker ...");
     helper::logRect(chr, "crosshair");
 
     crosshair[0]->setLine(QLineF(chr.center().x(), chr.top(), chr.center().x(), chr.bottom()));
@@ -169,7 +169,7 @@ QRectF Marker::centerStar(const QImage &scaledStar)
 
     if(!helper::checkSize(rect.size().toSize(), scaledStar.size()))
     {
-        SAR_WRN("centering star failed! Sizes of start image and marker rect are different: "
+        AB_WRN("centering star failed! Sizes of start image and marker rect are different: "
                 << "image(" << scaledStar.width() << ", " << scaledStar.height() << ")"
                 << "marker(" << rect.width() << ", " << rect.height() << ")");
         return QRectF();
@@ -194,25 +194,25 @@ QRectF Marker::centerStar(const QImage &scaledStar)
     if(c>0)
         newCenterLocal = QPointF(x/c, y/c);
 
-    SAR_INF("count-black: " << c);
+    AB_INF("count-black: " << c);
 
 
     QPointF newCenter = rect.topLeft() + newCenterLocal;
 
-    SAR_INF("topLeft(" << rect.topLeft().x() << ", " << rect.topLeft().y() << ")");
-    SAR_INF("bottomRight(" << rect.bottomRight().x() << ", " << rect.bottomRight().y() << ")");
-    SAR_INF("center(" << rect.center().x() << ", " << rect.center().y() << ")");
-    SAR_INF("newcenterLocal(" << newCenterLocal.x() << ", " << newCenterLocal.y() << ")");
-    SAR_INF("newcenter(" << newCenter.x() << ", " << newCenter.y() << ")");
+    AB_INF("topLeft(" << rect.topLeft().x() << ", " << rect.topLeft().y() << ")");
+    AB_INF("bottomRight(" << rect.bottomRight().x() << ", " << rect.bottomRight().y() << ")");
+    AB_INF("center(" << rect.center().x() << ", " << rect.center().y() << ")");
+    AB_INF("newcenterLocal(" << newCenterLocal.x() << ", " << newCenterLocal.y() << ")");
+    AB_INF("newcenter(" << newCenter.x() << ", " << newCenter.y() << ")");
 
     QPointF toMove = newCenter - currentCenter;
     Q_UNUSED(toMove)
-    SAR_INF("toMove(" << toMove.x() << ", " << toMove.y() << ")");
+    AB_INF("toMove(" << toMove.x() << ", " << toMove.y() << ")");
 
     QRectF newRect(newCenter.x() - (rect.width()/2.), newCenter.y() - (rect.height()/2.), rect.width(), rect.height());
     update(newRect);
 
-    SAR_INF("END");
+    AB_INF("END");
 
     return newRect;
 }

@@ -3,6 +3,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 
 namespace SonyAlphaRemote {
 namespace Json {
@@ -10,7 +11,7 @@ namespace Json {
 void Command::setReply(QNetworkReply *value)
 {
     if(!value)
-        SAR_WRN("no reply object");
+        AB_WRN("no reply object");
     reply = value;
     connect(reply, SIGNAL(finished()), this, SLOT(handleReply()));
 }
@@ -45,7 +46,7 @@ void Command::handleReply()
 {
     if(!reply)
     {
-        SAR_ERR("(" << objectName() << ") reply is NULL");
+        AB_ERR("(" << objectName() << ") reply is NULL");
         return;
     }
     QByteArray replyData = reply->readAll();
@@ -53,7 +54,7 @@ void Command::handleReply()
     reply->deleteLater();
     reply = NULL;
 
-    SAR_INF("(" << objectName() << ") reply: " << QString(replyData));
+    AB_INF("(" << objectName() << ") reply: " << QString(replyData));
     QJsonDocument replyJson = QJsonDocument::fromJson(replyData);
     handleReply(replyJson);
 }

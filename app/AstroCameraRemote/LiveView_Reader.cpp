@@ -3,7 +3,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 
 namespace LiveView {
 
@@ -11,10 +11,10 @@ bool Reader::getReady() const
 {
 //    return ready;
     if(!connection)
-        SAR_ERR("NO REPLY");
+        AB_ERR("NO REPLY");
     else
     {
-        SAR_INF("reply status"
+        AB_INF("reply status"
                 << ": isFinished(" << connection->isFinished() << ")"
                 << ", isRunning(" << connection->isRunning() << ")"
                 << ", url(" << connection->url().toString() << ")"
@@ -27,7 +27,7 @@ bool Reader::getReady() const
 Reader::Reader(QObject *parent)
     : QObject(parent)
     , manager(new QNetworkAccessManager(this))
-    , connection(NULL)
+    , connection(nullptr)
     , ready(false)
     , jpegSize(0)
     , paddingSize(0)
@@ -42,7 +42,7 @@ void Reader::open(QString urlStr)
     ready = false;
     QUrl url(urlStr);
     if(!url.isValid())
-        SAR_ERR("INVALID URL (" << urlStr << ")");
+        AB_ERR("INVALID URL (" << urlStr << ")");
 
 
     QNetworkRequest request;
@@ -53,15 +53,15 @@ void Reader::open(QString urlStr)
     if(connection)
         delete connection;
 
-    SAR_INF("LIVE VIEW NETWORK ACCESSIBLE: " << (int)manager->networkAccessible());
-    SAR_INF("LIVE VIEW SENDING REQUEST url(" << url.host() << ", port(" << url.port() << ")");
+    AB_INF("LIVE VIEW NETWORK ACCESSIBLE: " << static_cast<int>(manager->networkAccessible()));
+    AB_INF("LIVE VIEW SENDING REQUEST url(" << url.host() << ", port(" << url.port() << ")");
 
     connection = manager->get(request);
     if(!connection)
-        SAR_ERR("NO REPLY");
+        AB_ERR("NO REPLY");
     else
     {
-        SAR_INF("reply status"
+        AB_INF("reply status"
                 << ": isFinished(" << connection->isFinished() << ")"
                 << ", isRunning(" << connection->isRunning() << ")"
                 << ", url(" << connection->url().toString() << ")"
@@ -77,12 +77,12 @@ void Reader::close()
         connection->close();
         delete connection;
     }
-    connection = NULL;
+    connection = nullptr;
 }
 
 void Reader::readyRead()
 {
-//    SAR_INF("READY READ");
+//    AB_INF("READY READ");
 
     switch(status)
     {
@@ -107,7 +107,7 @@ bool Reader::readCommonHeader()
 {
     int readLength = 1 + 1 + 2 + 4;
 
-//    SAR_INF("bytes available: " << connection->bytesAvailable());
+//    AB_INF("bytes available: " << connection->bytesAvailable());
 
     if(readLength > connection->bytesAvailable())
         return false;
@@ -115,13 +115,13 @@ bool Reader::readCommonHeader()
     QByteArray commonHeader = readBytes(readLength);
     if(commonHeader.size() != readLength)
     {
-        SAR_ERR("Cannot read stream for common header.");
+        AB_ERR("Cannot read stream for common header.");
         return false;
     }
 
-    if (commonHeader[0] != (char)0xFF)
+    if (commonHeader[0] != static_cast<char>(0xFF))
     {
-        SAR_ERR("Unexpected data format. (Start byte)");
+        AB_ERR("Unexpected data format. (Start byte)");
         return false;
     }
 
@@ -129,7 +129,7 @@ bool Reader::readCommonHeader()
     {
         case 0x12:
             readLength = 4 + 3 + 1 + 2 + 118 + 4 + 4 + 24;
-            SAR_INF("skipping " << readLength << " bytes ...");
+            AB_INF("skipping " << readLength << " bytes ...");
             // This is information header for streaming.
             // skip this packet.
             commonHeader.clear();
@@ -157,15 +157,15 @@ bool Reader::readPayloadHeader()
 
     if (payloadHeader.size() != readLength)
     {
-        SAR_ERR("Cannot read stream for payload header (byted read: " << payloadHeader.size() << ")");
+        AB_ERR("Cannot read stream for payload header (byted read: " << payloadHeader.size() << ")");
         return false;
     }
 
-    if (payloadHeader[0] != (char)0x24 || payloadHeader[1] != (char)0x35
-            || payloadHeader[2] != (char)0x68
-            || payloadHeader[3] != (char)0x79)
+    if (payloadHeader[0] != static_cast<char>(0x24) || payloadHeader[1] != static_cast<char>(0x35)
+            || payloadHeader[2] != static_cast<char>(0x68)
+            || payloadHeader[3] != static_cast<char>(0x79))
     {
-        SAR_ERR("Unexpected data format. (Start code)");
+        AB_ERR("Unexpected data format. (Start code)");
         return false;
     }
 
@@ -207,7 +207,7 @@ QByteArray Reader::readBytes(int length)
     while(true)
     {
 
-        int trialReadLength = qMin((qint64)length, connection->bytesAvailable());
+        qint64 trialReadLength = qMin(static_cast<qint64>(length), connection->bytesAvailable());
         QByteArray segment = connection->read(trialReadLength);
         if(segment.size() == 0)
             break;

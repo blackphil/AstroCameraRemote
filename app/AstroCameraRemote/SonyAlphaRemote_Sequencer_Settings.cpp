@@ -2,7 +2,7 @@
 
 #include "SonyAlphaRemote_Sender.h"
 #include "SonyAlphaRemote_Json_Command.h"
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 
 namespace SonyAlphaRemote {
 
@@ -111,12 +111,12 @@ Settings::Settings(Setting *parent)
     , pauseUnit(2)
     , numShots(1)
 {
-    SAR_INF("Sequencer::Settings ctor");
+    AB_INF("Sequencer::Settings ctor");
 }
 
 Settings::~Settings()
 {
-    SAR_INF("Sequencer::Settings dtor");
+    AB_INF("Sequencer::Settings dtor");
 }
 
 void Settings::save()

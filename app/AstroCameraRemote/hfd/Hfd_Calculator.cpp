@@ -19,6 +19,7 @@
  */
 #include "Hfd_Calculator.h"
 #include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 
 #include <math.h>
 
@@ -82,7 +83,7 @@ qreal Calculator::calcHfd(const QImage& inImage, unsigned int inOuterDiameter)
 
 
     // NOTE: Multiplying with 2 is required since actually just the HFR is calculated above
-    return (sum ? 2.0 * sumDist / sum : std::sqrt(2.0) * outerRadius);
+    return (sum > 0.0 ? 2.0 * sumDist / sum : std::sqrt(2.0) * outerRadius);
 }
 
 double Calculator::meanValue(const QImage &img) const
@@ -153,7 +154,7 @@ int Calculator::test(/* int argc, char *argv[]*/)
         const unsigned int outerDiameter = 60;
         auto hfd = calcHfd(colorScaledImage, outerDiameter /*outer diameter in px*/);
         Q_UNUSED(hfd)
-        SAR_INF(fileName << "--> hfd: " << hfd);
+        AB_INF(fileName << "--> hfd: " << hfd);
     }
 
 

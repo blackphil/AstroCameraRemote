@@ -40,7 +40,7 @@ void BulbShootSequencer::start()
     {
         if(stateMachine->active())
         {
-            SAR_ERR("cannot start, sequence still active");
+            AB_ERR("cannot start, sequence still active");
             return;
         }
 

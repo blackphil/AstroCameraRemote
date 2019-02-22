@@ -1,6 +1,6 @@
 #include "LiveView_Commands.h"
 
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 
 namespace LiveView {
 
@@ -26,14 +26,14 @@ void StartLiveView::handleReply(const QJsonDocument& replyJson)
     QJsonObject obj = replyJson.object();
     if(obj.isEmpty() || !obj.contains("result") || !obj["result"].isArray())
     {
-        SAR_ERR("startLiveview: invalid reply!");
+        AB_ERR("startLiveview: invalid reply!");
         return;
     }
 
     QJsonArray result = obj["result"].toArray();
     if(1 > result.count())
     {
-        SAR_ERR("startLiveview: invalid reply!");
+        AB_ERR("startLiveview: invalid reply!");
         return;
     }
 

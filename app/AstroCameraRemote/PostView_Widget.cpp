@@ -1,6 +1,6 @@
 #include "PostView_Widget.h"
 #include "ui_PostView_Widget.h"
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 #include "StarTrack_GraphicsScene.h"
 
 #include "hfd/Hfd_Calculator.h"
@@ -31,7 +31,7 @@ Widget::Widget(QWidget *parent)
     , starTrackScene(new StarTrack::GraphicsScene(this))
     , ui(new Ui::Widget)
 {
-    SAR_INF("ctor");
+    AB_INF("ctor");
     ui->setupUi(this);
     ui->graphicsView->setScene(starTrackScene);
 }
@@ -52,7 +52,7 @@ void Widget::updatePostViewImage(const QPixmap &pixmap)
     //    Q_ASSERT(!imageStack.isEmpty());
     if(imageStack.isEmpty())
     {
-        SAR_ERR(tr("post view image stack is empty!!!"));
+        AB_ERR(tr("post view image stack is empty!!!"));
         starTrackScene->updateBackground(pixmap);
         return;
     }
@@ -157,11 +157,11 @@ void Widget::loadFiles(const QStringList &files, const QDir& mainDir)
             dummyInfo.setTimestamp(fileInfo.created());
             dummyInfo.setSeqNr(index++);
             newInfo(dummyInfo);
-            //        SAR_INF(fn << " (" << dummyInfo.getTimestamp().toString("HH:mm:ss") << ")");
+            //        AB_INF(fn << " (" << dummyInfo.getTimestamp().toString("HH:mm:ss") << ")");
 
             if(!fileInfo.exists())
             {
-                SAR_ERR("file " << fn << " doesn't exist!");
+                AB_ERR("file " << fn << " doesn't exist!");
                 continue;
             }
 
@@ -170,13 +170,13 @@ void Widget::loadFiles(const QStringList &files, const QDir& mainDir)
             QFile f(filePath);
             if(!f.open(QIODevice::ReadOnly))
             {
-                SAR_ERR("could not open file " << fn);
+                AB_ERR("could not open file " << fn);
                 continue;
             }
             QByteArray data = f.readAll();
             if(data.size() == 0)
             {
-                SAR_ERR("no data read from file " << fn);
+                AB_ERR("no data read from file " << fn);
                 continue;
             }
 

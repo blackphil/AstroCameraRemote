@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     , ui(new Ui::MainWindow)
 {
-    SAR_INF("start ...");
+    AB_INF("start ...");
 
     ui->setupUi(this);
 
@@ -665,7 +665,7 @@ void MainWindow::on_markerFixedRectSpinbox_editingFinished()
 {
     qreal newVal = ui->markerFixedRectSpinbox->value();
     qreal currentVal = StarTrack::Settings::getFixedRectSize();
-    SAR_INF("new(" << newVal << "), current(" << currentVal << ")");
+    AB_INF("new(" << newVal << "), current(" << currentVal << ")");
     if(AB_EQUAL(newVal, currentVal))
         return;
     StarTrack::Settings::setFixedRectSize(newVal);

@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QTimer>
+#include "AstroBase.h"
 
 #include "SonyAlphaRemote_Helper.h"
 
@@ -92,7 +93,7 @@ void Sender::send(Json::Command* cmd)
     if(reply)
         cmd->setReply(reply);
     else
-        SAR_ERR("no reply");
+        AB_ERR("no reply");
 }
 
 } //namespace SonyAlphaRemote

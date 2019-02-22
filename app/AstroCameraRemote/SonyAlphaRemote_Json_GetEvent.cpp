@@ -30,7 +30,7 @@ GetEvent::GetEvent(QObject* parent)
 QJsonDocument GetEvent::getJson() const
 {
     QJsonDocument json(getBase());
-//    SAR_INF(QString(json.toJson()));
+//    AB_INF(QString(json.toJson()));
     return json;
 
 }

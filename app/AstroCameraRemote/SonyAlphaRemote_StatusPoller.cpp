@@ -2,7 +2,7 @@
 
 #include <math.h>
 #include "SonyAlphaRemote_Json_Command.h"
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 #include <QUrl>
 
 namespace SonyAlphaRemote {
@@ -46,7 +46,7 @@ void StatusPoller::start(double interval)
     getEvent->setCallbackImmedialetyEnabled(true);
     trigger->start(msec);
 
-    SAR_INF("status poller started");
+    AB_INF("status poller started");
 }
 
 void StatusPoller::stop()
@@ -55,7 +55,7 @@ void StatusPoller::stop()
         delete trigger;
     trigger = Q_NULLPTR;
 
-    SAR_INF("status poller stopped");
+    AB_INF("status poller stopped");
 }
 
 bool StatusPoller::isActive() const
@@ -67,7 +67,7 @@ void StatusPoller::poll()
 {
     if(!waitingForEventReply)
     {
-//        SAR_INF("SEND GETEVENT NOW (" << getEvent->isCallbackImmedialetyEnabled() << ")");
+//        AB_INF("SEND GETEVENT NOW (" << getEvent->isCallbackImmedialetyEnabled() << ")");
         sender->send(getEvent);
         waitingForEventReply = true;
     }
@@ -137,14 +137,14 @@ void StatusPoller::getBatteryInfo(QJsonArray status)
 
 void StatusPoller::handleEventReply()
 {
-//    SAR_INF("RECV GETEVENT NOW (" << getEvent->isCallbackImmedialetyEnabled() << ")");
+//    AB_INF("RECV GETEVENT NOW (" << getEvent->isCallbackImmedialetyEnabled() << ")");
     getEvent->setCallbackImmedialetyEnabled(false);
 
     QJsonValueRef camStatVal = getEvent->getStatus()[1];
     if(!camStatVal.isNull() && camStatVal.isObject())
     {
         cameraStatus = camStatVal.toObject()["cameraStatus"].toString();
-        SAR_INF(cameraStatus);
+        AB_INF(cameraStatus);
         Q_EMIT statusChanged(cameraStatus);
     }
 

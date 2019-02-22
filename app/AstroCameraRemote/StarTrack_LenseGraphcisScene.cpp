@@ -1,6 +1,6 @@
 #include "StarTrack_LenseGraphcisScene.h"
 
-#include "SonyAlphaRemote_Helper.h"
+#include "AstroBase.h"
 
 namespace StarTrack {
 
@@ -14,7 +14,7 @@ LenseGraphcisScene::LenseGraphcisScene(QObject* parent)
 
 void LenseGraphcisScene::updateStar(const QImage &image)
 {
-    SAR_INF("bounding(" << width() << ", " << height() << ")");
+    AB_INF("bounding(" << width() << ", " << height() << ")");
     star->setPixmap(QPixmap::fromImage(image.scaled(width(), height(), Qt::KeepAspectRatio)));
 }
 
