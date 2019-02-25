@@ -37,6 +37,8 @@ StarTrackView::StarTrackView(QWidget *parent, bool fullScreen)
         ui->markerFixedRectSpinbox->setEnabled(false);
     ui->scaledImageCheckbox->setChecked(Settings::getPublishScaledImage());
     ui->starTrackView->setScene(lense);
+
+    this->lense->changeHfdFontPointSize(Settings::getHfdDisplayFontSize());
 }
 
 StarTrackView::~StarTrackView()
@@ -78,6 +80,8 @@ void StarTrackView::applyStatusFrom(StarTrackView *other)
     updateHfdValue(other->getHfdValue());
     updateStar(other->getStar());
 
+    lense->changeHfdFontPointSize(Settings::getHfdDisplayFontSize());
+    ui->hfdFontPointSize->setValue(Settings::getHfdDisplayFontSize());
     ui->settingsGroupBox->setEnabled(isFullScreen());
 }
 
@@ -114,5 +118,12 @@ void StarTrackView::keyPressEvent(QKeyEvent *ke)
     QWidget::keyPressEvent(ke);
 }
 
+void StarTrackView::on_hfdFontPointSize_valueChanged(int v)
+{
+    lense->changeHfdFontPointSize(v);
+    Settings::setHfdDisplayFontSize(v);
+}
+
 } // namespace StarTrack
+
 

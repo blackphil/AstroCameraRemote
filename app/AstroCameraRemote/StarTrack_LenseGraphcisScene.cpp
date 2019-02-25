@@ -17,7 +17,12 @@ LenseGraphcisScene::LenseGraphcisScene(QObject* parent)
     f.setPointSize(20);
     f.setBold(true);
     hfd = addSimpleText("nan", f);
-    hfd->setPen(QPen(Qt::red));
+
+    QPen p(Qt::red);
+    p.setWidthF(1.5);
+    hfd->setPen(p);
+    hfd->setBrush(Qt::transparent);
+
 }
 
 QImage LenseGraphcisScene::getStar() const
@@ -39,6 +44,14 @@ void LenseGraphcisScene::updateStar(const QImage &image)
 void LenseGraphcisScene::updateHfd(const float& hfd)
 {
     this->hfd->setText(QString::number(static_cast<double>(hfd), 'g', 3));
+}
+
+void LenseGraphcisScene::changeHfdFontPointSize(int size)
+{
+    QFont f = hfd->font();
+    f.setPointSize(size);
+    hfd->setFont(f);
+    updateHfd(getHfd());
 }
 
 } // namespace StarTrack

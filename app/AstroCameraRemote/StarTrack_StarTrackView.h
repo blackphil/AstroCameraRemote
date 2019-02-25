@@ -41,6 +41,8 @@ private slots:
 
     void on_markerFixedRectSpinbox_editingFinished();
 
+    void on_hfdFontPointSize_valueChanged(int arg1);
+
 private:
     Ui::StarTrackView *ui;
 

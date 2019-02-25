@@ -24,6 +24,7 @@ public:
 public Q_SLOTS :
     void updateStar(const QImage& image);
     void updateHfd(const float& hfd);
+    void changeHfdFontPointSize(int size);
 
 };
 

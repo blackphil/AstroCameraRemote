@@ -21,6 +21,9 @@ public:
 
     static void setPublishScaledImage(bool yes);
     static bool getPublishScaledImage();
+
+    static int getHfdDisplayFontSize();
+    static void setHfdDisplayFontSize(int size);
 };
 
 } // namespace StarTrack

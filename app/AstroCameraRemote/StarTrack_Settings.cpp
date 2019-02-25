@@ -34,4 +34,14 @@ void Settings::setMarkerModus(const Marker::Modus &value)
     QSettings().setValue("StarTrack/MarkerModus", value);
 }
 
+int Settings::getHfdDisplayFontSize()
+{
+    return QSettings().value("StarTrack/HfdDisplayFontSize", 20).toInt();
+}
+
+void Settings::setHfdDisplayFontSize(int size)
+{
+    QSettings().setValue("StarTrack/HfdDisplayFontSize", size);
+}
+
 } // namespace StarTrack

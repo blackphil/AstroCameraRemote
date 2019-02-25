@@ -201,6 +201,7 @@ void MainWindow::toggleStarTrackViewFullScreen(bool yes)
     {
         if(fullScreenStarTrackView)
         {
+            ui->starTrackView->applyStatusFrom(fullScreenStarTrackView);
             fullScreenStarTrackView->close();
             fullScreenStarTrackView->deleteLater();
             fullScreenStarTrackView = nullptr;
