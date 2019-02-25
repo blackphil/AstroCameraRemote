@@ -47,6 +47,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
     else
     {
+        if(fullScreenStarTrackView)
+        {
+            fullScreenStarTrackView->close();
+            delete fullScreenStarTrackView;
+            fullScreenStarTrackView = nullptr;
+        }
         statusPoller->stop();
         event->accept();
     }
@@ -192,10 +198,10 @@ void MainWindow::toggleStarTrackViewFullScreen(bool yes)
         {
             fullScreenStarTrackView = new StarTrack::StarTrackView(nullptr, true);
             setupStarTrackView(fullScreenStarTrackView);
-            fullScreenStarTrackView->applyStatusFrom(ui->starTrackView);
         }
 
         fullScreenStarTrackView->showFullScreen();
+        fullScreenStarTrackView->applyStatusFrom(ui->starTrackView);
     }
     else
     {

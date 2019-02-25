@@ -82,7 +82,7 @@ void StarTrackView::applyStatusFrom(StarTrackView *other)
 
     lense->changeHfdFontPointSize(Settings::getHfdDisplayFontSize());
     ui->hfdFontPointSize->setValue(Settings::getHfdDisplayFontSize());
-    ui->settingsGroupBox->setEnabled(isFullScreen());
+    ui->settingsGroupBox->setDisabled(isFullScreen());
 }
 
 void StarTrackView::on_markerModusCombobox_activated(int index)
