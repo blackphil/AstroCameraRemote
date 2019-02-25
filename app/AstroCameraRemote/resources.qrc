@@ -21,5 +21,7 @@
         <file>Record.svg</file>
         <file>Record_off.svg</file>
         <file>LiveView_NoImage.jpg</file>
+        <file>ExitFullScreen.svg</file>
+        <file>FullScreen.svg</file>
     </qresource>
 </RCC>

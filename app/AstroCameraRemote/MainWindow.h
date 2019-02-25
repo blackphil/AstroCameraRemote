@@ -18,6 +18,11 @@
 #include "LiveView_Settings.h"
 #include "StarTrack_Settings.h"
 
+namespace StarTrack
+{
+class StarTrackView;
+}
+
 
 namespace Ui {
 class MainWindow;
@@ -53,6 +58,8 @@ class MainWindow : public QMainWindow
     SonyAlphaRemote::Settings* settings;
     SonyAlphaRemote::Sequencer::SettingsManager* sequencerSettingsManager;
 
+    StarTrack::StarTrackView* fullScreenStarTrackView;
+
 
     int connectionState;
     bool aboutToClose;
@@ -64,6 +71,8 @@ class MainWindow : public QMainWindow
     void closeEvent(QCloseEvent *event);
 
     void connectionStateChanged();
+
+    void setupStarTrackView(StarTrack::StarTrackView* v);
 
 
 Q_SIGNALS :
@@ -77,7 +86,7 @@ public:
 
 private Q_SLOTS:
 
-    void updateHfdValue(float hfd);
+    void toggleStarTrackViewFullScreen(bool yes);
 
     void toggleRecordModeBtn(bool on);
 
@@ -135,10 +144,6 @@ private Q_SLOTS:
     void on_testHfdBtn_clicked();
 
     void on_lenrCheckbox_clicked(bool checked);
-
-    void on_markerModusCombobox_activated(int index);
-
-    void on_markerFixedRectSpinbox_editingFinished();
 
     void on_viewsTabWidget_currentChanged(int index);
 

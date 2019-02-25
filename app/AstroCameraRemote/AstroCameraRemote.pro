@@ -61,7 +61,9 @@ SOURCES += main.cpp\
     StarTrack_Settings.cpp \
     StarTrack_LenseGraphcisScene.cpp \
     BatchProcess_FitsRepair.cpp \
-    PostView_ImageLoader.cpp
+    PostView_ImageLoader.cpp \
+    StarTrack_StarTrackView.cpp \
+    StarTrack_GraphicsView.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -104,13 +106,16 @@ HEADERS  += MainWindow.h \
     StarTrack_Settings.h \
     StarTrack_LenseGraphcisScene.h \
     BatchProcess_FitsRepair.h \
-    PostView_ImageLoader.h
+    PostView_ImageLoader.h \
+    StarTrack_StarTrackView.h \
+    StarTrack_GraphicsView.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \
     SonyAlphaRemote_PostView_FullScreenWindow.ui \
     PostView_Widget.ui \
-    LiveView_Widget.ui
+    LiveView_Widget.ui \
+    StarTrack_StarTrackView.ui
 
 #DEFINES += DRY_RUN
 

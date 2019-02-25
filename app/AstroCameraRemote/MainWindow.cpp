@@ -68,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     , normalShootSequencer(new SonyAlphaRemote::Sequencer::NormalShootSequencer(statusPoller, sender, this))
     , settings(new SonyAlphaRemote::Settings(this))
     , sequencerSettingsManager(new SonyAlphaRemote::Sequencer::SettingsManager(settings))
+    , fullScreenStarTrackView(nullptr)
     , connectionState(State_NotConnected)
     , aboutToClose(false)
     , currentTimeDisplayTimer(new QTimer(this))
@@ -164,23 +165,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->settingsNameCBox->addItems(sequencerSettingsManager->getSettingsNames());
 
-    StarTrack::LenseGraphcisScene* lense = new StarTrack::LenseGraphcisScene(this);
-    connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), lense, SLOT(updateStar(QImage)));
-    connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)), this, SLOT(updateHfdValue(float)));
-    connect(ui->trackStarEnabledCheckbox, SIGNAL(toggled(bool)), ui->postViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));
-    connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), lense, SLOT(updateStar(QImage)));
-    connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)), this, SLOT(updateHfdValue(float)));
-    connect(ui->trackStarEnabledCheckbox, SIGNAL(toggled(bool)), ui->liveViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));
 
-    StarTrack::Marker::Modus modus = StarTrack::Settings::getMarkerModus();
-    ui->markerModusCombobox->setCurrentIndex(modus);
-    ui->markerFixedRectSpinbox->setValue(StarTrack::Settings::getFixedRectSize());
-    if(StarTrack::Marker::Modus_FixedRect == modus)
-        ui->markerFixedRectSpinbox->setEnabled(true);
-    else
-        ui->markerFixedRectSpinbox->setEnabled(false);
-    ui->scaledImageCheckbox->setChecked(StarTrack::Settings::getPublishScaledImage());
-    ui->starTrackView->setScene(lense);
+    setupStarTrackView(ui->starTrackView);
+
     on_viewsTabWidget_currentChanged(ui->viewsTabWidget->currentIndex());
 
     recalcSequenceDuration();
@@ -191,15 +178,39 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    if(fullScreenStarTrackView)
+        delete fullScreenStarTrackView;
+
     delete ui;
 }
 
-void MainWindow::updateHfdValue(float hfd)
+void MainWindow::toggleStarTrackViewFullScreen(bool yes)
 {
-    ui->currentHFDLineEdit->setText(QString::number(hfd, 'g', 3));
+    if(yes)
+    {
+        if(!fullScreenStarTrackView)
+        {
+            fullScreenStarTrackView = new StarTrack::StarTrackView(nullptr, true);
+            setupStarTrackView(fullScreenStarTrackView);
+            fullScreenStarTrackView->applyStatusFrom(ui->starTrackView);
+        }
+
+        fullScreenStarTrackView->showFullScreen();
+    }
+    else
+    {
+        if(fullScreenStarTrackView)
+        {
+            fullScreenStarTrackView->close();
+            fullScreenStarTrackView->deleteLater();
+            fullScreenStarTrackView = nullptr;
+        }
+    }
+
+
+    ui->starTrackView->fullScreenToggled(yes);
+
 }
-
-
 
 void MainWindow::toggleRecordModeBtn(bool on)
 {
@@ -243,6 +254,19 @@ void MainWindow::connectionStateChanged()
         Q_EMIT disconnectedFromCamera();
     else
         Q_EMIT connectedToCamera();
+}
+
+void MainWindow::setupStarTrackView(StarTrack::StarTrackView *v)
+{
+    connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), v, SLOT(updateStar(QImage)));
+    connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)),   v, SLOT(updateHfdValue(float)));
+    connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), v, SLOT(updateStar(QImage)));
+    connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)),   v, SLOT(updateHfdValue(float)));
+    connect(v, SIGNAL(trackingEnabledStatusToggled(bool)), ui->postViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));
+    connect(v, SIGNAL(trackingEnabledStatusToggled(bool)), ui->liveViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));
+    connect(v, SIGNAL(updateMarker()), ui->liveViewWidget->getStarTrackScene(), SLOT(updateMarker()));
+    connect(v, SIGNAL(updateMarker()), ui->postViewWidget->getStarTrackScene(), SLOT(updateMarker()));
+    connect(v, SIGNAL(toggleFullScreen(bool)), this, SLOT(toggleStarTrackViewFullScreen(bool)));
 }
 
 
@@ -646,32 +670,6 @@ void MainWindow::on_lenrCheckbox_clicked(bool checked)
     Settings::General::setLenrEnabled(checked);
 }
 
-void MainWindow::on_markerModusCombobox_activated(int index)
-{
-    StarTrack::Marker::Modus modus = static_cast<StarTrack::Marker::Modus>(index);
-    StarTrack::Settings::setMarkerModus(modus);
-    if(StarTrack::Marker::Modus_FixedRect == modus)
-        ui->markerFixedRectSpinbox->setEnabled(true);
-    else
-        ui->markerFixedRectSpinbox->setEnabled(false);
-
-    ui->liveViewWidget->getStarTrackScene()->updateMarker();
-    ui->postViewWidget->getStarTrackScene()->updateMarker();
-}
-
-
-
-void MainWindow::on_markerFixedRectSpinbox_editingFinished()
-{
-    qreal newVal = ui->markerFixedRectSpinbox->value();
-    qreal currentVal = StarTrack::Settings::getFixedRectSize();
-    AB_INF("new(" << newVal << "), current(" << currentVal << ")");
-    if(AB_EQUAL(newVal, currentVal))
-        return;
-    StarTrack::Settings::setFixedRectSize(newVal);
-    ui->liveViewWidget->getStarTrackScene()->updateMarker();
-    ui->postViewWidget->getStarTrackScene()->updateMarker();
-}
 
 void MainWindow::on_viewsTabWidget_currentChanged(int index)
 {

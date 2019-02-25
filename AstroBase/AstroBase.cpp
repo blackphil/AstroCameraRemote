@@ -37,11 +37,12 @@ void Logging::messageOutput(QtMsgType type, const QMessageLogContext &context, c
         break;
     case QtFatalMsg:
         instance->stream << "ERR|";
-        abort();
     }
 
     instance->stream << QTime::currentTime().toString("HH:mm:ss:zzz") << "|" << context.file << ":" << context.line << "(" << context.function << ")\t" << localMsg << "\n";
-
+    instance->stream.flush();
+    if(QtFatalMsg == type)
+        abort();
 }
 
 } //namespace AstroBase
