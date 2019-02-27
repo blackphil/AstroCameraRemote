@@ -44,7 +44,7 @@ class Widget : public QWidget
 
     int frameCount;
 
-    float calcFps();
+    int calcFps();
 
 public:
     explicit Widget(QWidget *parent = 0);
@@ -65,8 +65,8 @@ public Q_SLOTS :
 private Q_SLOTS :
     void startReaderThread(QString url);
     void stopReaderThread();
-    void on_fpsSpinBox_valueChanged(double fps);
 
+    void on_fpsSpinBox_valueChanged(int fps);
 };
 
 

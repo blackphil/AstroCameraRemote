@@ -9,8 +9,8 @@ class Settings
 
 public:
 
-    static float getFps();
-    static void setFps(float value);
+    static int getFps();
+    static void setFps(int value);
 
 };
 

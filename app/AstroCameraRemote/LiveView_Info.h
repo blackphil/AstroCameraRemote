@@ -8,14 +8,14 @@ namespace LiveView {
 
 class Info
 {
-    float fps;
+    int fps;
     QString htmlPattern;
     long frameCount;
 
 public:
     Info();
-    float getFps() const;
-    void setFps(float value);
+    int getFps() const;
+    void setFps(int value);
 
     QString toHtml() const;
     long getFrameCount() const;

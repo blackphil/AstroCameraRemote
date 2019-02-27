@@ -23,12 +23,12 @@ Info::Info()
     htmlPattern = htmlPatternFile.readAll();
 }
 
-float Info::getFps() const
+int Info::getFps() const
 {
     return fps;
 }
 
-void Info::setFps(float value)
+void Info::setFps(int value)
 {
     fps = value;
 }
@@ -36,7 +36,7 @@ void Info::setFps(float value)
 QString Info::toHtml() const
 {
 
-    return htmlPattern.arg(fps, 0, 'g', 2).arg(frameCount);
+    return htmlPattern.arg(fps).arg(frameCount);
 }
 
 

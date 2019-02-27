@@ -73,7 +73,7 @@ StarTrack::GraphicsScene *Widget::getStarTrackScene() const
     return starTrackScene;
 }
 
-float Widget::calcFps()
+int Widget::calcFps()
 {
 
     float fps = 0;
@@ -81,7 +81,7 @@ float Widget::calcFps()
     fps = 1000.0f / lastTimeStamp.msecsTo(now);
     lastTimeStamp = QTime::currentTime();
 
-    return fps;
+    return qRound(fps);
 }
 
 void Widget::updateLiveViewImage()
@@ -136,7 +136,7 @@ void Widget::stopReaderThread()
             AB_INF("stopped reader thread");
 
         delete readerThread;
-        readerThread = 0;
+        readerThread = nullptr;
 
     }
     else
@@ -146,11 +146,12 @@ void Widget::stopReaderThread()
 
 }
 
-void Widget::on_fpsSpinBox_valueChanged(double fps)
+void LiveView::Widget::on_fpsSpinBox_valueChanged(int fps)
 {
     pollImageTimer->setInterval(1000 / fps);
     Settings::setFps(fps);
 }
 
 } // namespace LiveView
+
 
