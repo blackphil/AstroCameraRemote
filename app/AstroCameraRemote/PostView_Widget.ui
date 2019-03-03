@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>907</width>
+    <width>892</width>
     <height>662</height>
    </rect>
   </property>
@@ -30,49 +30,26 @@
     <number>0</number>
    </property>
    <item row="2" column="7">
-    <widget class="QPushButton" name="loadTestDataBtn">
+    <widget class="QPushButton" name="refImg">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Load test data</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="10">
-    <widget class="QGraphicsView" name="graphicsView">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>16777215</width>
+       <width>55</width>
        <height>16777215</height>
       </size>
      </property>
-    </widget>
-   </item>
-   <item row="2" column="9">
-    <widget class="QPushButton" name="clearBtn">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="text">
-      <string>Clear</string>
+      <string>Ref. Img.</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="6">
-    <widget class="QPushButton" name="postViewFwd">
+   <item row="2" column="5">
+    <widget class="QPushButton" name="firstImg">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -88,34 +65,59 @@
      <property name="maximumSize">
       <size>
        <width>23</width>
-       <height>16777215</height>
+       <height>23</height>
       </size>
      </property>
      <property name="text">
-      <string>&gt;</string>
+      <string>|&lt;</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="8">
-    <widget class="QPushButton" name="openFilesBtn">
+   <item row="1" column="0" rowspan="3" colspan="5">
+    <widget class="QLabel" name="postViewMetaInfo">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="maximumSize">
+     <property name="minimumSize">
       <size>
-       <width>16777215</width>
-       <height>16777215</height>
+       <width>0</width>
+       <height>50</height>
       </size>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>Meta info</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="5">
+   <item row="2" column="9">
+    <widget class="QPushButton" name="latestImg">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>23</width>
+       <height>23</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>23</width>
+       <height>23</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>&gt;|</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="6">
     <widget class="QPushButton" name="postViewBwd">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -140,22 +142,112 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" rowspan="3" colspan="5">
-    <widget class="QLabel" name="postViewMetaInfo">
+   <item row="2" column="8">
+    <widget class="QPushButton" name="postViewFwd">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="minimumSize">
       <size>
-       <width>0</width>
-       <height>50</height>
+       <width>23</width>
+       <height>23</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>23</width>
+       <height>16777215</height>
       </size>
      </property>
      <property name="text">
-      <string>Meta info</string>
+      <string>&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="10">
+    <widget class="QPushButton" name="loadTestDataBtn">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Load test data</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="7" colspan="2">
+    <widget class="QPushButton" name="setAsRefImg">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>23</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Set Ref. Img</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="10">
+    <widget class="QPushButton" name="openFilesBtn">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>23</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="11">
+    <widget class="QPushButton" name="clearBtn">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Clear</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="12">
+    <widget class="QGraphicsView" name="graphicsView">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="11">
+    <widget class="QCheckBox" name="autoFwd">
+     <property name="text">
+      <string>Auto fwd.</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

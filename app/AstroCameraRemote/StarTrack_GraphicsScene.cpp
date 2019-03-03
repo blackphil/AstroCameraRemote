@@ -4,6 +4,7 @@
 #include "AstroBase.h"
 #include "hfd/Hfd_Calculator.h"
 #include "StarTrack_Settings.h"
+#include "StarTrack_StarInfo.h"
 
 
 #include <QGraphicsSceneMouseEvent>
@@ -59,11 +60,11 @@ bool GraphicsScene::grabImages(const QRectF& rect)
     return true;
 }
 
-double GraphicsScene::calcHfd(const QRectF& rect) const
+qreal GraphicsScene::calcHfd(const QRectF& rect) const
 {
     Hfd::Calculator hfd;
-    double outerDiameter = qMin(rect.width(), rect.height());
-    double hfdValue = hfd.calcHfd(scaledStar, qRound(outerDiameter));
+    qreal outerDiameter = qMin(rect.width(), rect.height());
+    qreal hfdValue = hfd.calcHfd(scaledStar, qRound(outerDiameter));
     hfdValue = outerDiameter / hfdValue;
     return hfdValue;
 }
@@ -149,12 +150,15 @@ void GraphicsScene::newMark()
     if(!enabled)
         return;
 
+    StarInfoPtr info(new StarInfo());
     QRectF rect = marker->getRect();
 
     if(!grabImages(rect))
         return;
 
     rect = marker->centerStar(scaledStar);
+    info->window = rect.size();
+    info->centerPosition = rect.center();
 
     if(!grabImages(rect))
         return;
@@ -165,9 +169,10 @@ void GraphicsScene::newMark()
         Q_EMIT starCentered(star);
 
 
-    double hfdValue = calcHfd(marker->getRect());
-    marker->setInfo(QString("hfd(%0)").arg(hfdValue));
-    Q_EMIT newHfdValue(hfdValue);
+    info->hfd = calcHfd(marker->getRect());
+    marker->setInfo(QString("hfd(%0)").arg(info->hfd));
+
+    Q_EMIT newHfdValue(info);
 
     AB_INF("END");
 

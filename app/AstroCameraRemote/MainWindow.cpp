@@ -11,6 +11,7 @@
 #include "StarTrack_LenseGraphcisScene.h"
 #include "BatchProcess_FitsRepair.h"
 #include "BatchProcess_SelectFilesDialog.h"
+#include "StarTrack_StarInfo.h"
 
 #include <QMessageBox>
 #include <QRegExp>
@@ -266,7 +267,7 @@ void MainWindow::connectionStateChanged()
 void MainWindow::setupStarTrackView(StarTrack::StarTrackView *v)
 {
     connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), v, SLOT(updateStar(QImage)));
-    connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)),   v, SLOT(updateHfdValue(float)));
+    connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(StarInfoPtr)),   v, SLOT(updateHfdValue(StarInfoPtr)));
     connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), v, SLOT(updateStar(QImage)));
     connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)),   v, SLOT(updateHfdValue(float)));
     connect(v, SIGNAL(trackingEnabledStatusToggled(bool)), ui->postViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));

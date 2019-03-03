@@ -28,6 +28,7 @@ StarTrack::GraphicsScene *Widget::getStarTrackScene() const
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , cursor(0)
+    , refImageIndex(0)
     , starTrackScene(new StarTrack::GraphicsScene(this))
     , ui(new Ui::Widget)
 {
@@ -39,29 +40,6 @@ Widget::Widget(QWidget *parent)
 Widget::~Widget()
 {
     delete ui;
-}
-
-void Widget::updatePostViewImage(const QByteArray &data)
-{
-    QImage img = QImage::fromData(data);
-    updatePostViewImage(QPixmap::fromImage(img));
-}
-
-void Widget::updatePostViewImage(const QPixmap &pixmap)
-{
-    //    Q_ASSERT(!imageStack.isEmpty());
-    if(imageStack.isEmpty())
-    {
-        AB_ERR(tr("post view image stack is empty!!!"));
-        starTrackScene->updateBackground(pixmap);
-        return;
-    }
-
-
-    imageStack.back().setImage(pixmap);
-    cursor = imageStack.count()-1;
-    updatePostView();
-
 }
 
 void Widget::updatePostView()
@@ -96,29 +74,36 @@ void Widget::updatePostView()
 
 void Widget::newInfo(const Info &info)
 {
+    if(info.getImage().isNull())
+        return;
+
     imageStack.push_back(info);
-    if(!info.getImage().isNull())
-        updatePostViewImage(info.getImage());
+
+    if(ui->autoFwd->isChecked())
+        on_latestImg_clicked();
+}
+
+void Widget::setImage(int index)
+{
+    Q_ASSERT(0 <= index && index < imageStack.count());
+    if(0 > index || imageStack.count() <= index)
+        return;
+
+    if(cursor == index)
+        return;
+
+    cursor = index;
+    updatePostView();
 }
 
 void Widget::on_postViewFwd_clicked()
 {
-    int nextPos = qMin(cursor+1, imageStack.count()-1);
-    if(cursor != nextPos)
-    {
-        cursor = nextPos;
-        updatePostView();
-    }
+    setImage(qMin(cursor+1, imageStack.count()-1));
 }
 
 void Widget::on_postViewBwd_clicked()
 {
-    int nextPos = qMax(cursor-1, 0);
-    if(cursor != nextPos)
-    {
-        cursor = nextPos;
-        updatePostView();
-    }
+    setImage(qMax(cursor-1, 0));
 }
 
 void Widget::on_loadTestDataBtn_clicked()
@@ -156,7 +141,6 @@ void Widget::loadFiles(const QStringList &files, const QDir& mainDir)
             dummyInfo.setShutterSpeed(fileInfo.baseName());
             dummyInfo.setTimestamp(fileInfo.created());
             dummyInfo.setSeqNr(index++);
-            newInfo(dummyInfo);
             //        AB_INF(fn << " (" << dummyInfo.getTimestamp().toString("HH:mm:ss") << ")");
 
             if(!fileInfo.exists())
@@ -180,7 +164,8 @@ void Widget::loadFiles(const QStringList &files, const QDir& mainDir)
                 continue;
             }
 
-            updatePostViewImage(data);
+            dummyInfo.setImage(QPixmap::fromImage(QImage::fromData(data)));
+            newInfo(dummyInfo);
         }
         catch(std::exception& e)
         {
@@ -188,9 +173,6 @@ void Widget::loadFiles(const QStringList &files, const QDir& mainDir)
         }
         progress.setValue(index);
     }
-
-    cursor = 0;
-    updatePostView();
 }
 
 
@@ -213,10 +195,9 @@ void Widget::on_openFilesBtn_clicked()
     loadFiles(files);
 }
 
-} // namespace PostView
 
 
-void PostView::Widget::on_clearBtn_clicked()
+void Widget::on_clearBtn_clicked()
 {
     if(QMessageBox::Yes ==
             QMessageBox::question(
@@ -233,3 +214,28 @@ void PostView::Widget::on_clearBtn_clicked()
         starTrackScene->updateBackground(QPixmap::fromImage(QImage::fromData(imageData, "JPG").scaled(defaultRect.size())));
     }
 }
+
+void Widget::on_setAsRefImg_clicked()
+{
+    refImageIndex = cursor;
+}
+
+
+void Widget::on_refImg_clicked()
+{
+    ui->autoFwd->setChecked(false);
+    setImage(refImageIndex);
+}
+
+void Widget::on_firstImg_clicked()
+{
+    setImage(0);
+}
+
+void Widget::on_latestImg_clicked()
+{
+    setImage(imageStack.count()-1);
+    ui->autoFwd->setChecked(true);
+}
+
+} // namespace PostView

@@ -2,6 +2,7 @@
 #define STARTRACK_GRAPHICSSCENE_H
 
 #include <QGraphicsScene>
+#include "StarTrack_StarInfo.h"
 
 namespace StarTrack {
 
@@ -21,7 +22,7 @@ class GraphicsScene : public QGraphicsScene
     QImage star, scaledStar;
 
     bool grabImages(const QRectF &rect);
-    double calcHfd(const QRectF &rect) const;
+    qreal calcHfd(const QRectF &rect) const;
 
 public:
     GraphicsScene(QObject* parent);
@@ -35,7 +36,7 @@ public:
 
 Q_SIGNALS :
     void starCentered(const QImage&);
-    void newHfdValue(float);
+    void newHfdValue(StarInfoPtr);
     void starTrackingEnabled(bool yes);
 
 public Q_SLOTS :

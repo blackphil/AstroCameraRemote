@@ -2,6 +2,7 @@
 #define StarTrack_STARTRACKVIEW_H
 
 #include <QWidget>
+#include "StarTrack_StarInfo.h"
 
 namespace StarTrack {
 
@@ -21,7 +22,7 @@ public:
     explicit StarTrackView(QWidget *parent = nullptr, bool fullScreen = false);
     ~StarTrackView();
 
-    float getHfdValue() const;
+    StarInfoPtr getStarInfo() const;
     QImage getStar() const;
 
 Q_SIGNALS :
@@ -32,7 +33,7 @@ Q_SIGNALS :
 public Q_SLOTS :
 
     void updateStar(const QImage &img);
-    void updateHfdValue(float hfd);
+    void updateHfdValue(StarInfoPtr hfd);
     void fullScreenToggled(bool yes);
     void applyStatusFrom(StarTrackView* other);
 

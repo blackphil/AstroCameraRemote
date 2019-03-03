@@ -1,5 +1,7 @@
 #include "StarTrack_LenseGraphcisScene.h"
 
+#include "StarTrack_StarInfo.h"
+
 #include "AstroBase.h"
 #include <QPen>
 #include <QFont>
@@ -30,9 +32,9 @@ QImage LenseGraphcisScene::getStar() const
     return star->pixmap().toImage();
 }
 
-float LenseGraphcisScene::getHfd() const
+StarInfoPtr LenseGraphcisScene::getStarInfo() const
 {
-    return hfd->text().toFloat();
+    return starInfo;
 }
 
 void LenseGraphcisScene::updateStar(const QImage &image)
@@ -41,9 +43,11 @@ void LenseGraphcisScene::updateStar(const QImage &image)
     star->setPixmap(QPixmap::fromImage(image.scaled(width(), height(), Qt::KeepAspectRatio)));
 }
 
-void LenseGraphcisScene::updateHfd(const float& hfd)
+void LenseGraphcisScene::updateHfd(StarInfoPtr starInfo)
 {
-    this->hfd->setText(QString::number(static_cast<double>(hfd), 'g', 3));
+    this->starInfo = starInfo;
+    if(starInfo)
+        this->hfd->setText(QString::number(static_cast<double>(starInfo->hfd), 'g', 3));
 }
 
 void LenseGraphcisScene::changeHfdFontPointSize(int size)
@@ -51,7 +55,7 @@ void LenseGraphcisScene::changeHfdFontPointSize(int size)
     QFont f = hfd->font();
     f.setPointSize(size);
     hfd->setFont(f);
-    updateHfd(getHfd());
+    updateHfd(starInfo);
 }
 
 } // namespace StarTrack
