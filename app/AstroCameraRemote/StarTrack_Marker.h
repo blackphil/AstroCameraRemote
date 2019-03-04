@@ -9,9 +9,9 @@
 #include <QPen>
 
 #include "StarTrack_GraphicsScene.h"
+#include "StarTrack_Tracker.h"
 
 namespace StarTrack {
-
 class Marker : public QObject
 {
     Q_OBJECT
@@ -32,6 +32,8 @@ public :
 
 private :
 
+    Tracker tracker;
+
     GraphicsScene* scene;
     QGraphicsRectItem* rectItem;
     QGraphicsLineItem* crosshair[2];
@@ -43,6 +45,8 @@ private :
 
     Status status;
 
+    void update();
+    bool update(const QRectF &r);
 
 Q_SIGNALS :
     void newMark();
@@ -55,6 +59,8 @@ public:
 
     bool getTracking() const;
 
+    const Tracker& getTracker() const;
+
 public Q_SLOTS :
     void setTracking(bool value);
     void start(const QPointF &pos);
@@ -62,8 +68,8 @@ public Q_SLOTS :
     void mouseMoved(const QPointF& pos);
 
     void setInfo(const QString& text);
-    void update();
-    bool update(const QRectF &r);
+
+    void update(const QPixmap& image);
 
 };
 

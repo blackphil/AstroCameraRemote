@@ -17,14 +17,13 @@ class GraphicsScene : public QGraphicsScene
     Q_OBJECT
 
     QGraphicsPixmapItem* imageLayer;
-    Marker* marker;
+    Marker* selectedMarker;
 
     bool enabled;
     bool publishScaledImage;
 
-    QList<TrackerPtr> trackers;
+    QList<Marker*> markers;
 
-    bool grabImages();
 
 public:
     GraphicsScene(QObject* parent);

@@ -5,6 +5,7 @@
 
 #include "AstroBase.h"
 #include "StarTrack_Settings.h"
+#include "StarTrack_GraphicsScene.h"
 
 namespace StarTrack {
 
@@ -19,6 +20,9 @@ Marker::Marker(GraphicsScene *scene, QObject *parent)
     , tracking(true )
     , status(Status_Idle)
 {
+
+    connect(this, SIGNAL(newMark()), scene, SLOT(newMark()));
+    connect(scene, SIGNAL(starTrackingEnabled(bool)), this, SLOT(setTracking(bool)));
 
     rectItem = scene->addRect(QRectF(), rectPen);
     rectItem->setZValue(2);
@@ -57,6 +61,11 @@ void logRect(const QRectF& r, const QString& context)
 bool Marker::getTracking() const
 {
     return tracking;
+}
+
+const Tracker &Marker::getTracker() const
+{
+    return tracker;
 }
 
 void Marker::setTracking(bool value)
@@ -114,7 +123,9 @@ void Marker::start(const QPointF &pos)
 void Marker::finish(const QPointF &pos)
 {
     Q_UNUSED(pos)
+    tracker.setRect(getRect());
     Q_EMIT newMark();
+
 }
 
 void Marker::mouseMoved(const QPointF &pos)
@@ -172,6 +183,13 @@ void Marker::update()
 
     if(update(r))
         Q_EMIT newMark();
+}
+
+void Marker::update(const QPixmap& image)
+{
+    tracker.update(image);
+    update(tracker.getRect());
+    setInfo(QString("hfd(%0)").arg(tracker.getHfd()));
 }
 
 

@@ -36,37 +36,23 @@ void GraphicsScene::setPublishScaledImage(bool value)
         return;
     publishScaledImage = value;
 
-    if(!enabled || trackers.isEmpty())
+    if(!enabled || selectedMarker == nullptr)
         return;
 
     if(publishScaledImage)
-        Q_EMIT starCentered(trackers[0]->getScaledStar());
+        Q_EMIT starCentered(selectedMarker->getTracker().getScaledStar());
     else
-        Q_EMIT starCentered(trackers[0]->getCurrentStar());
+        Q_EMIT starCentered(selectedMarker->getTracker().getCurrentStar());
 
 }
 
-bool GraphicsScene::grabImages()
-{
-    QPixmap pixmap = imageLayer->pixmap();
-    if(pixmap.isNull())
-        return false;
-
-    foreach(TrackerPtr t, trackers)
-        t->update(pixmap);
-    return true;
-}
 
 GraphicsScene::GraphicsScene(QObject* parent)
     : QGraphicsScene(parent)
-    , marker(new Marker(this, this))
+    , selectedMarker(nullptr)
     , enabled(true)
     , publishScaledImage(Settings::getPublishScaledImage())
 {
-
-
-    connect(marker, SIGNAL(newMark()), this, SLOT(newMark()));
-    connect(this, SIGNAL(starTrackingEnabled(bool)), marker, SLOT(setTracking(bool)));
 
     QRect defaultRect(0, 0, 808, 540);
 
@@ -98,11 +84,12 @@ void GraphicsScene::updateMarker()
 {
     if(!enabled)
         return;
-    marker->update();
 
-    foreach(TrackerPtr tracker, trackers)
+    QPixmap pm = imageLayer->pixmap();
+
+    foreach(Marker* marker, markers)
     {
-        tracker->update(imageLayer->pixmap());
+        marker->update(pm);
     }
 }
 
@@ -110,26 +97,44 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(!enabled)
         return;
-    marker->start(event->scenePos());
-    if(trackers.isEmpty())
-        trackers << TrackerPtr(new Tracker());
+
+    selectedMarker = nullptr;
+
+    if(markers.isEmpty() || event->modifiers().testFlag(Qt::ControlModifier))
+    {
+        selectedMarker = new Marker(this, this);
+        markers << selectedMarker;
+    }
+    else
+    {
+        foreach(Marker* m, markers)
+        {
+            if(m->getRect().contains(event->scenePos()))
+            {
+                selectedMarker = m;
+                break;
+            }
+        }
+    }
+
+    if(!selectedMarker)
+        return;
+
+    selectedMarker->start(event->scenePos());
 }
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(!enabled)
+    if(!enabled || selectedMarker == nullptr)
         return;
-    marker->mouseMoved(event->scenePos());
+    selectedMarker->mouseMoved(event->scenePos());
 }
 
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(!enabled)
+    if(!enabled || selectedMarker == nullptr)
         return;
-    marker->finish(event->scenePos());
-
-    trackers.last()->setRect(marker->getRect());
-
+    selectedMarker->finish(event->scenePos());
 }
 
 namespace helper
@@ -146,34 +151,35 @@ void GraphicsScene::newMark()
 {
     if(!enabled)
         return;
-    if(trackers.isEmpty())
+
+    QPixmap pixmap = imageLayer->pixmap();
+    if(pixmap.isNull())
         return;
 
-    trackers[0]->setRect(marker->getRect());
+    foreach(Marker* m, markers)
+    {
+        m->update(pixmap);
+    }
+
+    if(selectedMarker == nullptr)
+        return;
+
     StarInfoPtr info(new StarInfo());
 
-    if(!grabImages())
-        return;
-
-
-    QRectF rect = trackers[0]->getRect();
-    marker->update(rect);
-
+    QRectF rect = selectedMarker->getRect();
     info->window = rect.size();
     info->centerPosition = rect.center();
 
     if(publishScaledImage)
-        Q_EMIT starCentered(trackers[0]->getScaledStar());
+        Q_EMIT starCentered(selectedMarker->getTracker().getScaledStar());
     else
-        Q_EMIT starCentered(trackers[0]->getCurrentStar());
+        Q_EMIT starCentered(selectedMarker->getTracker().getCurrentStar());
 
 
-    info->hfd = trackers[0]->getHfd();
-    marker->setInfo(QString("hfd(%0)").arg(info->hfd));
+    info->hfd = selectedMarker->getTracker().getHfd();
 
     Q_EMIT newHfdValue(info);
 
-    AB_INF("END");
 
 }
 
