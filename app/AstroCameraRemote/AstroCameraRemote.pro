@@ -64,7 +64,8 @@ SOURCES += main.cpp\
     PostView_ImageLoader.cpp \
     StarTrack_StarTrackView.cpp \
     StarTrack_GraphicsView.cpp \
-    StarTrack_StarInfo.cpp
+    StarTrack_StarInfo.cpp \
+    StarTrack_Tracker.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -110,7 +111,8 @@ HEADERS  += MainWindow.h \
     PostView_ImageLoader.h \
     StarTrack_StarTrackView.h \
     StarTrack_GraphicsView.h \
-    StarTrack_StarInfo.h
+    StarTrack_StarInfo.h \
+    StarTrack_Tracker.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

@@ -43,7 +43,6 @@ private :
 
     Status status;
 
-    bool update(const QRectF &r);
 
 Q_SIGNALS :
     void newMark();
@@ -63,9 +62,8 @@ public Q_SLOTS :
     void mouseMoved(const QPointF& pos);
 
     void setInfo(const QString& text);
-
-    QRectF centerStar(const QImage& scaledStar);
     void update();
+    bool update(const QRectF &r);
 
 };
 

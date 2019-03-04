@@ -60,7 +60,7 @@ bool Calculator::insideCircle(qreal inX /*pos of x*/, qreal inY /*pos of y*/, qr
  *       system and also on the seeing conditions. The HFD value calculated depends on this
  *       outer diameter value.
  */
-qreal Calculator::calcHfd(const QImage& inImage, unsigned int inOuterDiameter)
+qreal Calculator::calcHfd(const QImage& inImage, qreal inOuterDiameter)
 {
     // Sum up all pixel values in whole circle
     qreal outerRadius = inOuterDiameter / 2.;

@@ -29,6 +29,7 @@ class Widget : public QWidget
     StarTrack::GraphicsScene* starTrackScene;
 
 
+
 public:
     explicit Widget(QWidget *parent = Q_NULLPTR);
     ~Widget();
@@ -41,6 +42,8 @@ public Q_SLOTS :
     void newInfo(const PostView::Info& info);
 
 private Q_SLOTS :
+
+    void newHfdValue(StarTrack::StarInfoPtr starInfo);
 
     void setImage(int index);
 

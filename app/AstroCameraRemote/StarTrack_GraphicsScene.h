@@ -2,6 +2,9 @@
 #define STARTRACK_GRAPHICSSCENE_H
 
 #include <QGraphicsScene>
+#include <QList>
+
+#include "StarTrack_Tracker.h"
 #include "StarTrack_StarInfo.h"
 
 namespace StarTrack {
@@ -19,10 +22,9 @@ class GraphicsScene : public QGraphicsScene
     bool enabled;
     bool publishScaledImage;
 
-    QImage star, scaledStar;
+    QList<TrackerPtr> trackers;
 
-    bool grabImages(const QRectF &rect);
-    qreal calcHfd(const QRectF &rect) const;
+    bool grabImages();
 
 public:
     GraphicsScene(QObject* parent);

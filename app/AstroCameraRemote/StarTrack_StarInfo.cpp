@@ -4,7 +4,6 @@ namespace StarTrack {
 
 StarInfo::StarInfo()
     : hfd(0.0)
-    , index(-1)
 {
 
 }

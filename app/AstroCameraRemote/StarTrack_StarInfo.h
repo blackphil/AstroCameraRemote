@@ -13,7 +13,6 @@ struct StarInfo
     QSizeF window;
     QPointF centerPosition;
     qreal hfd;
-    int index;
 
     StarInfo();
 };

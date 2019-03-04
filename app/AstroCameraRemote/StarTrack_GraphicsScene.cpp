@@ -36,37 +36,25 @@ void GraphicsScene::setPublishScaledImage(bool value)
         return;
     publishScaledImage = value;
 
-    if(!enabled)
+    if(!enabled || trackers.isEmpty())
         return;
 
     if(publishScaledImage)
-        Q_EMIT starCentered(scaledStar);
+        Q_EMIT starCentered(trackers[0]->getScaledStar());
     else
-        Q_EMIT starCentered(star);
+        Q_EMIT starCentered(trackers[0]->getCurrentStar());
 
 }
 
-bool GraphicsScene::grabImages(const QRectF& rect)
+bool GraphicsScene::grabImages()
 {
     QPixmap pixmap = imageLayer->pixmap();
     if(pixmap.isNull())
         return false;
 
-    Hfd::Calculator hfd;
-    star = pixmap.copy(rect.toRect()).toImage();
-    double mean = hfd.meanValue(star);
-    scaledStar = hfd.scaledImage(star, mean);
-
+    foreach(TrackerPtr t, trackers)
+        t->update(pixmap);
     return true;
-}
-
-qreal GraphicsScene::calcHfd(const QRectF& rect) const
-{
-    Hfd::Calculator hfd;
-    qreal outerDiameter = qMin(rect.width(), rect.height());
-    qreal hfdValue = hfd.calcHfd(scaledStar, qRound(outerDiameter));
-    hfdValue = outerDiameter / hfdValue;
-    return hfdValue;
 }
 
 GraphicsScene::GraphicsScene(QObject* parent)
@@ -111,6 +99,11 @@ void GraphicsScene::updateMarker()
     if(!enabled)
         return;
     marker->update();
+
+    foreach(TrackerPtr tracker, trackers)
+    {
+        tracker->update(imageLayer->pixmap());
+    }
 }
 
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -118,6 +111,8 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if(!enabled)
         return;
     marker->start(event->scenePos());
+    if(trackers.isEmpty())
+        trackers << TrackerPtr(new Tracker());
 }
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -132,6 +127,8 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if(!enabled)
         return;
     marker->finish(event->scenePos());
+
+    trackers.last()->setRect(marker->getRect());
 
 }
 
@@ -149,27 +146,29 @@ void GraphicsScene::newMark()
 {
     if(!enabled)
         return;
-
-    StarInfoPtr info(new StarInfo());
-    QRectF rect = marker->getRect();
-
-    if(!grabImages(rect))
+    if(trackers.isEmpty())
         return;
 
-    rect = marker->centerStar(scaledStar);
+    trackers[0]->setRect(marker->getRect());
+    StarInfoPtr info(new StarInfo());
+
+    if(!grabImages())
+        return;
+
+
+    QRectF rect = trackers[0]->getRect();
+    marker->update(rect);
+
     info->window = rect.size();
     info->centerPosition = rect.center();
 
-    if(!grabImages(rect))
-        return;
-
     if(publishScaledImage)
-        Q_EMIT starCentered(scaledStar);
+        Q_EMIT starCentered(trackers[0]->getScaledStar());
     else
-        Q_EMIT starCentered(star);
+        Q_EMIT starCentered(trackers[0]->getCurrentStar());
 
 
-    info->hfd = calcHfd(marker->getRect());
+    info->hfd = trackers[0]->getHfd();
     marker->setInfo(QString("hfd(%0)").arg(info->hfd));
 
     Q_EMIT newHfdValue(info);

@@ -83,6 +83,14 @@ void Widget::newInfo(const Info &info)
         on_latestImg_clicked();
 }
 
+void Widget::newHfdValue(StarTrack::StarInfoPtr starInfo)
+{
+    if(0 <= cursor && cursor < imageStack.count())
+    {
+        imageStack[cursor].setStarInfo(StarTrack::StarInfoPtr(new StarTrack::StarInfo(*starInfo)));
+    }
+}
+
 void Widget::setImage(int index)
 {
     Q_ASSERT(0 <= index && index < imageStack.count());
