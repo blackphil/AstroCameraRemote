@@ -93,6 +93,12 @@ void GraphicsScene::updateMarker()
     }
 }
 
+void GraphicsScene::setReference()
+{
+    foreach(Marker* marker, markers)
+        marker->setReferencePos();
+}
+
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(!enabled)
@@ -132,9 +138,11 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    Q_UNUSED(event);
+
     if(!enabled || selectedMarker == nullptr)
         return;
-    selectedMarker->finish(event->scenePos());
+    selectedMarker->finish();
 }
 
 namespace helper

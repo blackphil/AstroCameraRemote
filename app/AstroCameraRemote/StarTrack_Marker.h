@@ -34,6 +34,10 @@ private :
 
     Tracker tracker;
 
+    QPointF referencePos;
+
+    QGraphicsLineItem* lineFromRef;
+
     GraphicsScene* scene;
     QGraphicsRectItem* rectItem;
     QGraphicsLineItem* crosshair[2];
@@ -61,10 +65,15 @@ public:
 
     const Tracker& getTracker() const;
 
+
+
+    QPointF getReferencePos() const;
+    void setReferencePos();
+
 public Q_SLOTS :
     void setTracking(bool value);
     void start(const QPointF &pos);
-    void finish(const QPointF& pos);
+    void finish();
     void mouseMoved(const QPointF& pos);
 
     void setInfo(const QString& text);

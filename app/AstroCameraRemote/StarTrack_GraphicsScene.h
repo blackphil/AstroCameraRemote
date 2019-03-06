@@ -43,6 +43,7 @@ Q_SIGNALS :
 public Q_SLOTS :
     void updateBackground(const QPixmap& pixmap);
     void updateMarker();
+    void setReference();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

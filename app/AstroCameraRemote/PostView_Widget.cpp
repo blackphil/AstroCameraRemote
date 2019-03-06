@@ -226,6 +226,7 @@ void Widget::on_clearBtn_clicked()
 void Widget::on_setAsRefImg_clicked()
 {
     refImageIndex = cursor;
+    starTrackScene->setReference();
 }
 
 

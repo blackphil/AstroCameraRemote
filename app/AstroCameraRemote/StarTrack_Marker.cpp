@@ -36,6 +36,9 @@ Marker::Marker(GraphicsScene *scene, QObject *parent)
     info = scene->addSimpleText("");
     info->setBrush(QBrush(Qt::green));
     info->setZValue(2);
+
+    lineFromRef = scene->addLine(QLineF(), QPen(QBrush(Qt::red), 2));
+    lineFromRef->setZValue(3);
 }
 
 QRectF Marker::getRect() const
@@ -91,6 +94,13 @@ bool Marker::update(const QRectF& r)
     crosshair[0]->setLine(QLineF(chr.center().x(), chr.top(), chr.center().x(), chr.bottom()));
     crosshair[1]->setLine(QLineF(chr.left(), chr.center().y(), chr.right(), chr.center().y()));
 
+    if(!referencePos.isNull())
+    {
+        QPointF currentCenter = r.center();
+        qreal length = (currentCenter-referencePos).manhattanLength();
+        lineFromRef->setLine(QLineF(referencePos.x(), referencePos.y(), r.center().x(), r.center().y()));
+    }
+
     info->setPos(rectItem->rect().topLeft() + QPointF(0, -info->boundingRect().height()));
 
     return true;
@@ -120,9 +130,8 @@ void Marker::start(const QPointF &pos)
     status = Status_Moving;
 }
 
-void Marker::finish(const QPointF &pos)
+void Marker::finish()
 {
-    Q_UNUSED(pos)
     tracker.setRect(getRect());
     Q_EMIT newMark();
 
@@ -160,6 +169,16 @@ void Marker::mouseMoved(const QPointF &pos)
 void Marker::setInfo(const QString &text)
 {
     info->setText(text);
+}
+
+QPointF Marker::getReferencePos() const
+{
+    return referencePos;
+}
+
+void Marker::setReferencePos()
+{
+    referencePos = tracker.getRect().center();
 }
 
 void Marker::update()
