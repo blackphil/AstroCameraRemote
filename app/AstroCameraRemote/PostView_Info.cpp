@@ -26,6 +26,11 @@ void Info::setShutterSpeedBulbMs(int value)
     shutterSpeedBulbMs = value;
 }
 
+void Info::setStarInfo(StarTrack::StarInfoPtr info)
+{
+    starInfos << info;
+}
+
 Info::Info()
     : shutterSpeedBulbMs(0)
     , iso(0)

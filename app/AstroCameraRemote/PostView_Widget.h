@@ -24,8 +24,13 @@ class Widget : public QWidget
 
     QList<Info> imageStack;
     int cursor;
+    int refImageIndex;
 
     StarTrack::GraphicsScene* starTrackScene;
+
+protected:
+    void keyPressEvent(QKeyEvent* event);
+
 
 
 public:
@@ -35,13 +40,17 @@ public:
     StarTrack::GraphicsScene *getStarTrackScene() const;
 
 public Q_SLOTS :
-    void updatePostViewImage(const QByteArray& data);
-    void updatePostViewImage(const QPixmap& pixmap);
     void updatePostView();
 
     void newInfo(const PostView::Info& info);
 
 private Q_SLOTS :
+
+    void newHfdValue(StarTrack::StarInfoPtr starInfo);
+    void removeSelectedMarker();
+
+    void setImage(int index);
+
     void on_postViewFwd_clicked();
     void on_postViewBwd_clicked();
 
@@ -50,9 +59,17 @@ private Q_SLOTS :
 
     void on_openFilesBtn_clicked();
 
-    void loadFiles(const QStringList& files, const QDir &mainDir = QDir());
+    void loadFiles(const QStringList& files);
 
     void on_clearBtn_clicked();
+
+    void on_setAsRefImg_clicked();
+
+    void on_refImg_clicked();
+
+    void on_firstImg_clicked();
+
+    void on_latestImg_clicked();
 
 private:
     Ui::Widget *ui;

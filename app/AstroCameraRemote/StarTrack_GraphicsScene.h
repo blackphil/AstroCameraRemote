@@ -2,6 +2,10 @@
 #define STARTRACK_GRAPHICSSCENE_H
 
 #include <QGraphicsScene>
+#include <QList>
+
+#include "StarTrack_Tracker.h"
+#include "StarTrack_StarInfo.h"
 
 namespace StarTrack {
 
@@ -13,15 +17,13 @@ class GraphicsScene : public QGraphicsScene
     Q_OBJECT
 
     QGraphicsPixmapItem* imageLayer;
-    Marker* marker;
+    Marker* selectedMarker;
 
     bool enabled;
     bool publishScaledImage;
 
-    QImage star, scaledStar;
+    QList<Marker*> markers;
 
-    bool grabImages(const QRectF &rect);
-    double calcHfd(const QRectF &rect) const;
 
 public:
     GraphicsScene(QObject* parent);
@@ -35,12 +37,15 @@ public:
 
 Q_SIGNALS :
     void starCentered(const QImage&);
-    void newHfdValue(float);
+    void newHfdValue(StarInfoPtr);
     void starTrackingEnabled(bool yes);
 
 public Q_SLOTS :
     void updateBackground(const QPixmap& pixmap);
     void updateMarker();
+    void setReference();
+    void removeSelectedMarker();
+    void cleanUpMarkers();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -49,6 +54,8 @@ protected:
 
 private Q_SLOTS :
     void newMark();
+    void setSelectedMarker(const QPointF& pos);
+    void setSelectedMarker(Marker* m);
 
 };
 

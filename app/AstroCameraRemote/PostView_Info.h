@@ -4,6 +4,9 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QPixmap>
+#include <QList>
+
+#include "StarTrack_StarInfo.h"
 
 namespace PostView {
 
@@ -19,6 +22,8 @@ class Info
     QPixmap image;
 
     static QString htmlPattern;
+
+    QList<StarTrack::StarInfoPtr> starInfos;
 
 
 public:
@@ -45,6 +50,8 @@ public:
     void setShutterSpeed(const QString &value);
     int getShutterSpeedBulbMs() const;
     void setShutterSpeedBulbMs(int value);
+
+    void setStarInfo(StarTrack::StarInfoPtr info);
 };
 
 } // namespace PostView
