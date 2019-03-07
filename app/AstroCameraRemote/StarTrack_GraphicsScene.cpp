@@ -113,6 +113,12 @@ void GraphicsScene::removeSelectedMarker()
     }
 }
 
+void GraphicsScene::cleanUpMarkers()
+{
+    setSelectedMarker(nullptr);
+    qDeleteAll(markers);
+}
+
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(!enabled)

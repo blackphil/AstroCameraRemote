@@ -1,6 +1,7 @@
 #include "StarTrack_Tracker.h"
 
 #include <QPixmap>
+#include <QSettings>
 
 #include "hfd/Hfd_Calculator.h"
 #include "AstroBase.h"
@@ -37,9 +38,17 @@ bool Tracker::update(const QPixmap& pm)
     QPointF currentCenter = currentRect.center();
     QPointF newCenter;
 
-    int dbgRunsNeeded = 0;
+    QSettings settings;
+
+    const int maxRunCount = settings.value("StarTrack/MaxCountOfTrackingTries", 10).toInt();
+    settings.setValue("StarTrack/MaxCountOfTrackingTries", maxRunCount);
+
+    int runsNeeded = 0;
     do
     {
+        if(maxRunCount <= runsNeeded)
+            return false;
+
         currentRect = newRect;
         currentCenter = newRect.center();
 
@@ -53,9 +62,9 @@ bool Tracker::update(const QPixmap& pm)
 
         newCenter = newRect.center();
 
-        dbgRunsNeeded++;
+        runsNeeded++;
 
-        AB_DBG("run(" << dbgRunsNeeded << "), newCenter(" << newCenter.x() << "," << newCenter.y() << "), manhattenLength(" << (currentCenter-newCenter).manhattanLength() << ")");
+        AB_DBG("run(" << runsNeeded << "), newCenter(" << newCenter.x() << "," << newCenter.y() << "), manhattenLength(" << (currentCenter-newCenter).manhattanLength() << ")");
 
     }
     while((currentCenter-newCenter).manhattanLength() > epsilon);

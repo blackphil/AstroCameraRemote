@@ -45,6 +45,7 @@ public Q_SLOTS :
     void updateMarker();
     void setReference();
     void removeSelectedMarker();
+    void cleanUpMarkers();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

@@ -43,11 +43,12 @@ Marker::Marker(GraphicsScene *scene, QObject *parent)
 
 Marker::~Marker()
 {
-    delete lineFromRef;
-    delete rectItem;
-    delete crosshair[0];
-    delete crosshair[1];
-    delete info;
+    scene->removeItem(lineFromRef);
+    scene->removeItem(lineFromRef);
+    scene->removeItem(rectItem);
+    scene->removeItem(crosshair[0]);
+    scene->removeItem(crosshair[1]);
+    scene->removeItem(info);
 }
 
 QRectF Marker::getRect() const
@@ -87,9 +88,29 @@ void Marker::setTracking(bool value)
 
 bool Marker::update(const QRectF& r)
 {
+
+
+    static const QPen unSelectedPen(Qt::green, 1);
+    static const QPen selectedPen(Qt::yellow, 1);
+    static const QPen errorPen(Qt::magenta, 1);
+
+    if(isSelected)
+    {
+        rectItem->setPen(selectedPen);
+        crosshair[0]->setPen(hasError ? errorPen : selectedPen);
+        crosshair[1]->setPen(hasError ? errorPen : selectedPen);
+        info->setPen(selectedPen);
+    }
+    else
+    {
+        rectItem->setPen(unSelectedPen);
+        crosshair[0]->setPen(hasError ? errorPen : unSelectedPen);
+        crosshair[1]->setPen(hasError ? errorPen : unSelectedPen);
+        info->setPen(unSelectedPen);
+    }
+
     if(r == rectItem->rect())
         return false;
-
     rectItem->setRect(r);
 
     helper::logRect(r, "bounding");
@@ -196,21 +217,13 @@ bool Marker::getIsSelected() const
 
 void Marker::setIsSelected(bool value)
 {
+    if(isSelected == value)
+        return;
+
     isSelected = value;
-    if(isSelected)
-    {
-        rectItem->setPen(QPen(Qt::yellow, 1));
-        crosshair[0]->setPen(QPen(Qt::yellow, 1));
-        crosshair[1]->setPen(QPen(Qt::yellow, 1));
-        info->setBrush(Qt::yellow);
-    }
-    else
-    {
-        rectItem->setPen(QPen(Qt::green, 1));
-        crosshair[0]->setPen(QPen(Qt::green, 1));
-        crosshair[1]->setPen(QPen(Qt::green, 1));
-        info->setBrush(Qt::green);
-    }
+
+    update(getRect());
+
 }
 
 void Marker::update()
@@ -238,7 +251,11 @@ void Marker::update()
 
 void Marker::update(const QPixmap& image)
 {
-    tracker.update(image);
+    if(!tracker.update(image))
+        hasError = true;
+    else
+        hasError = false;
+
     update(tracker.getRect());
     setInfo(QString("hfd(%0)").arg(tracker.getHfd()));
 }

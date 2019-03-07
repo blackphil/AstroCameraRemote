@@ -49,6 +49,7 @@ private :
     Status status;
 
     bool isSelected;
+    bool hasError;
 
     void update();
     bool update(const QRectF &r);

@@ -17,6 +17,8 @@
 #include <QFileDialog>
 #include <QPluginLoader>
 #include <QBuffer>
+#include <QTransform>
+#include <QSettings>
 
 namespace PostView {
 
@@ -113,8 +115,8 @@ void Widget::setImage(int index)
     if(0 > index || imageStack.count() <= index)
         return;
 
-    if(cursor == index)
-        return;
+//    if(cursor == index)
+//        return;
 
     cursor = index;
     updatePostView();
@@ -190,7 +192,15 @@ void Widget::loadFiles(const QStringList &files)
                 continue;
             }
 
-            dummyInfo.setImage(QPixmap::fromImage(QImage::fromData(data)));
+            QImage image = QImage::fromData(data);
+            if(image.height() > image.width())
+            {
+                QTransform t;
+                t.rotate(90, Qt::ZAxis);
+                image = image.transformed(t);
+            }
+
+            dummyInfo.setImage(QPixmap::fromImage(image));
             newInfo(dummyInfo);
         }
         catch(std::exception& e)
@@ -205,17 +215,29 @@ void Widget::loadFiles(const QStringList &files)
 void Widget::on_openFilesBtn_clicked()
 {
     AstroBase::PersistentDirInfo dir("PostView?LastDir");
+
+    QStringList filters;
+    filters << "FITS (*.fit *.fts *.fits)"
+            << "JPEG (*.jpg *.jpeg)"
+            << "TIFF (*.tif *.tiff)"
+            << "All files(*.*)";
+
+
+
+    QString selectedFilter = QSettings().value("PostView/OpenFilesFilter", filters[0]).toString();
+
+
     QStringList files = QFileDialog::getOpenFileNames(
                 this
                 , tr("Open files")
                 , dir
-                , "FITS (*.fit *.fts *.fits)"
-                  ";;JPEG (*.jpg *.jpeg)"
-                  ";;TIFF (*.tif *.tiff)"
-                  ";;All files(*.*)");
+                , filters.join(";;")
+                , &selectedFilter);
 
     if(files.isEmpty())
         return;
+
+    QSettings().setValue("PostView/OpenFilesFilter", selectedFilter);
 
     dir = QFileInfo(files[0]).absolutePath();
     loadFiles(files);
@@ -236,6 +258,8 @@ void Widget::on_clearBtn_clicked()
         defaultImage.open(QIODevice::ReadOnly);
         QByteArray imageData = defaultImage.readAll();
         QRect defaultRect(0, 0, 808, 540);
+
+        starTrackScene->cleanUpMarkers();
 
         starTrackScene->updateBackground(QPixmap::fromImage(QImage::fromData(imageData, "JPG").scaled(defaultRect.size())));
     }
