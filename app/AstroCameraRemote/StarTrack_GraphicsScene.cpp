@@ -99,6 +99,20 @@ void GraphicsScene::setReference()
         marker->setReferencePos();
 }
 
+void GraphicsScene::removeSelectedMarker()
+{
+    if(selectedMarker)
+    {
+        markers.removeAll(selectedMarker);
+        selectedMarker->deleteLater();
+        if(!markers.isEmpty())
+            setSelectedMarker(markers.last());
+        else
+            setSelectedMarker(nullptr);
+
+    }
+}
+
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(!enabled)
@@ -178,19 +192,26 @@ void GraphicsScene::newMark()
 
 void GraphicsScene::setSelectedMarker(const QPointF &pos)
 {
-    if(selectedMarker)
-        selectedMarker->setIsSelected(false);
 
     foreach(Marker* m, markers)
     {
         if(m->getRect().contains(pos))
         {
-            selectedMarker = m;
-            selectedMarker->setIsSelected(true);
+            setSelectedMarker(m);
             break;
         }
     }
 
+}
+
+void GraphicsScene::setSelectedMarker(Marker *m)
+{
+    if(selectedMarker)
+        selectedMarker->setIsSelected(false);
+    selectedMarker = m;
+
+    if(selectedMarker)
+        selectedMarker->setIsSelected(true);
 }
 
 } // namespace StarTrack

@@ -25,6 +25,14 @@ StarTrack::GraphicsScene *Widget::getStarTrackScene() const
     return starTrackScene;
 }
 
+void Widget::keyPressEvent(QKeyEvent *event)
+{
+    if(Qt::Key_Delete == event->key())
+        removeSelectedMarker();
+
+    QWidget::keyPressEvent(event);
+}
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , cursor(0)
@@ -88,6 +96,14 @@ void Widget::newHfdValue(StarTrack::StarInfoPtr starInfo)
     if(0 <= cursor && cursor < imageStack.count())
     {
         imageStack[cursor].setStarInfo(StarTrack::StarInfoPtr(new StarTrack::StarInfo(*starInfo)));
+    }
+}
+
+void Widget::removeSelectedMarker()
+{
+    if(QMessageBox::Yes == QMessageBox::question(this, tr("Remote star tracker"), tr("Remove star tracker?")))
+    {
+        starTrackScene->removeSelectedMarker();
     }
 }
 

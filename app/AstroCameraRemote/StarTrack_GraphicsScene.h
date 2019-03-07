@@ -44,6 +44,7 @@ public Q_SLOTS :
     void updateBackground(const QPixmap& pixmap);
     void updateMarker();
     void setReference();
+    void removeSelectedMarker();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -53,6 +54,7 @@ protected:
 private Q_SLOTS :
     void newMark();
     void setSelectedMarker(const QPointF& pos);
+    void setSelectedMarker(Marker* m);
 
 };
 

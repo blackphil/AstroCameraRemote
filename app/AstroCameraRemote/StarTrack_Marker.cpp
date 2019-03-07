@@ -41,6 +41,15 @@ Marker::Marker(GraphicsScene *scene, QObject *parent)
     lineFromRef->setZValue(3);
 }
 
+Marker::~Marker()
+{
+    delete lineFromRef;
+    delete rectItem;
+    delete crosshair[0];
+    delete crosshair[1];
+    delete info;
+}
+
 QRectF Marker::getRect() const
 {
     if(rectItem)
@@ -57,7 +66,7 @@ void logRect(const QRectF& r, const QString& context)
     AB_INF(
                 context <<
                 ": center(" << r.center().x() << ", " << r.center().y() << ")"
-                ", size(" << r.width() << ", " << r.height() << ")");
+                                                                           ", size(" << r.width() << ", " << r.height() << ")");
 }
 }
 

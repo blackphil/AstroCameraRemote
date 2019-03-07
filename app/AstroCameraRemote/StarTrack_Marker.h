@@ -58,6 +58,7 @@ Q_SIGNALS :
 
 public:
     Marker(GraphicsScene* scene, QObject* parent);
+    ~Marker();
 
     QRectF getRect() const;
 
