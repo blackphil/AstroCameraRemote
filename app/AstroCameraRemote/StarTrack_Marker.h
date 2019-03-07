@@ -42,12 +42,13 @@ private :
     QGraphicsRectItem* rectItem;
     QGraphicsLineItem* crosshair[2];
     QGraphicsSimpleTextItem* info;
-    QPen rectPen;
-    QPen crosshairPen;
+    QPen pen;
     QPointF startPos;
     bool tracking;
 
     Status status;
+
+    bool isSelected;
 
     void update();
     bool update(const QRectF &r);
@@ -69,6 +70,9 @@ public:
 
     QPointF getReferencePos() const;
     void setReferencePos();
+
+    bool getIsSelected() const;
+    void setIsSelected(bool value);
 
 public Q_SLOTS :
     void setTracking(bool value);

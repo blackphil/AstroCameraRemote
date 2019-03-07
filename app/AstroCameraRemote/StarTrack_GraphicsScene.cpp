@@ -104,29 +104,14 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if(!enabled)
         return;
 
-    selectedMarker = nullptr;
 
     if(markers.isEmpty() || event->modifiers().testFlag(Qt::ControlModifier))
     {
-        selectedMarker = new Marker(this, this);
-        markers << selectedMarker;
+        Marker* m = new Marker(this, this);
+        markers << m;
+        m->start(event->scenePos());
     }
-    else
-    {
-        foreach(Marker* m, markers)
-        {
-            if(m->getRect().contains(event->scenePos()))
-            {
-                selectedMarker = m;
-                break;
-            }
-        }
-    }
-
-    if(!selectedMarker)
-        return;
-
-    selectedMarker->start(event->scenePos());
+    setSelectedMarker(event->scenePos());
 }
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -188,6 +173,23 @@ void GraphicsScene::newMark()
 
     Q_EMIT newHfdValue(info);
 
+
+}
+
+void GraphicsScene::setSelectedMarker(const QPointF &pos)
+{
+    if(selectedMarker)
+        selectedMarker->setIsSelected(false);
+
+    foreach(Marker* m, markers)
+    {
+        if(m->getRect().contains(pos))
+        {
+            selectedMarker = m;
+            selectedMarker->setIsSelected(true);
+            break;
+        }
+    }
 
 }
 

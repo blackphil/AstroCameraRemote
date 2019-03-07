@@ -52,6 +52,7 @@ protected:
 
 private Q_SLOTS :
     void newMark();
+    void setSelectedMarker(const QPointF& pos);
 
 };
 

@@ -15,21 +15,21 @@ Marker::Marker(GraphicsScene *scene, QObject *parent)
     , scene(scene)
     , rectItem(Q_NULLPTR)
     , info(Q_NULLPTR)
-    , rectPen(QPen(QBrush(Qt::green), 1))
-    , crosshairPen(QPen(QBrush(Qt::green), 1))
+    , pen(QPen(QBrush(Qt::green), 1))
     , tracking(true )
     , status(Status_Idle)
+    , isSelected(false)
 {
 
     connect(this, SIGNAL(newMark()), scene, SLOT(newMark()));
     connect(scene, SIGNAL(starTrackingEnabled(bool)), this, SLOT(setTracking(bool)));
 
-    rectItem = scene->addRect(QRectF(), rectPen);
+    rectItem = scene->addRect(QRectF(), pen);
     rectItem->setZValue(2);
 
     for(int i=0; i<2; i++)
     {
-        crosshair[i] = scene->addLine(QLineF(), crosshairPen);
+        crosshair[i] = scene->addLine(QLineF(), pen);
         crosshair[i]->setZValue(2);
     }
 
@@ -97,8 +97,7 @@ bool Marker::update(const QRectF& r)
     if(!referencePos.isNull())
     {
         QPointF currentCenter = r.center();
-        qreal length = (currentCenter-referencePos).manhattanLength();
-        lineFromRef->setLine(QLineF(referencePos.x(), referencePos.y(), r.center().x(), r.center().y()));
+        lineFromRef->setLine(QLineF(referencePos.x(), referencePos.y(), currentCenter.x(), currentCenter.y()));
     }
 
     info->setPos(rectItem->rect().topLeft() + QPointF(0, -info->boundingRect().height()));
@@ -181,10 +180,34 @@ void Marker::setReferencePos()
     referencePos = tracker.getRect().center();
 }
 
+bool Marker::getIsSelected() const
+{
+    return isSelected;
+}
+
+void Marker::setIsSelected(bool value)
+{
+    isSelected = value;
+    if(isSelected)
+    {
+        rectItem->setPen(QPen(Qt::yellow, 1));
+        crosshair[0]->setPen(QPen(Qt::yellow, 1));
+        crosshair[1]->setPen(QPen(Qt::yellow, 1));
+        info->setBrush(Qt::yellow);
+    }
+    else
+    {
+        rectItem->setPen(QPen(Qt::green, 1));
+        crosshair[0]->setPen(QPen(Qt::green, 1));
+        crosshair[1]->setPen(QPen(Qt::green, 1));
+        info->setBrush(Qt::green);
+    }
+}
+
 void Marker::update()
 {
     QRectF r = getRect();
-
+    
     switch(Settings::getMarkerModus())
     {
     case Marker::Modus_Rubberband :

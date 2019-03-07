@@ -117,14 +117,16 @@ void Widget::on_postViewBwd_clicked()
 void Widget::on_loadTestDataBtn_clicked()
 {
 
-    QDir sequence(":/hfd/sequence");
-    QStringList entries = sequence.entryList(QDir::Files, QDir::Time);
-
-
-    this->loadFiles(entries, sequence);
+    QDir dir = QDir(":/hfd/sequence");
+    QStringList entries = dir.entryList(QDir::Files, QDir::Time);
+    for(int i=0; i<entries.count(); i++)
+    {
+        entries[i].prepend("/").prepend(dir.absolutePath());
+    }
+    this->loadFiles(entries);
 }
 
-void Widget::loadFiles(const QStringList &files, const QDir& mainDir)
+void Widget::loadFiles(const QStringList &files)
 {
 
     QProgressDialog progress(tr("Loading test data ..."), tr("Cancel"), 0, files.count(), this);
@@ -144,7 +146,7 @@ void Widget::loadFiles(const QStringList &files, const QDir& mainDir)
 
             QImage img;
 
-            QFileInfo fileInfo(mainDir, fn);
+            QFileInfo fileInfo(fn);
             Info dummyInfo;
             dummyInfo.setShutterSpeed(fileInfo.baseName());
             dummyInfo.setTimestamp(fileInfo.created());
@@ -193,7 +195,7 @@ void Widget::on_openFilesBtn_clicked()
                 , dir
                 , "FITS (*.fit *.fts *.fits)"
                   ";;JPEG (*.jpg *.jpeg)"
-                  ";;TIFF (*.tif)"
+                  ";;TIFF (*.tif *.tiff)"
                   ";;All files(*.*)");
 
     if(files.isEmpty())

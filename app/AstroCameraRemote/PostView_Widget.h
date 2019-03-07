@@ -55,7 +55,7 @@ private Q_SLOTS :
 
     void on_openFilesBtn_clicked();
 
-    void loadFiles(const QStringList& files, const QDir &mainDir = QDir());
+    void loadFiles(const QStringList& files);
 
     void on_clearBtn_clicked();
 
