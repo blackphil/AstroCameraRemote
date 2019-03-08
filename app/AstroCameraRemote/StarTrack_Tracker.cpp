@@ -28,7 +28,7 @@ QRectF Tracker::getRect() const
 
 bool Tracker::update(const QPixmap& pm)
 {
-    if(pm.isNull())
+    if(pm.isNull() || currentRect.isNull())
         return false;
 
     static const qreal epsilon = 1;

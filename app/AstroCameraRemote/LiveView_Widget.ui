@@ -6,14 +6,38 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>663</width>
+    <height>498</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="5">
+    <widget class="ImageView" name="graphicsView">
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContents</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QSpinBox" name="fpsSpinBox">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>200</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>FPS:</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0" rowspan="2">
     <widget class="QLabel" name="metaInfo">
      <property name="sizePolicy">
@@ -33,28 +57,22 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="5">
-    <widget class="QGraphicsView" name="graphicsView"/>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="label">
+   <item row="2" column="2">
+    <widget class="QCheckBox" name="debugModeCb">
      <property name="text">
-      <string>FPS:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QSpinBox" name="fpsSpinBox">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>200</number>
+      <string>Debug-Mode</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ImageView</class>
+   <extends>QGraphicsView</extends>
+   <header>ImageView.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

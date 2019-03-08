@@ -15,7 +15,7 @@ Q_SIGNALS:
     void newLiveViewUrl(QString);
 
 public :
-    StartLiveView(QObject* parent = NULL);
+    StartLiveView(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 };
 
@@ -32,7 +32,7 @@ Q_SIGNALS:
     void liveViewStopped();
 
 public :
-    StopLiveView(QObject* parent = NULL);
+    StopLiveView(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 };
 

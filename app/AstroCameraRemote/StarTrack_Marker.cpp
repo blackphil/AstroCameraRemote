@@ -43,12 +43,15 @@ Marker::Marker(GraphicsScene *scene, QObject *parent)
 
 Marker::~Marker()
 {
-    scene->removeItem(lineFromRef);
-    scene->removeItem(lineFromRef);
-    scene->removeItem(rectItem);
-    scene->removeItem(crosshair[0]);
-    scene->removeItem(crosshair[1]);
-    scene->removeItem(info);
+    if(scene)
+    {
+        scene->removeItem(lineFromRef);
+        scene->removeItem(lineFromRef);
+        scene->removeItem(rectItem);
+        scene->removeItem(crosshair[0]);
+        scene->removeItem(crosshair[1]);
+        scene->removeItem(info);
+    }
 }
 
 QRectF Marker::getRect() const

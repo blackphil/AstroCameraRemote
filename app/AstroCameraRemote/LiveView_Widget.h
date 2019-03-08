@@ -38,16 +38,19 @@ class Widget : public QWidget
     ImageQueue* imageQueue;
     QTimer* pollImageTimer;
 
-    ReaderThread* readerThread;
+    ReaderThreadBase* readerThread;
     QTime lastTimeStamp;
     StarTrack::GraphicsScene* starTrackScene;
 
     int frameCount;
 
+    bool debugModeEnabled;
+    QString url;
+
     int calcFps();
 
 public:
-    explicit Widget(QWidget *parent = 0);
+    explicit Widget(QWidget *parent = nullptr);
     ~Widget();
 
     void setSender(SonyAlphaRemote::Sender *value);
@@ -64,9 +67,12 @@ public Q_SLOTS :
 
 private Q_SLOTS :
     void startReaderThread(QString url);
+    void startReaderThread();
     void stopReaderThread();
 
     void on_fpsSpinBox_valueChanged(int fps);
+    void on_debugModeCb_toggled(bool checked);
+    void on_setRefBtn_clicked();
 };
 
 

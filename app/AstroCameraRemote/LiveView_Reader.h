@@ -38,10 +38,6 @@ public:
     explicit Reader(QObject *parent = nullptr);
     bool getReady() const;
 
-
-    int getStepSizeMs() const;
-    void setStepSizeMs(int value);
-
 Q_SIGNALS :
     void newPayload(PayloadPtr);
 

@@ -49,10 +49,12 @@ void GraphicsScene::setPublishScaledImage(bool value)
 
 GraphicsScene::GraphicsScene(QObject* parent)
     : QGraphicsScene(parent)
+    , imageLayer(nullptr)
     , selectedMarker(nullptr)
     , enabled(true)
     , publishScaledImage(Settings::getPublishScaledImage())
 {
+
 
     QRect defaultRect(0, 0, 808, 540);
 
@@ -69,6 +71,7 @@ GraphicsScene::GraphicsScene(QObject* parent)
 
 GraphicsScene::~GraphicsScene()
 {
+    qDeleteAll(markers);
 }
 
 void GraphicsScene::updateBackground(const QPixmap &pixmap)
@@ -76,7 +79,7 @@ void GraphicsScene::updateBackground(const QPixmap &pixmap)
     if(!enabled)
         return;
 
-    imageLayer->setPixmap(pixmap);
+    imageLayer->setPixmap(pixmap.scaledToHeight(sceneRect().toRect().height()));
     newMark();
 }
 
@@ -138,7 +141,8 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if(!enabled || selectedMarker == nullptr)
         return;
-    selectedMarker->mouseMoved(event->scenePos());
+    if(event->buttons().testFlag(Qt::LeftButton) && event->modifiers() == 0)
+        selectedMarker->mouseMoved(event->scenePos());
 }
 
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -219,5 +223,6 @@ void GraphicsScene::setSelectedMarker(Marker *m)
     if(selectedMarker)
         selectedMarker->setIsSelected(true);
 }
+
 
 } // namespace StarTrack

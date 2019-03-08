@@ -25,14 +25,14 @@ Widget::Widget(QWidget *parent)
     , ui(new Ui::Widget)
     , startLiveView(new StartLiveView(this))
     , stopLiveView(new StopLiveView(this))
-    , sender(Q_NULLPTR)
+    , sender(nullptr)
     , imageQueue(new ImageQueue(this))
     , pollImageTimer(new QTimer(this))
-    , readerThread(Q_NULLPTR)
+    , readerThread(nullptr)
     , lastTimeStamp(QTime::currentTime())
     , starTrackScene(new StarTrack::GraphicsScene(this))
     , frameCount(0)
-
+    , debugModeEnabled(false)
 {
     AB_INF("ctor");
     ui->setupUi(this);
@@ -103,6 +103,13 @@ void Widget::updateLiveViewImage()
 
 void Widget::startReaderThread(QString url)
 {
+    this->url = url;
+    if(!debugModeEnabled)
+        startReaderThread();
+}
+
+void Widget::startReaderThread()
+{
     if(readerThread)
     {
         readerThread->quit();
@@ -110,8 +117,14 @@ void Widget::startReaderThread(QString url)
         delete readerThread;
     }
 
+    if(debugModeEnabled)
+        readerThread = new DummyReaderThread(this);
+    else if(!url.isEmpty())
+        readerThread = new ReaderThread(url, this);
 
-    readerThread = new ReaderThread(url, this);
+    if(!readerThread)
+        return;
+
     connect(readerThread, SIGNAL(newPayload(PayloadPtr)), imageQueue, SLOT(push(PayloadPtr)));
 
     readerThread->start();
@@ -146,12 +159,26 @@ void Widget::stopReaderThread()
 
 }
 
-void LiveView::Widget::on_fpsSpinBox_valueChanged(int fps)
+void Widget::on_fpsSpinBox_valueChanged(int fps)
 {
     pollImageTimer->setInterval(1000 / fps);
     Settings::setFps(fps);
 }
 
+void Widget::on_debugModeCb_toggled(bool checked)
+{
+    debugModeEnabled = checked;
+    stopReaderThread();
+    startReaderThread();
+}
+
+void Widget::on_setRefBtn_clicked()
+{
+    starTrackScene->setReference();
+}
+
 } // namespace LiveView
+
+
 
 
