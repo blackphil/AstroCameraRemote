@@ -1,12 +1,10 @@
-#ifndef SONYALPHAREMOTE_JSON_COMMAND_H
-#define SONYALPHAREMOTE_JSON_COMMAND_H
+#ifndef JSON_COMMAND_H
+#define JSON_COMMAND_H
 
 #include <QObject>
 #include <QJsonDocument>
 #include <QtNetwork>
 #include <QStringList>
-
-namespace SonyAlphaRemote {
 
 class Sender;
 
@@ -193,7 +191,6 @@ public :
 
 
 } // namespace Json
-} // namespace SonyAlphaRemote
 
 
-#endif // SONYALPHAREMOTE_JSON_COMMAND_H
+#endif // JSON_COMMAND_H

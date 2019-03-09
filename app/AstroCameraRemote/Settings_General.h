@@ -1,11 +1,9 @@
-#ifndef SETTINGS_GENERAL_H
-#define SETTINGS_GENERAL_H
+#ifndef GENERAL_SETTINGS_H
+#define GENERAL_SETTINGS_H
 
 
 
-namespace Settings {
-
-class General
+class GeneralSettings
 {
 
 public:
@@ -15,6 +13,4 @@ public:
 
 };
 
-} // namespace Settings
-
-#endif // SETTINGS_GENERAL_H
+#endif // GENERAL_SETTINGS_H

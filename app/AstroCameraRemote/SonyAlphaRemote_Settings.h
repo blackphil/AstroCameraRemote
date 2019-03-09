@@ -1,5 +1,5 @@
-#ifndef SONYALPHAREMOTE_SETTINGS_H
-#define SONYALPHAREMOTE_SETTINGS_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 #include <QObject>
 #include <QSettings>
@@ -7,8 +7,6 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include "SonyAlphaRemote_TimeUnitButton.h"
-
-namespace SonyAlphaRemote {
 
 class Settings;
 class Setting : public QObject
@@ -58,7 +56,4 @@ public:
 };
 
 
-
-} // namespace SonyAlphaRemote
-
-#endif // SONYALPHAREMOTE_SETTINGS_H
+#endif // SETTINGS_H

@@ -5,7 +5,7 @@
 #include "SonyAlphaRemote_Helper.h"
 #include "AstroBase.h"
 
-namespace SonyAlphaRemote {
+
 namespace Json {
 
 void Command::setReply(QNetworkReply *value)
@@ -392,4 +392,4 @@ PostViewProviderCommand::PostViewProviderCommand(QObject *parent)
 }
 
 } // namespace Json
-} // namespace SonyAlphaRemote
+

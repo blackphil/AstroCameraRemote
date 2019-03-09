@@ -1,6 +1,6 @@
 #include "SonyAlphaRemote_Sequencer_StateNormalShooting.h"
 
-namespace SonyAlphaRemote {
+
 namespace Sequencer {
 
 StateNormalShooting::StateNormalShooting(Sender* sender, quint32 i, quint32 maxCount)
@@ -21,4 +21,4 @@ void StateNormalShooting::onEntry(QEvent *ev)
 }
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
+

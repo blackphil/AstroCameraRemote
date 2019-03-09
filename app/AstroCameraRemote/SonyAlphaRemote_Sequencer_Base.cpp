@@ -5,7 +5,7 @@
 #include "Settings_General.h"
 #include "SonyAlphaRemote_Sequencer_StateBase.h"
 
-namespace SonyAlphaRemote {
+
 namespace Sequencer {
 
 Base::Base(StatusPoller *statusPoller, Sender *sender, QObject *parent)
@@ -42,7 +42,7 @@ bool Base::isRunning() const
 int Base::calculateSequenceDuration(int startDelay, int shutterSpeed, int pauseDelay, int numShots)
 {
     int factor = 1;
-    if(::Settings::General::getLenrEnabled())
+    if(GeneralSettings::getLenrEnabled())
         factor = 2;
 
     return startDelay + (factor * shutterSpeed + pauseDelay) * numShots - pauseDelay;
@@ -91,4 +91,4 @@ void Base::addState(StateBase *s)
 
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
+

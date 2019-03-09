@@ -5,9 +5,6 @@
 #include "AstroBase.h"
 
 
-namespace SonyAlphaRemote {
-
-
 Setting::Setting(Setting* parent)
     : QObject(parent)
     , qSettings(NULL == parent ? NULL : parent->qSettings)
@@ -73,6 +70,3 @@ void Settings::load()
         s->load();
     }
 }
-
-
-} // namespace SonyAlphaRemote

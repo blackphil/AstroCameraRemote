@@ -3,12 +3,11 @@
 
 #include "AstroBase.h"
 
-namespace SonyAlphaRemote {
 namespace Sequencer {
 
 
 
-SettingsManager::SettingsManager(SonyAlphaRemote::Setting* parent)
+SettingsManager::SettingsManager(Setting* parent)
     : Setting(parent)
     , current(nullptr)
 {
@@ -181,4 +180,3 @@ void SettingsManager::setNumShots(int value)
 
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote

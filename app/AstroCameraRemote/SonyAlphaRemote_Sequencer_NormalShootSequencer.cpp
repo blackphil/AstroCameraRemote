@@ -7,7 +7,7 @@
 #include "SonyAlphaRemote_Sequencer_StatePause.h"
 #include "SonyAlphaRemote_Sequencer_StateFinish.h"
 
-namespace SonyAlphaRemote {
+
 namespace Sequencer {
 
 
@@ -118,4 +118,4 @@ void NormalShootSequencer::setShutterSpeed(int value)
 }
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
+

@@ -1,11 +1,11 @@
-#ifndef SONYALPHAREMOTE_TIMEUNITBUTTON_H
-#define SONYALPHAREMOTE_TIMEUNITBUTTON_H
+#ifndef TIMEUNITBUTTON_H
+#define TIMEUNITBUTTON_H
 
 #include <QPushButton>
 #include <QDoubleSpinBox>
 
 
-namespace SonyAlphaRemote {
+
 
 class TimeUnitButton : public QPushButton
 {
@@ -62,6 +62,6 @@ protected Q_SLOTS :
     void handleValueChanged(double);
 };
 
-} // namespace SonyAlphaRemote
 
-#endif // SONYALPHAREMOTE_TIMEUNITBUTTON_H
+
+#endif // TIMEUNITBUTTON_H

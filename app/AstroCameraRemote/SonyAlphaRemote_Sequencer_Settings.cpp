@@ -4,7 +4,6 @@
 #include "SonyAlphaRemote_Json_Command.h"
 #include "AstroBase.h"
 
-namespace SonyAlphaRemote {
 
 namespace Sequencer {
 
@@ -150,4 +149,3 @@ void Settings::load()
 }
 
 } //namespace Sequencer
-} // namespace SonyAlphaRemote

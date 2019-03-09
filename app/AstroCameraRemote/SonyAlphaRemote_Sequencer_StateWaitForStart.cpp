@@ -1,6 +1,6 @@
 #include "SonyAlphaRemote_Sequencer_StateWaitForStart.h"
 
-namespace SonyAlphaRemote {
+
 namespace Sequencer {
 
 StateWaitForStart::StateWaitForStart(QTimer *t)
@@ -12,4 +12,4 @@ StateWaitForStart::StateWaitForStart(QTimer *t)
 
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
+

@@ -1,5 +1,5 @@
-#ifndef SONYALPHAREMOTE_POSTVIEW_INFO_H
-#define SONYALPHAREMOTE_POSTVIEW_INFO_H
+#ifndef POSTVIEW_INFO_H
+#define POSTVIEW_INFO_H
 
 #include <QDateTime>
 #include <QUrl>
@@ -56,4 +56,4 @@ public:
 
 } // namespace PostView
 
-#endif // SONYALPHAREMOTE_POSTVIEW_INFO_H
+#endif // POSTVIEW_INFO_H

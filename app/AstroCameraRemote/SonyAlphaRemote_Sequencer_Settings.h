@@ -1,5 +1,5 @@
-#ifndef SONYALPHAREMOTE_SHOOTSEQUENCE_H
-#define SONYALPHAREMOTE_SHOOTSEQUENCE_H
+#ifndef SHOOTSEQUENCE_H
+#define SHOOTSEQUENCE_H
 
 #include <QString>
 #include <QObject>
@@ -9,8 +9,6 @@
 
 #include "SonyAlphaRemote_Settings.h"
 
-
-namespace SonyAlphaRemote {
 
 namespace Sequencer {
 
@@ -57,7 +55,5 @@ public:
 };
 
 } //namespace Sequencer
-} // namespace SonyAlphaRemote
 
-
-#endif // SONYALPHAREMOTE_SHOOTSEQUENCE_H
+#endif // SHOOTSEQUENCE_H

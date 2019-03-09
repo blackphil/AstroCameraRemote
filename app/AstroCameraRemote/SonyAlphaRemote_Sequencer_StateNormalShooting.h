@@ -1,11 +1,11 @@
-#ifndef SONYALPHAREMOTE_SEQUENCER_STATENORMALSHOOTING_H
-#define SONYALPHAREMOTE_SEQUENCER_STATENORMALSHOOTING_H
+#ifndef SEQUENCER_STATENORMALSHOOTING_H
+#define SEQUENCER_STATENORMALSHOOTING_H
 
 #include "SonyAlphaRemote_Sequencer_StateBase.h"
 #include "SonyAlphaRemote_Json_Command.h"
 #include "SonyAlphaRemote_Sender.h"
 
-namespace SonyAlphaRemote {
+
 namespace Sequencer {
 
 class StateNormalShooting : public StateBase
@@ -22,6 +22,6 @@ protected :
 };
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
 
-#endif // SONYALPHAREMOTE_SEQUENCER_STATENORMALSHOOTING_H
+
+#endif // SEQUENCER_STATENORMALSHOOTING_H

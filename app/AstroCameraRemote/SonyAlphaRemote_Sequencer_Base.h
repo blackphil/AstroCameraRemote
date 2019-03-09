@@ -1,5 +1,5 @@
-#ifndef SONYALPHAREMOTE_SEQUENCER_BASE_H
-#define SONYALPHAREMOTE_SEQUENCER_BASE_H
+#ifndef SEQUENCER_BASE_H
+#define SEQUENCER_BASE_H
 
 #include <QObject>
 #include <QStateMachine>
@@ -9,7 +9,7 @@
 #include "SonyAlphaRemote_StatusPoller.h"
 
 
-namespace SonyAlphaRemote {
+
 namespace Sequencer {
 
 class StateBase;
@@ -65,6 +65,6 @@ public Q_SLOTS :
 };
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
 
-#endif // SONYALPHAREMOTE_SEQUENCER_BASE_H
+
+#endif // SEQUENCER_BASE_H

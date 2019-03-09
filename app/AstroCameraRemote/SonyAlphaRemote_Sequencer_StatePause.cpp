@@ -1,6 +1,6 @@
 #include "SonyAlphaRemote_Sequencer_StatePause.h"
 
-namespace SonyAlphaRemote {
+
 namespace Sequencer {
 
 StatePause::StatePause(QTimer *t)
@@ -10,4 +10,4 @@ StatePause::StatePause(QTimer *t)
 }
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
+

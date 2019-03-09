@@ -1,13 +1,11 @@
-#ifndef SONYALPHAREMOTE_SEQUENCER_STATEBASE_H
-#define SONYALPHAREMOTE_SEQUENCER_STATEBASE_H
+#ifndef SEQUENCER_STATEBASE_H
+#define SEQUENCER_STATEBASE_H
 
 #include <QObject>
 #include <QState>
 #include <QTimer>
 #include <QPointer>
 
-
-namespace SonyAlphaRemote {
 namespace Sequencer {
 
 class StateBase : public QState
@@ -45,6 +43,5 @@ Q_SIGNALS :
 };
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
 
-#endif // SONYALPHAREMOTE_SEQUENCER_STATEBASE_H
+#endif // SEQUENCER_STATEBASE_H

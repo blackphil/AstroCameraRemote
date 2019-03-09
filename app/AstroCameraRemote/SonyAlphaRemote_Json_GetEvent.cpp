@@ -2,7 +2,7 @@
 
 #include <QJsonDocument>
 
-namespace SonyAlphaRemote {
+
 namespace Json {
 
 QJsonArray GetEvent::getStatus() const
@@ -71,4 +71,4 @@ void GetEvent::handleReply(const QJsonDocument &replyJson)
 }
 
 } // namespace Json
-} // namespace SonyAlphaRemote
+

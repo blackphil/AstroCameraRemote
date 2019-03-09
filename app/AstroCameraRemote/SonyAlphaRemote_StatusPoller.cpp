@@ -5,7 +5,7 @@
 #include "AstroBase.h"
 #include <QUrl>
 
-namespace SonyAlphaRemote {
+
 
 QString StatusPoller::getCameraStatus() const
 {
@@ -23,10 +23,9 @@ void StatusPoller::simCamReady()
     Q_EMIT statusChanged("IDLE");
 }
 
-StatusPoller::StatusPoller(Sender *sender, QObject *parent)
+StatusPoller::StatusPoller(QObject *parent)
     : QObject(parent)
-    , sender(sender)
-    , trigger(Q_NULLPTR)
+    , trigger(nullptr)
     , cameraStatus(tr("not connected"))
     , getEvent(new Json::GetEvent(this))
     , waitingForEventReply(false)
@@ -68,7 +67,7 @@ void StatusPoller::poll()
     if(!waitingForEventReply)
     {
 //        AB_INF("SEND GETEVENT NOW (" << getEvent->isCallbackImmedialetyEnabled() << ")");
-        sender->send(getEvent);
+        Sender::get()->send(getEvent);
         waitingForEventReply = true;
     }
 }
@@ -175,4 +174,4 @@ void StatusPoller::handleEventError()
 
 
 
-} // namespace SonyAlphaRemote
+

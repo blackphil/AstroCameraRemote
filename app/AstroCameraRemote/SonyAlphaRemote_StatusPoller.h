@@ -1,5 +1,5 @@
-#ifndef SONYALPHAREMOTE_STATUSPOLLER_H
-#define SONYALPHAREMOTE_STATUSPOLLER_H
+#ifndef STATUSPOLLER_H
+#define STATUSPOLLER_H
 
 #include <QObject>
 #include <QTimer>
@@ -9,13 +9,12 @@
 #include "SonyAlphaRemote_Json_GetEvent.h"
 #include "SonyAlphaRemote_BatteryInfo.h"
 
-namespace SonyAlphaRemote {
+
 
 class   StatusPoller : public QObject
 {
     Q_OBJECT
 
-    Sender* sender;
     QTimer* trigger;
     QString cameraStatus;
     BatteryInfo batteryInfo;
@@ -27,7 +26,7 @@ class   StatusPoller : public QObject
     void getBatteryInfo(QJsonArray status);
 
 public:
-    explicit StatusPoller(Sender* sender, QObject *parent = Q_NULLPTR);
+    explicit StatusPoller(QObject *parent = nullptr);
 
     void start(double interval);
     void stop();
@@ -58,6 +57,6 @@ private Q_SLOTS :
 
 };
 
-} // namespace SonyAlphaRemote
 
-#endif // SONYALPHAREMOTE_STATUSPOLLER_H
+
+#endif // STATUSPOLLER_H

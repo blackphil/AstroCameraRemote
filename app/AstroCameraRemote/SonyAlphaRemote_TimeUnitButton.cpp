@@ -1,6 +1,6 @@
 #include "SonyAlphaRemote_TimeUnitButton.h"
 
-namespace SonyAlphaRemote {
+
 
 TimeUnitButton::TimeUnitButton(QWidget *parent)
     : QPushButton(parent)
@@ -102,4 +102,4 @@ void TimeUnitButton::handleValueChanged(double)
     Q_EMIT valueChanged(ms);
 }
 
-} // namespace SonyAlphaRemote
+

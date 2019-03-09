@@ -1,11 +1,9 @@
-#ifndef SONYALPHAREMOTE_SEQUENCER_STATEFINISH_H
-#define SONYALPHAREMOTE_SEQUENCER_STATEFINISH_H
+#ifndef SEQUENCER_STATEFINISH_H
+#define SEQUENCER_STATEFINISH_H
 
 
 #include "SonyAlphaRemote_Sequencer_StateBase.h"
 
-
-namespace SonyAlphaRemote {
 namespace Sequencer {
 
 class StateFinish : public StateBase
@@ -16,6 +14,5 @@ public:
 };
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
 
-#endif // SONYALPHAREMOTE_SEQUENCER_STATEFINISH_H
+#endif // SEQUENCER_STATEFINISH_H

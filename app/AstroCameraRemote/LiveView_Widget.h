@@ -33,7 +33,6 @@ class Widget : public QWidget
 
     StartLiveView* startLiveView;
     StopLiveView* stopLiveView;
-    SonyAlphaRemote::Sender* sender;
 
     ImageQueue* imageQueue;
     QTimer* pollImageTimer;
@@ -52,9 +51,6 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
-
-    void setSender(SonyAlphaRemote::Sender *value);
-
 
     StarTrack::GraphicsScene *getStarTrackScene() const;
 

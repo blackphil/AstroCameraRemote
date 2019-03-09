@@ -1,6 +1,6 @@
 #include "SonyAlphaRemote_Sequencer_StateFinish.h"
 
-namespace SonyAlphaRemote {
+
 namespace Sequencer {
 
 StateFinish::StateFinish()
@@ -10,4 +10,4 @@ StateFinish::StateFinish()
 }
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
+

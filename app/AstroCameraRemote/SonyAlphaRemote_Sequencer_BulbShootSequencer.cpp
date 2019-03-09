@@ -8,7 +8,8 @@
 #include "SonyAlphaRemote_Sequencer_StatePause.h"
 #include "SonyAlphaRemote_Sequencer_StateFinish.h"
 
-namespace SonyAlphaRemote {
+
+
 namespace Sequencer {
 
 
@@ -125,4 +126,3 @@ void BulbShootSequencer::handleStopped()
 
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote

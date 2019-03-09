@@ -6,8 +6,23 @@
 
 #include "SonyAlphaRemote_Helper.h"
 
-namespace SonyAlphaRemote
+
+Sender* Sender::instance(nullptr);
+
+Sender* Sender::create(QObject *parent)
 {
+    Q_ASSERT(!instance);
+    if(instance)
+       delete instance;
+
+    instance = new Sender(parent);
+    return instance;
+}
+
+Sender* Sender::get()
+{
+    return instance;
+}
 
 QJsonDocument Sender::handleReply(QNetworkReply *reply) const
 {
@@ -24,8 +39,8 @@ Sender::Sender(QObject* parent)
     : QObject(parent)
     , manager(new QNetworkAccessManager(this))
     , replyDelay(2000)
-    , timeoutTimer(NULL)
-    , postViewImageReply(NULL)
+    , timeoutTimer(nullptr)
+    , postViewImageReply(nullptr)
 {
 //    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
 
@@ -38,13 +53,18 @@ Sender::Sender(QObject* parent)
 
 }
 
+Sender::~Sender()
+{
+    instance = nullptr;
+}
+
 void Sender::finished(QNetworkReply *reply)
 {
     if(timeoutTimer)
     {
         timeoutTimer->stop();
         delete timeoutTimer;
-        timeoutTimer = NULL;
+        timeoutTimer = nullptr;
     }
 
     QJsonDocument json = handleReply(reply);
@@ -96,4 +116,3 @@ void Sender::send(Json::Command* cmd)
         AB_ERR("no reply");
 }
 
-} //namespace SonyAlphaRemote

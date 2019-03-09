@@ -1,7 +1,9 @@
 #include "SonyAlphaRemote_Sequencer_StateBulbShooting.h"
 
 
-namespace SonyAlphaRemote {
+#include "SonyAlphaRemote_Sender.h"
+
+
 namespace Sequencer {
 
 StateBulbShooting::StateBulbShooting(Sender* sender, QTimer* t, quint32 i, quint32 maxCount)
@@ -20,7 +22,7 @@ void StateBulbShooting::onEntry(QEvent* event)
 
 #ifndef DRY_RUN
     if(!sender.isNull())
-        sender.data()->send(&startBulbShooting);
+        Sender::get()->send(&startBulbShooting);
 #endif
 
     StateBase::onEntry(event);
@@ -37,4 +39,4 @@ void StateBulbShooting::onExit(QEvent* event)
 }
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
+

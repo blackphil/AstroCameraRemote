@@ -1,6 +1,6 @@
 #include "SonyAlphaRemote_Sequencer_StateWaitForCamReady.h"
 
-namespace SonyAlphaRemote {
+
 namespace Sequencer {
 
 StateWaitForCamReady::StateWaitForCamReady(Sender* sender, int i, int numShots)
@@ -27,4 +27,4 @@ void StateWaitForCamReady::updatePostViewInfo(QString url)
 }
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
+

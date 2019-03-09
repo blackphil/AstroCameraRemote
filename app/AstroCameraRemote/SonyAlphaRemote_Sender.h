@@ -1,5 +1,5 @@
-#ifndef SONYALPHAREMOTE_SENDER_H
-#define SONYALPHAREMOTE_SENDER_H
+#ifndef SENDER_H
+#define SENDER_H
 
 #include <QObject>
 #include <QJsonDocument>
@@ -7,12 +7,11 @@
 
 #include "SonyAlphaRemote_Json_Command.h"
 
-namespace SonyAlphaRemote
-{
-
 class Sender : public QObject
 {
     Q_OBJECT
+
+    static Sender* instance;
 
     QNetworkAccessManager* manager;
     QJsonObject noReplyError;
@@ -22,8 +21,13 @@ class Sender : public QObject
 
     QJsonDocument handleReply(QNetworkReply* reply) const;
 
+    explicit Sender(QObject* parent = nullptr);
 public:
-    explicit Sender(QObject* parent = 0);
+
+    ~Sender();
+
+    static Sender* create(QObject* parent);
+    static Sender* get();
 
 Q_SIGNALS :
     void replyReceived(QJsonDocument reply);
@@ -43,6 +47,5 @@ public Q_SLOTS :
 
 };
 
-} //namespace SonyAlphaRemote
 
-#endif // SONYALPHAREMOTE_SENDER_H
+#endif // SENDER_H

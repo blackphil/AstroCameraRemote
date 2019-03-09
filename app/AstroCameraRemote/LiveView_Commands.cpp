@@ -7,7 +7,7 @@ namespace LiveView {
 
 
 StartLiveView::StartLiveView(QObject* parent)
-    : SonyAlphaRemote::Json::Command(parent)
+    : Json::Command(parent)
 {
     setObjectName("StartLiveView");
 }
@@ -62,7 +62,7 @@ QJsonDocument StopLiveView::getJson() const
 
 void StopLiveView::handleReply(const QJsonDocument &replyJson)
 {
-    SonyAlphaRemote::Json::Command::handleReply(replyJson);
+    Json::Command::handleReply(replyJson);
     Q_EMIT liveViewStopped();
 }
 

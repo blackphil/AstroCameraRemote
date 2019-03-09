@@ -1,10 +1,9 @@
-#ifndef SONYALPHAREMOTE_SEQUENCER_STATEWAITFORSTART_H
-#define SONYALPHAREMOTE_SEQUENCER_STATEWAITFORSTART_H
+#ifndef SEQUENCER_STATEWAITFORSTART_H
+#define SEQUENCER_STATEWAITFORSTART_H
 
 #include "SonyAlphaRemote_Sequencer_StateBase.h"
 
 
-namespace SonyAlphaRemote {
 namespace Sequencer {
 
 class StateWaitForStart : public StateBase
@@ -18,6 +17,4 @@ public :
 };
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
-
-#endif // SONYALPHAREMOTE_SEQUENCER_STATEWAITFORSTART_H
+#endif // SEQUENCER_STATEWAITFORSTART_H

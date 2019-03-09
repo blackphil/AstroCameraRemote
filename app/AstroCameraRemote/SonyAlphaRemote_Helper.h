@@ -1,5 +1,5 @@
-#ifndef SONYALPHAREMOTE_HELPER_H
-#define SONYALPHAREMOTE_HELPER_H
+#ifndef HELPER_H
+#define HELPER_H
 
 #include <QString>
 #include <QWidget>
@@ -8,11 +8,10 @@
 //#include "SonyAlphaRemote_Exception.h"
 
 
-namespace SonyAlphaRemote {
 
 class Helper
 {
-    Q_DECLARE_TR_FUNCTIONS(::SonyAlphaRemote::Helper)
+    Q_DECLARE_TR_FUNCTIONS(Helper)
 
 public:
 
@@ -57,13 +56,11 @@ public:
 //Helper::Log& operator<<(Helper::Log& log, const qint64& val);
 
 
-} // namespace SonyAlphaRemote
-
 #ifdef QT_DEBUG
-#define SAR_INF(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Info, __FILE__, __FUNCTION__, __LINE__) << X
-#define SAR_WRN(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Warning, __FILE__, __FUNCTION__,  __LINE__) << X
-#define SAR_ERR(X) ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Error, __FILE__, __FUNCTION__, __LINE__) << X
-#define SAR_NOT_IMPLEMENTED ::SonyAlphaRemote::Helper::Log(SonyAlphaRemote::Helper::Log::Warning, __FILE__, __FUNCTION__, __LINE__) << " not implemented yet!"
+#define SAR_INF(X) ::Helper::Log(Helper::Log::Info, __FILE__, __FUNCTION__, __LINE__) << X
+#define SAR_WRN(X) ::Helper::Log(Helper::Log::Warning, __FILE__, __FUNCTION__,  __LINE__) << X
+#define SAR_ERR(X) ::Helper::Log(Helper::Log::Error, __FILE__, __FUNCTION__, __LINE__) << X
+#define SAR_NOT_IMPLEMENTED ::Helper::Log(Helper::Log::Warning, __FILE__, __FUNCTION__, __LINE__) << " not implemented yet!"
 #else
 #define SAR_INF(X) qt_noop()
 #define SAR_WRN(X) qt_noop()
@@ -71,4 +68,4 @@ public:
 #define SAR_NOT_IMPLEMENTED qt_noop()
 #endif
 
-#endif // SONYALPHAREMOTE_HELPER_H
+#endif // HELPER_H

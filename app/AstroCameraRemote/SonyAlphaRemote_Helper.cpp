@@ -5,7 +5,7 @@
 
 //#include "SonyAlphaRemote_Exception.h"
 
-namespace SonyAlphaRemote {
+
 
 FILE* Helper::Log::logfile(0);
 
@@ -124,4 +124,3 @@ Helper::Log& operator<<(Helper::Log& log, const qint64& val)
 
 #endif
 
-} // namespace Creo

@@ -1,0 +1,88 @@
+#ifndef SEQUENCER_SEQUENCER_CONTROLWIDGET_H
+#define SEQUENCER_SEQUENCER_CONTROLWIDGET_H
+
+#include <QWidget>
+
+#include "SonyAlphaRemote_Json_Command.h"
+#include "SonyAlphaRemote_StatusPoller.h"
+#include "MessagePoster.h"
+#include "PostView_Info.h"
+
+class Settings;
+
+namespace Sequencer {
+
+class BulbShootSequencer;
+class NormalShootSequencer;
+
+class SettingsManager;
+
+namespace Ui {
+class ControlWidget;
+}
+
+class ControlWidget : public QWidget, public MessagePoster
+{
+    Q_OBJECT
+
+private:
+    Ui::ControlWidget *ui;
+    Settings* settings;
+    SettingsManager* sequencerSettingsManager;
+
+    Json::SetShutterSpeed* setShutterSpeed;
+    Json::SetIsoSpeedRate* setIsoSpeedRate;
+    Json::ActTakePicture* actTakePicture;
+    Json::StartBulbShooting* startBulbShooting;
+    Json::StopBulbShooting* stopBulbShooting;
+
+    StatusPoller* statusPoller;
+    BulbShootSequencer* bulbShootSequencer;
+    NormalShootSequencer* normalShootSequencer;
+
+
+    int connectionState;
+
+public:
+    explicit ControlWidget(QWidget *parent = nullptr);
+    ~ControlWidget();
+
+Q_SIGNALS :
+
+    void newPostViewInfo(PostView::Info);
+
+public Q_SLOTS :
+    void isoSpeedRatesChanged(const QStringList &candidates);
+    void shutterSpeedsChanged(const QStringList &candidates);
+
+private Q_SLOTS :
+
+    void on_isoSpeedRate_activated(const QString &isoSpeedRate);
+
+    void onPostView(const QString &url);
+
+    void onPostView(const QString& url, int i, int numShots);
+
+    void addCurrentSequencerSettings();
+    void applySequencerSettings(const QString& name, const QStringList& availableSettings);
+    void removeSequencerSettings(const QString& name);
+
+    bool stopRunningSequence();
+
+    void shootSequencerStarted();
+    void shootSequencerStopped();
+    void recalcSequenceDuration();
+
+    void on_startBulbSequence_clicked();
+
+    void shutterSpeedChanged(const QString& value);
+
+    void on_shutterSpeed_activated(const QString &speed);
+
+    void on_takeShotBtn_clicked();
+
+};
+
+
+} // namespace Sequencer
+#endif // SEQUENCER_SEQUENCER_CONTROLWIDGET_H

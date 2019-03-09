@@ -1,10 +1,8 @@
-#ifndef SONYALPHAREMOTE_BATTERYINFO_H
-#define SONYALPHAREMOTE_BATTERYINFO_H
+#ifndef BATTERYINFO_H
+#define BATTERYINFO_H
 
 #include <QString>
 #include <QJsonObject>
-
-namespace SonyAlphaRemote {
 
 class BatteryInfo
 {
@@ -53,6 +51,5 @@ public:
     static QString getStyleCritical() { return styleCritical; }
 };
 
-} // namespace SonyAlphaRemote
 
-#endif // SONYALPHAREMOTE_BATTERYINFO_H
+#endif // BATTERYINFO_H

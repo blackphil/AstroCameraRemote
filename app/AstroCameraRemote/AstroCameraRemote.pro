@@ -45,7 +45,6 @@ SOURCES += main.cpp\
     SettingsDialog.cpp \
     Settings_General.cpp \
     ToolBar.cpp \
-    SonyAlphaRemote_PostView_FullScreenWindow.cpp \
     PostView_Widget.cpp \
     PostView_Info.cpp \
     LiveView_Widget.cpp \
@@ -66,7 +65,9 @@ SOURCES += main.cpp\
     StarTrack_GraphicsView.cpp \
     StarTrack_StarInfo.cpp \
     StarTrack_Tracker.cpp \
-    ImageView.cpp
+    ImageView.cpp \
+    Sequencer_ControlWidget.cpp \
+    MessagePoster.cpp
 
 HEADERS  += MainWindow.h \
     SonyAlphaRemote_Helper.h \
@@ -93,7 +94,6 @@ HEADERS  += MainWindow.h \
     SettingsDialog.h \
     Settings_General.h \
     ToolBar.h \
-    SonyAlphaRemote_PostView_FullScreenWindow.h \
     PostView_Widget.h \
     PostView_Info.h \
     LiveView_Widget.h \
@@ -114,14 +114,16 @@ HEADERS  += MainWindow.h \
     StarTrack_GraphicsView.h \
     StarTrack_StarInfo.h \
     StarTrack_Tracker.h \
-    ImageView.h
+    ImageView.h \
+    Sequencer_ControlWidget.h \
+    MessagePoster.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \
-    SonyAlphaRemote_PostView_FullScreenWindow.ui \
     PostView_Widget.ui \
     LiveView_Widget.ui \
-    StarTrack_StarTrackView.ui
+    StarTrack_StarTrackView.ui \
+    Sequencer_ControlWidget.ui
 
 #DEFINES += DRY_RUN
 

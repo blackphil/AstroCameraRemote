@@ -1,17 +1,16 @@
-#ifndef SONYALPHAREMOTE_BULBSHOOTSEQUENCER_H
-#define SONYALPHAREMOTE_BULBSHOOTSEQUENCER_H
+#ifndef BULBSHOOTSEQUENCER_H
+#define BULBSHOOTSEQUENCER_H
 
 #include <QObject>
 #include <QTimer>
 
 #include "SonyAlphaRemote_Sequencer_Base.h"
 
-namespace SonyAlphaRemote {
 namespace Sequencer {
 
 
 
-class BulbShootSequencer : public Base
+class BulbShootSequencer : public Sequencer::Base
 {
     Q_OBJECT
 
@@ -29,7 +28,7 @@ private :
 public:
 
 
-    explicit BulbShootSequencer(StatusPoller* statusPoller, Sender* sender, QObject *parent = 0);
+    explicit BulbShootSequencer(StatusPoller* statusPoller, Sender* sender, QObject *parent = nullptr);
 
     int getStartDelay() const;
     void setStartDelay(int value);
@@ -45,6 +44,5 @@ public:
 };
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
 
-#endif // SONYALPHAREMOTE_BULBSHOOTSEQUENCER_H
+#endif // BULBSHOOTSEQUENCER_H

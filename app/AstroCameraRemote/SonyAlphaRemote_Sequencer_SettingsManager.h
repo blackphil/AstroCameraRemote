@@ -1,5 +1,5 @@
-#ifndef SONYALPHAREMOTE_SEQUENCER_SETTINGSMANAGER_H
-#define SONYALPHAREMOTE_SEQUENCER_SETTINGSMANAGER_H
+#ifndef SEQUENCER_SETTINGSMANAGER_H
+#define SEQUENCER_SETTINGSMANAGER_H
 
 
 #include <QObject>
@@ -8,7 +8,6 @@
 #include "SonyAlphaRemote_Settings.h"
 #include "SonyAlphaRemote_Sequencer_Settings.h"
 
-namespace SonyAlphaRemote {
 namespace Sequencer {
 
 class SettingsManager : public Setting
@@ -56,6 +55,5 @@ public Q_SLOTS :
 };
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
 
-#endif // SONYALPHAREMOTE_SEQUENCER_SETTINGSMANAGER_H
+#endif // SEQUENCER_SETTINGSMANAGER_H

@@ -7,7 +7,6 @@
 
 #define MSG_MAX_LEN 40
 
-namespace SonyAlphaRemote {
 namespace Sequencer {
 
 
@@ -89,4 +88,3 @@ void StateBase::triggerCountDown()
 }
 
 } // namespace Sequencer
-} // namespace SonyAlphaRemote
