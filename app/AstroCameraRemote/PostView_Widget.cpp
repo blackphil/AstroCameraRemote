@@ -107,10 +107,10 @@ void Widget::updatePostView()
 
 void Widget::newInfo(const Info &info)
 {
+    imageStack.push_back(info);
+
     if(info.getImage().isNull())
         return;
-
-    imageStack.push_back(info);
 
     if(ui->autoFwd->isChecked())
         on_latestImg_clicked();
