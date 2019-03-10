@@ -52,6 +52,29 @@ Widget::~Widget()
     delete ui;
 }
 
+void Widget::updatePostViewImage(const QByteArray &data)
+{
+    QImage img = QImage::fromData(data);
+    updatePostViewImage(QPixmap::fromImage(img));
+}
+
+void Widget::updatePostViewImage(const QPixmap &pixmap)
+{
+    //    Q_ASSERT(!imageStack.isEmpty());
+    if(imageStack.isEmpty())
+    {
+        AB_ERR(tr("post view image stack is empty!!!"));
+        starTrackScene->updateBackground(pixmap);
+        return;
+    }
+
+
+    imageStack.back().setImage(pixmap);
+    cursor = imageStack.count()-1;
+    updatePostView();
+
+}
+
 void Widget::updatePostView()
 {
     if(0 <= cursor && imageStack.count() > cursor)

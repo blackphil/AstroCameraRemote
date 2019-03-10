@@ -94,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(currentTimeDisplayTimer, SIGNAL(timeout()), this, SLOT(updateCurrentTimeDisplay()));
     currentTimeDisplayTimer->start(200);
 
+    connect(Sender::get(), SIGNAL(loadedPostViewImage(QByteArray)), ui->postViewWidget, SLOT(updatePostViewImage(QByteArray)));
     connect(ui->sequencerControl, SIGNAL(newPostViewInfo(PostView::Info)), ui->postViewWidget, SLOT(newInfo(PostView::Info)));
     connect(StatusPoller::get(), SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
     connect(StatusPoller::get(), SIGNAL(isoSpeedRatesChanged(QStringList,QString))

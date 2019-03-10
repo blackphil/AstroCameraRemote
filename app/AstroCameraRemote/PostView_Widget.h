@@ -40,6 +40,8 @@ public:
     StarTrack::GraphicsScene *getStarTrackScene() const;
 
 public Q_SLOTS :
+    void updatePostViewImage(const QByteArray &data);
+    void updatePostViewImage(const QPixmap &pixmap);
     void updatePostView();
 
     void newInfo(const PostView::Info& info);

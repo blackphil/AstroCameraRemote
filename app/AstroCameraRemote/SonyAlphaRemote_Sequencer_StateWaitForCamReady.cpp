@@ -14,13 +14,6 @@ StateWaitForCamReady::StateWaitForCamReady(int i, int numShots)
     connect(&awaitTakePicture, SIGNAL(havePostViewUrl(QString)), this, SLOT(updatePostViewInfo(QString)));
 }
 
-void StateWaitForCamReady::onEntry(QEvent *event)
-{
-    AB_DBG("VISIT");
-    StateBase::onEntry(event);
-}
-
-
 void StateWaitForCamReady::onExit(QEvent *event)
 {
     Q_UNUSED(event);

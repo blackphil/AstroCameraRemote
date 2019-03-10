@@ -21,7 +21,6 @@ public :
     StateWaitForCamReady(int i, int numShots);
 
 protected :
-    void onEntry(QEvent* event);
     void onExit(QEvent *event);
 
 private Q_SLOTS:
