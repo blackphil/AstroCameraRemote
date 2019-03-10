@@ -1,5 +1,5 @@
 #include "Settings_General.h"
-#include "SonyAlphaRemote_Settings.h"
+#include "Settings.h"
 
 
 

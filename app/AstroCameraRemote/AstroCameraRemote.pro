@@ -21,27 +21,7 @@ DLL_DEPS += \
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    SonyAlphaRemote_Helper.cpp \
-    SonyAlphaRemote_Json_Command.cpp \
-    SonyAlphaRemote_Sender.cpp \
     SsdpClient.cpp \
-    SonyAlphaRemote_StatusPoller.cpp \
-    SonyAlphaRemote_Sequencer_StateBase.cpp \
-    SonyAlphaRemote_Sequencer_StateWaitForStart.cpp \
-    SonyAlphaRemote_Sequencer_StateNormalShooting.cpp \
-    SonyAlphaRemote_Sequencer_StateBulbShooting.cpp \
-    SonyAlphaRemote_Sequencer_StateWaitForCamReady.cpp \
-    SonyAlphaRemote_Sequencer_StatePause.cpp \
-    SonyAlphaRemote_Sequencer_StateFinish.cpp \
-    SonyAlphaRemote_Json_GetEvent.cpp \
-    SonyAlphaRemote_BatteryInfo.cpp \
-    SonyAlphaRemote_Settings.cpp \
-    SonyAlphaRemote_TimeUnitButton.cpp \
-    SonyAlphaRemote_Sequencer_Settings.cpp \
-    SonyAlphaRemote_Sequencer_BulbShootSequencer.cpp \
-    SonyAlphaRemote_Sequencer_NormalShootSequencer.cpp \
-    SonyAlphaRemote_Sequencer_SettingsManager.cpp \
-    SonyAlphaRemote_Sequencer_Base.cpp \
     SettingsDialog.cpp \
     Settings_General.cpp \
     ToolBar.cpp \
@@ -67,30 +47,30 @@ SOURCES += main.cpp\
     StarTrack_Tracker.cpp \
     ImageView.cpp \
     Sequencer_ControlWidget.cpp \
-    MessagePoster.cpp
+    MessagePoster.cpp \
+    BatteryInfo.cpp \
+    Helper.cpp \
+    Json_Command.cpp \
+    Json_GetEvent.cpp \
+    Sender.cpp \
+    Sequencer_Base.cpp \
+    Sequencer_BulbShootSequencer.cpp \
+    Sequencer_NormalShootSequencer.cpp \
+    Sequencer_Settings.cpp \
+    Sequencer_SettingsManager.cpp \
+    Sequencer_StateBase.cpp \
+    Sequencer_StateBulbShooting.cpp \
+    Sequencer_StateFinish.cpp \
+    Sequencer_StateNormalShooting.cpp \
+    Sequencer_StatePause.cpp \
+    Sequencer_StateWaitForCamReady.cpp \
+    Sequencer_StateWaitForStart.cpp \
+    Settings.cpp \
+    StatusPoller.cpp \
+    TimeUnitButton.cpp
 
 HEADERS  += MainWindow.h \
-    SonyAlphaRemote_Helper.h \
-    SonyAlphaRemote_Json_Command.h \
-    SonyAlphaRemote_Sender.h \
     SsdpClient.h \
-    SonyAlphaRemote_StatusPoller.h \
-    SonyAlphaRemote_Sequencer_StateBase.h \
-    SonyAlphaRemote_Sequencer_StateWaitForStart.h \
-    SonyAlphaRemote_Sequencer_StateNormalShooting.h \
-    SonyAlphaRemote_Sequencer_StateBulbShooting.h \
-    SonyAlphaRemote_Sequencer_StateWaitForCamReady.h \
-    SonyAlphaRemote_Sequencer_StatePause.h \
-    SonyAlphaRemote_Sequencer_StateFinish.h \
-    SonyAlphaRemote_Json_GetEvent.h \
-    SonyAlphaRemote_BatteryInfo.h \
-    SonyAlphaRemote_Settings.h \
-    SonyAlphaRemote_TimeUnitButton.h \
-    SonyAlphaRemote_Sequencer_Settings.h \
-    SonyAlphaRemote_Sequencer_BulbShootSequencer.h \
-    SonyAlphaRemote_Sequencer_NormalShootSequencer.h \
-    SonyAlphaRemote_Sequencer_SettingsManager.h \
-    SonyAlphaRemote_Sequencer_Base.h \
     SettingsDialog.h \
     Settings_General.h \
     ToolBar.h \
@@ -116,7 +96,27 @@ HEADERS  += MainWindow.h \
     StarTrack_Tracker.h \
     ImageView.h \
     Sequencer_ControlWidget.h \
-    MessagePoster.h
+    MessagePoster.h \
+    BatteryInfo.h \
+    Helper.h \
+    Json_Command.h \
+    Json_GetEvent.h \
+    Sender.h \
+    Sequencer_Base.h \
+    Sequencer_BulbShootSequencer.h \
+    Sequencer_NormalShootSequencer.h \
+    Sequencer_Settings.h \
+    Sequencer_SettingsManager.h \
+    Sequencer_StateBase.h \
+    Sequencer_StateBulbShooting.h \
+    Sequencer_StateFinish.h \
+    Sequencer_StateNormalShooting.h \
+    Sequencer_StatePause.h \
+    Sequencer_StateWaitForCamReady.h \
+    Sequencer_StateWaitForStart.h \
+    Settings.h \
+    StatusPoller.h \
+    TimeUnitButton.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

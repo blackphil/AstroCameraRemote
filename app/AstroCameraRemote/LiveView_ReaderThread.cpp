@@ -1,5 +1,5 @@
 #include "LiveView_ReaderThread.h"
-#include "SonyAlphaRemote_Helper.h"
+#include "Helper.h"
 
 #include <QDir>
 #include <QFile>

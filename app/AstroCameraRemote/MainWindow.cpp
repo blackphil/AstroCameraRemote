@@ -3,8 +3,8 @@
 
 #include "AstroBase.h"
 
-#include "SonyAlphaRemote_Helper.h"
-#include "SonyAlphaRemote_Sender.h"
+#include "Helper.h"
+#include "Sender.h"
 #include "SettingsDialog.h"
 #include "LiveView_Widget.h"
 #include "hfd/Hfd_Calculator.h"
@@ -237,7 +237,7 @@ void MainWindow::setupStarTrackView(StarTrack::StarTrackView *v)
     connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), v, SLOT(updateStar(QImage)));
     connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(StarInfoPtr)), v, SLOT(updateHfdValue(StarInfoPtr)));
     connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), v, SLOT(updateStar(QImage)));
-    connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(StarInfoPtr)), v, SLOT(updateHfdValue(StarInfoPtr)));
+    connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(StarInfoPtr)), v, SLOT(updateHfdValue(float)));
     connect(v, SIGNAL(trackingEnabledStatusToggled(bool)), ui->postViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));
     connect(v, SIGNAL(trackingEnabledStatusToggled(bool)), ui->liveViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));
     connect(v, SIGNAL(updateMarker()), ui->liveViewWidget->getStarTrackScene(), SLOT(updateMarker()));

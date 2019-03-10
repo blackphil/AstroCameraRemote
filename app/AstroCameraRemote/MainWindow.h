@@ -6,11 +6,11 @@
 #include <QTimer>
 #include <QList>
 
-#include "SonyAlphaRemote_Sender.h"
-#include "SonyAlphaRemote_StatusPoller.h"
-#include "SonyAlphaRemote_BatteryInfo.h"
-#include "SonyAlphaRemote_Settings.h"
-#include "SonyAlphaRemote_Sequencer_SettingsManager.h"
+#include "Sender.h"
+#include "StatusPoller.h"
+#include "BatteryInfo.h"
+#include "Settings.h"
+#include "Sequencer_SettingsManager.h"
 #include "PostView_Info.h"
 #include "Settings_General.h"
 #include "LiveView_Settings.h"

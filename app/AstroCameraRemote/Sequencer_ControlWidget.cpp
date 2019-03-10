@@ -3,12 +3,12 @@
 
 #include "AstroBase.h"
 
-#include "SonyAlphaRemote_Settings.h"
-#include "SonyAlphaRemote_Sequencer_SettingsManager.h"
+#include "Settings.h"
+#include "Sequencer_SettingsManager.h"
 #include "Settings_General.h"
-#include "SonyAlphaRemote_Sender.h"
-#include "SonyAlphaRemote_Sequencer_BulbShootSequencer.h"
-#include "SonyAlphaRemote_Sequencer_NormalShootSequencer.h"
+#include "Sender.h"
+#include "Sequencer_BulbShootSequencer.h"
+#include "Sequencer_NormalShootSequencer.h"
 
 
 #include <QMessageBox>

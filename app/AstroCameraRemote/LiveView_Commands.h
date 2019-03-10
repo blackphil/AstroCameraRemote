@@ -1,7 +1,7 @@
 #ifndef LIVEVIEW_COMMAND_H
 #define LIVEVIEW_COMMAND_H
 
-#include <SonyAlphaRemote_Json_Command.h>
+#include <Json_Command.h>
 
 
 namespace LiveView {

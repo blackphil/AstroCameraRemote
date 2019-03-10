@@ -2,7 +2,7 @@
 
 #include <QSettings>
 
-#include "SonyAlphaRemote_Helper.h"
+#include "Helper.h"
 
 namespace LiveView {
 

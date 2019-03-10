@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "Hfd_Calculator.h"
-#include "SonyAlphaRemote_Helper.h"
+#include "Helper.h"
 #include "AstroBase.h"
 
 #include <math.h>

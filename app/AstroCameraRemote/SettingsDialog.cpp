@@ -3,7 +3,7 @@
 
 #include <QSettings>
 
-#include "SonyAlphaRemote_Settings.h"
+#include "Settings.h"
 #include "Settings_General.h"
 #include "StarTrack_Settings.h"
 

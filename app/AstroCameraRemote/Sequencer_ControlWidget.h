@@ -3,8 +3,8 @@
 
 #include <QWidget>
 
-#include "SonyAlphaRemote_Json_Command.h"
-#include "SonyAlphaRemote_StatusPoller.h"
+#include "Json_Command.h"
+#include "StatusPoller.h"
 #include "MessagePoster.h"
 #include "PostView_Info.h"
 

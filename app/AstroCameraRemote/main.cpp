@@ -1,8 +1,8 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include "AstroBase.h"
-#include "SonyAlphaRemote_Sender.h"
-#include "SonyAlphaRemote_StatusPoller.h"
+#include "Sender.h"
+#include "StatusPoller.h"
 
 #define xstr(a) str(a)
 #define str(a) #a

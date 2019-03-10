@@ -11,7 +11,7 @@
 
 #include "LiveView_Commands.h"
 #include "LiveView_Reader.h"
-#include "SonyAlphaRemote_Sender.h"
+#include "Sender.h"
 #include "LiveView_ImageQueue.h"
 #include "LiveView_ReaderThread.h"
 #include "LiveView_Settings.h"

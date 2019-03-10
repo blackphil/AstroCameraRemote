@@ -424,7 +424,7 @@
   <customwidget>
    <class>TimeUnitButton</class>
    <extends>QPushButton</extends>
-   <header>SonyAlphaRemote_TimeUnitButton.h</header>
+   <header>TimeUnitButton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
