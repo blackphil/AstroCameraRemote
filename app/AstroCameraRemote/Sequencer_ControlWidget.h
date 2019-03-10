@@ -27,7 +27,6 @@ class ControlWidget : public QWidget, public MessagePoster
 
 private:
     Ui::ControlWidget *ui;
-    Settings* settings;
     SettingsManager* sequencerSettingsManager;
 
     Json::SetShutterSpeed* setShutterSpeed;
@@ -54,6 +53,9 @@ Q_SIGNALS :
 public Q_SLOTS :
     void isoSpeedRatesChanged(const QStringList &candidates);
     void shutterSpeedsChanged(const QStringList &candidates);
+
+    void error(QString msg);
+    void appendOutputMessage(QString msg);
 
 private Q_SLOTS :
 

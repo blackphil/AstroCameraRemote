@@ -13,8 +13,8 @@
 namespace Sequencer {
 
 
-BulbShootSequencer::BulbShootSequencer(StatusPoller *statusPoller, Sender* sender, QObject *parent)
-    : Base(statusPoller, sender, parent)
+BulbShootSequencer::BulbShootSequencer(QObject *parent)
+    : Base(parent)
     , shutterSpeedTm(new QTimer(this))
     , pauseDelayTm(new QTimer(this))
     , startDelayTm(new QTimer(this))
@@ -45,13 +45,13 @@ void BulbShootSequencer::handleStarted()
     QTimer* currentTimer = startDelayTm;
     for(int i=0; i<numShots; i++)
     {
-        StateBulbShooting* shooting = new StateBulbShooting(sender, shutterSpeedTm, i+1, numShots);
+        StateBulbShooting* shooting = new StateBulbShooting(shutterSpeedTm, i+1, numShots);
         connect(shooting, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
         addState(shooting);
 
         prevState->addTransition(currentTimer, SIGNAL(timeout()), shooting);
 
-        StateWaitForCamReady* waitForCamReady = new StateWaitForCamReady(sender, i+1, numShots);
+        StateWaitForCamReady* waitForCamReady = new StateWaitForCamReady(i+1, numShots);
         connect(waitForCamReady, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
         connect(waitForCamReady, SIGNAL(havePostViewUrl(QString, int, int)), this, SIGNAL(havePostViewUrl(QString, int, int)));
         addState(waitForCamReady);
@@ -112,7 +112,7 @@ int BulbShootSequencer::calculateSequenceDuration() const
 
 void BulbShootSequencer::handleStopped()
 {
-    sender->send(&stopBulbShooting);
+    Sender::get()->send(&stopBulbShooting);
 
     if(shutterSpeedTm)
         shutterSpeedTm->stop();

@@ -46,8 +46,6 @@ class MainWindow : public QMainWindow
 
     Settings* settings;
 
-    StatusPoller* statusPoller;
-
     Json::StartRecMode* startRecMode;
     Json::StopRecMode* stopRecMode;
 
@@ -94,8 +92,6 @@ private Q_SLOTS:
     void error(QString);
 
     void appendOutputMessage(QString msg);
-
-    void on_simCamReadyBtn_clicked();
 
     void handleCameraStatus(QString status);
 

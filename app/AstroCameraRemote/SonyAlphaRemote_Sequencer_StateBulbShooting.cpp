@@ -6,12 +6,11 @@
 
 namespace Sequencer {
 
-StateBulbShooting::StateBulbShooting(Sender* sender, QTimer* t, quint32 i, quint32 maxCount)
+StateBulbShooting::StateBulbShooting(QTimer* t, quint32 i, quint32 maxCount)
     : StateBase(
           tr("start shoot (%0/%1)").arg(i).arg(maxCount)
           , tr("stop shoot (%0/%1)").arg(i).arg(maxCount)
           , t)
-    , sender(sender)
 {
     setObjectName("StateBulbShooting");
 }
@@ -21,8 +20,7 @@ void StateBulbShooting::onEntry(QEvent* event)
 {
 
 #ifndef DRY_RUN
-    if(!sender.isNull())
-        Sender::get()->send(&startBulbShooting);
+    Sender::get()->send(&startBulbShooting);
 #endif
 
     StateBase::onEntry(event);
@@ -31,8 +29,7 @@ void StateBulbShooting::onEntry(QEvent* event)
 void StateBulbShooting::onExit(QEvent* event)
 {
 #ifndef DRY_RUN
-    if(!sender.isNull())
-        sender.data()->send(&stopBulbShooting);
+    Sender::get()->send(&stopBulbShooting);
 #endif
 
     StateBase::onExit(event);

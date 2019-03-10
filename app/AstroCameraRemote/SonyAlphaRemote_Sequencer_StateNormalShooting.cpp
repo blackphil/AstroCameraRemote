@@ -3,9 +3,8 @@
 
 namespace Sequencer {
 
-StateNormalShooting::StateNormalShooting(Sender* sender, quint32 i, quint32 maxCount)
-    : StateBase(tr("take shoot (%0/%1").arg(i).arg(maxCount), "", NULL)
-    , sender(sender)
+StateNormalShooting::StateNormalShooting(quint32 i, quint32 maxCount)
+    : StateBase(tr("take shoot (%0/%1").arg(i).arg(maxCount), "", nullptr)
 {
     setObjectName("StateNormalShooting");
 }
@@ -13,8 +12,7 @@ StateNormalShooting::StateNormalShooting(Sender* sender, quint32 i, quint32 maxC
 void StateNormalShooting::onEntry(QEvent *ev)
 {
 #ifndef DRY_RUN
-    if(!sender.isNull())
-        sender.data()->send(&actTakePicture);
+    Sender::get()->send(&actTakePicture);
 #endif
 
     StateBase::onEntry(ev);

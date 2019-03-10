@@ -19,8 +19,6 @@ class Base : public QObject
     Q_OBJECT
 
 protected :
-    QPointer<StatusPoller> statusPoller;
-    QPointer<Sender> sender;
     QStateMachine* stateMachine;
 
     int count;
@@ -35,7 +33,7 @@ protected Q_SLOTS :
     void addState(StateBase* s);
 
 public:
-    explicit Base(StatusPoller* statusPoller, Sender* sender, QObject *parent = 0);
+    explicit Base(QObject *parent = nullptr);
     virtual ~Base();
 
     int getNumShots() const;

@@ -28,7 +28,7 @@ private :
 public:
 
 
-    explicit BulbShootSequencer(StatusPoller* statusPoller, Sender* sender, QObject *parent = nullptr);
+    explicit BulbShootSequencer(QObject *parent = nullptr);
 
     int getStartDelay() const;
     void setStartDelay(int value);

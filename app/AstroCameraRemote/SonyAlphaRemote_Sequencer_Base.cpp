@@ -8,15 +8,13 @@
 
 namespace Sequencer {
 
-Base::Base(StatusPoller *statusPoller, Sender *sender, QObject *parent)
+Base::Base(QObject *parent)
   : QObject(parent)
-  , statusPoller(statusPoller)
-  , sender(sender)
   , stateMachine(nullptr)
   , count(0)
   , numShots(0)
 {
-    connect(statusPoller, SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
+    connect(StatusPoller::get(), SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
 }
 
 Base::~Base()

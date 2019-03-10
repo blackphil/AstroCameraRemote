@@ -5,6 +5,17 @@
 #include "AstroBase.h"
 #include <QUrl>
 
+StatusPoller* StatusPoller::instance(nullptr);
+
+StatusPoller* StatusPoller::create(QObject* parent)
+{
+    return new StatusPoller(parent);
+}
+
+StatusPoller* StatusPoller::get()
+{
+    return instance;
+}
 
 
 QString StatusPoller::getCameraStatus() const
@@ -30,6 +41,9 @@ StatusPoller::StatusPoller(QObject *parent)
     , getEvent(new Json::GetEvent(this))
     , waitingForEventReply(false)
 {
+    Q_ASSERT(nullptr == instance);
+    instance = this;
+
     connect(getEvent, SIGNAL(confirmed()), this, SLOT(handleEventReply()));
     connect(getEvent, SIGNAL(declined()), this, SLOT(handleEventError()));
 }
@@ -175,3 +189,8 @@ void StatusPoller::handleEventError()
 
 
 
+
+StatusPoller::~StatusPoller()
+{
+    instance = nullptr;
+}

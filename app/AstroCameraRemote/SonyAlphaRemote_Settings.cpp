@@ -7,7 +7,7 @@
 
 Setting::Setting(Setting* parent)
     : QObject(parent)
-    , qSettings(NULL == parent ? NULL : parent->qSettings)
+    , qSettings(nullptr == parent ? nullptr : parent->qSettings)
 {
 }
 
@@ -21,6 +21,8 @@ QPointer<Settings> Settings::instance(nullptr);
 Settings::Settings(QObject *parent)
     : Setting(nullptr)
 {
+    Q_ASSERT(nullptr == instance);
+
     setObjectName("SonyAlphaRemote");
     Q_ASSERT(parent);
     QObject::setParent(parent);

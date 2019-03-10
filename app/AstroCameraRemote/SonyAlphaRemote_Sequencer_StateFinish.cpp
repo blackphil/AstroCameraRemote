@@ -4,7 +4,7 @@
 namespace Sequencer {
 
 StateFinish::StateFinish()
-    : StateBase(tr("finished"), "", NULL)
+    : StateBase(tr("finished"), "", nullptr)
 {
     setObjectName("StateFinish");
 }

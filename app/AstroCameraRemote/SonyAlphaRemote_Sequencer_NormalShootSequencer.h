@@ -29,7 +29,7 @@ private :
 public:
 
 
-    explicit NormalShootSequencer(StatusPoller* statusPoller, Sender* sender, QObject *parent = 0);
+    explicit NormalShootSequencer(QObject *parent = nullptr);
 
     int getStartDelay() const;
     void setStartDelay(int value);

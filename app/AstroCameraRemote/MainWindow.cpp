@@ -65,7 +65,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
             delete fullScreenStarTrackView;
             fullScreenStarTrackView = nullptr;
         }
-        statusPoller->stop();
+        StatusPoller::get()->stop();
         event->accept();
     }
 }
@@ -74,7 +74,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , settings(new Settings(this))
-    , statusPoller(new StatusPoller(parent))
     , startRecMode(new Json::StartRecMode(this))
     , stopRecMode(new Json::StopRecMode(this))
     , fullScreenStarTrackView(nullptr)
@@ -90,20 +89,18 @@ MainWindow::MainWindow(QWidget *parent)
     messageHandler = new TextEditMessageHandler(ui->output);
 
     ui->sequencerControl->setMsgHandler(messageHandler);
-    Sender::create(this);
 
 
     connect(currentTimeDisplayTimer, SIGNAL(timeout()), this, SLOT(updateCurrentTimeDisplay()));
     currentTimeDisplayTimer->start(200);
 
-    connect(Sender::get(), SIGNAL(loadedPostViewImage(QByteArray)), ui->postViewWidget, SLOT(updatePostViewImage(QByteArray)));
-    connect(this, SIGNAL(newPostViewInfo(PostView::Info)), ui->postViewWidget, SLOT(newInfo(PostView::Info)));
-    connect(statusPoller, SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
-    connect(statusPoller, SIGNAL(isoSpeedRatesChanged(QStringList,QString))
+    connect(ui->sequencerControl, SIGNAL(newPostViewInfo(PostView::Info)), ui->postViewWidget, SLOT(newInfo(PostView::Info)));
+    connect(StatusPoller::get(), SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
+    connect(StatusPoller::get(), SIGNAL(isoSpeedRatesChanged(QStringList,QString))
             , this, SLOT(isoSpeedRatesChanged(QStringList,QString)));
-    connect(statusPoller, SIGNAL(shutterSpeedsChanged(QStringList,QString))
+    connect(StatusPoller::get(), SIGNAL(shutterSpeedsChanged(QStringList,QString))
             , this, SLOT(shutterSpeedsChanged(QStringList,QString)));
-    connect(statusPoller, SIGNAL(batteryStatusChanged()), this, SLOT(updateBatteryStatus()));
+    connect(StatusPoller::get(), SIGNAL(batteryStatusChanged()), this, SLOT(updateBatteryStatus()));
 
     connect(ui->actionToggleRecordMode, SIGNAL(toggled(bool)), this, SLOT(toggleRecordModeBtn(bool)));
     connect(startRecMode, SIGNAL(confirmed()), this, SLOT(toggleRecordModeBtnStarted()));
@@ -252,9 +249,9 @@ void MainWindow::hello()
 {
     ui->centralWidget->setEnabled(true);
 
-    if(!statusPoller->isActive())
+    if(!StatusPoller::get()->isActive())
     {
-        statusPoller->start(1);
+        StatusPoller::get()->start(1);
     }
 
     connectionState |= State_Hello;
@@ -300,11 +297,6 @@ void MainWindow::appendOutputMessage(QString msg)
     ui->output->append(tr("%0: %1").arg(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz")).arg(msg));
 }
 
-void MainWindow::on_simCamReadyBtn_clicked()
-{
-    statusPoller->simCamReady();
-}
-
 void MainWindow::handleCameraStatus(QString status)
 {
     ui->cameraStatus->setText(status);
@@ -321,7 +313,7 @@ void MainWindow::updateCurrentTimeDisplay()
 
 void MainWindow::updateBatteryStatus()
 {
-    BatteryInfo info = statusPoller->getBatteryInfo();
+    BatteryInfo info = StatusPoller::get()->getBatteryInfo();
     ui->batteryStatus->setMinimum(0);
     ui->batteryStatus->setMaximum(info.getLevelDenom());
     ui->batteryStatus->setValue(info.getLevelNumber());

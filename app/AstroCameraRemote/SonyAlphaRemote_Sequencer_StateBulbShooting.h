@@ -15,11 +15,8 @@ class StateBulbShooting : public StateBase
     Json::StartBulbShooting startBulbShooting;
     Json::StopBulbShooting stopBulbShooting;
 
-    QPointer<Sender> sender;
-
-
 public :
-    StateBulbShooting(Sender* sender, QTimer* t, quint32 i, quint32 maxCount);
+    StateBulbShooting(QTimer* t, quint32 i, quint32 maxCount);
 
 protected :
     void onEntry(QEvent* event);

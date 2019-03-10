@@ -14,14 +14,14 @@ class StateWaitForCamReady: public StateBase
     Q_OBJECT
 
     Json::AwaitTakePicture awaitTakePicture;
-    Sender* sender;
     int i, numShots;
 
 
 public :
-    StateWaitForCamReady(Sender *sender, int i, int numShots);
+    StateWaitForCamReady(int i, int numShots);
 
 protected :
+    void onEntry(QEvent* event);
     void onExit(QEvent *event);
 
 private Q_SLOTS:

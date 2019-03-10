@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include "AstroBase.h"
+#include "SonyAlphaRemote_Sender.h"
+#include "SonyAlphaRemote_StatusPoller.h"
 
 #define xstr(a) str(a)
 #define str(a) #a
@@ -21,6 +23,9 @@ int main(int argc, char *argv[])
 
     a.setOrganizationName(organizationName);
     a.setApplicationName(appName);
+
+    StatusPoller::create(&a);
+    Sender::create(&a);
 
     MainWindow w;
     w.show();

@@ -13,8 +13,8 @@ namespace Sequencer {
 
 
 
-NormalShootSequencer::NormalShootSequencer(StatusPoller *statusPoller, Sender* sender, QObject *parent)
-    : Base(statusPoller, sender, parent)
+NormalShootSequencer::NormalShootSequencer(QObject *parent)
+    : Base(parent)
     , pauseDelayTm(new QTimer(this))
     , startDelayTm(new QTimer(this))
     , shutterSpeed(0)
@@ -43,13 +43,13 @@ void NormalShootSequencer::handleStarted()
     QTimer* currentTimer = startDelayTm;
     for(int i=0; i<numShots; i++)
     {
-        StateNormalShooting* shooting = new StateNormalShooting(sender, i+1, numShots);
+        StateNormalShooting* shooting = new StateNormalShooting(i+1, numShots);
         connect(shooting, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
         addState(shooting);
 
         prevState->addTransition(currentTimer, SIGNAL(timeout()), shooting);
 
-        StateWaitForCamReady* waitForCamReady = new StateWaitForCamReady(sender, i+1, numShots);
+        StateWaitForCamReady* waitForCamReady = new StateWaitForCamReady(i+1, numShots);
         connect(waitForCamReady, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
         connect(waitForCamReady, SIGNAL(havePostViewUrl(QString, int, int)), this, SIGNAL(havePostViewUrl(QString, int, int)));
         addState(waitForCamReady);

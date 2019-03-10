@@ -11,9 +11,11 @@
 
 
 
-class   StatusPoller : public QObject
+class StatusPoller : public QObject
 {
     Q_OBJECT
+
+    static StatusPoller* instance;
 
     QTimer* trigger;
     QString cameraStatus;
@@ -25,12 +27,17 @@ class   StatusPoller : public QObject
     bool getEnumeratedOption(int index, const QString& type, QJsonArray status, const QString& currentName, const QString& candidatesName, QString& current, QStringList& candidates) const;
     void getBatteryInfo(QJsonArray status);
 
-public:
     explicit StatusPoller(QObject *parent = nullptr);
+public:
+
+    ~StatusPoller();
 
     void start(double interval);
     void stop();
     bool isActive() const;
+
+    static StatusPoller* create(QObject* parent);
+    static StatusPoller* get();
 
 
 

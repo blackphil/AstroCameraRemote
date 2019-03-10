@@ -12,10 +12,9 @@ class StateNormalShooting : public StateBase
 {
 
     Json::ActTakePicture actTakePicture;
-    QPointer<Sender> sender;
 
 public:
-    StateNormalShooting(Sender *sender, quint32 i, quint32 maxCount);
+    StateNormalShooting(quint32 i, quint32 maxCount);
 
 protected :
     void onEntry(QEvent* ev);

@@ -1,6 +1,8 @@
 #include "Sequencer_ControlWidget.h"
 #include "ui_Sequencer_ControlWidget.h"
 
+#include "AstroBase.h"
+
 #include "SonyAlphaRemote_Settings.h"
 #include "SonyAlphaRemote_Sequencer_SettingsManager.h"
 #include "Settings_General.h"
@@ -32,20 +34,18 @@ int shutterSpeedStrToMilliseconds(QString shutterSpeedStr)
 ControlWidget::ControlWidget(QWidget *parent) :
     QWidget(parent)
   ,  ui(new Ui::ControlWidget)
-  , settings(new ::Settings(this))
-  , sequencerSettingsManager(new Sequencer::SettingsManager(settings))
+  , sequencerSettingsManager(new Sequencer::SettingsManager(::Settings::getInstance()))
   , setShutterSpeed(new Json::SetShutterSpeed(this))
   , setIsoSpeedRate(new Json::SetIsoSpeedRate(this))
   , actTakePicture(new Json::ActTakePicture(this))
   , startBulbShooting(new Json::StartBulbShooting(this))
   , stopBulbShooting(new Json::StopBulbShooting(this))
-  , statusPoller(new StatusPoller(this))
-  , bulbShootSequencer(new BulbShootSequencer(statusPoller, Sender::get(), this))
-  , normalShootSequencer(new NormalShootSequencer(statusPoller, Sender::get(), this))
+  , bulbShootSequencer(new BulbShootSequencer(this))
+  , normalShootSequencer(new NormalShootSequencer(this))
 {
     ui->setupUi(this);
 
-    settings->add(sequencerSettingsManager);
+    ::Settings::getInstance()->add(sequencerSettingsManager);
 
     connect(setShutterSpeed, SIGNAL(error(QString)), this, SLOT(error(QString)));
     connect(setIsoSpeedRate, SIGNAL(error(QString)), this, SLOT(error(QString)));
@@ -188,6 +188,17 @@ void ControlWidget::shutterSpeedsChanged(const QStringList &candidates)
     }
     ui->shutterSpeed->blockSignals(false);
 
+}
+
+void ControlWidget::error(QString msg)
+{
+    AB_ERR(msg);
+    errorMessage(msg);
+}
+
+void ControlWidget::appendOutputMessage(QString msg)
+{
+    infoMessage(msg);
 }
 
 void ControlWidget::addCurrentSequencerSettings()
