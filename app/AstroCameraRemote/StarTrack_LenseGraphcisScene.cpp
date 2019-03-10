@@ -39,6 +39,12 @@ StarInfoPtr LenseGraphcisScene::getStarInfo() const
 
 void LenseGraphcisScene::updateStar(const QImage &image)
 {
+    Q_ASSERT(!image.isNull());
+    if(image.isNull())
+    {
+        AB_ERR("image is null");
+        return;
+    }
     AB_INF("bounding(" << width() << ", " << height() << ")");
     star->setPixmap(QPixmap::fromImage(image.scaled(width(), height(), Qt::KeepAspectRatio)));
 }

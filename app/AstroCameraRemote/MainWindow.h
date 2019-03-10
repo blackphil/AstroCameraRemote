@@ -103,8 +103,6 @@ private Q_SLOTS:
 
     void viewsTabChanged(int index);
 
-    void on_testHfdBtn_clicked();
-
     void on_lenrCheckbox_clicked(bool checked);
 
     void on_viewsTabWidget_currentChanged(int index);

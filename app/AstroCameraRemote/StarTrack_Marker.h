@@ -49,7 +49,7 @@ private :
     Status status;
 
     bool isSelected;
-    bool hasError;
+    bool haveStar;
 
     void update();
     bool update(const QRectF &r);

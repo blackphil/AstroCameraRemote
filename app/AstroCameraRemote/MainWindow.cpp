@@ -235,9 +235,9 @@ void MainWindow::connectionStateChanged()
 void MainWindow::setupStarTrackView(StarTrack::StarTrackView *v)
 {
     connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), v, SLOT(updateStar(QImage)));
-    connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(StarInfoPtr)),   v, SLOT(updateHfdValue(StarInfoPtr)));
+    connect(ui->postViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(StarInfoPtr)), v, SLOT(updateHfdValue(StarInfoPtr)));
     connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(starCentered(QImage)), v, SLOT(updateStar(QImage)));
-    connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(float)),   v, SLOT(updateHfdValue(float)));
+    connect(ui->liveViewWidget->getStarTrackScene(), SIGNAL(newHfdValue(StarInfoPtr)), v, SLOT(updateHfdValue(StarInfoPtr)));
     connect(v, SIGNAL(trackingEnabledStatusToggled(bool)), ui->postViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));
     connect(v, SIGNAL(trackingEnabledStatusToggled(bool)), ui->liveViewWidget->getStarTrackScene(), SIGNAL(starTrackingEnabled(bool)));
     connect(v, SIGNAL(updateMarker()), ui->liveViewWidget->getStarTrackScene(), SLOT(updateMarker()));
@@ -347,11 +347,6 @@ void MainWindow::viewsTabChanged(int index)
         ui->liveViewWidget->start();
     else
         ui->liveViewWidget->stop();
-}
-
-void MainWindow::on_testHfdBtn_clicked()
-{
-    Hfd::Calculator().test();
 }
 
 void MainWindow::on_lenrCheckbox_clicked(bool checked)

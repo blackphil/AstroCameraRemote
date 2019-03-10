@@ -14,20 +14,17 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="2">
+    <widget class="QCheckBox" name="debugModeCb">
+     <property name="text">
+      <string>Debug-Mode</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0" colspan="5">
     <widget class="ImageView" name="graphicsView">
      <property name="sizeAdjustPolicy">
       <enum>QAbstractScrollArea::AdjustToContents</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QSpinBox" name="fpsSpinBox">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>200</number>
      </property>
     </widget>
    </item>
@@ -57,10 +54,20 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="2">
-    <widget class="QCheckBox" name="debugModeCb">
+   <item row="1" column="2">
+    <widget class="QSpinBox" name="fpsSpinBox">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>200</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QPushButton" name="setRefBtn">
      <property name="text">
-      <string>Debug-Mode</string>
+      <string>Set ref.</string>
      </property>
     </widget>
    </item>

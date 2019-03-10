@@ -28,11 +28,6 @@ class Widget : public QWidget
 
     StarTrack::GraphicsScene* starTrackScene;
 
-protected:
-    void keyPressEvent(QKeyEvent* event);
-
-
-
 public:
     explicit Widget(QWidget *parent = Q_NULLPTR);
     ~Widget();
@@ -49,7 +44,6 @@ public Q_SLOTS :
 private Q_SLOTS :
 
     void newHfdValue(StarTrack::StarInfoPtr starInfo);
-    void removeSelectedMarker();
 
     void setImage(int index);
 

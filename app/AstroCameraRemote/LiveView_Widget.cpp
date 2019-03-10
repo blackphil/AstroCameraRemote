@@ -87,6 +87,7 @@ void Widget::updateLiveViewImage()
     ui->metaInfo->setText(metaInfo.toHtml());
 
     QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data->payload, "JPG"));
+    Q_ASSERT(!pixmap.isNull());
     starTrackScene->updateBackground(pixmap);
 }
 

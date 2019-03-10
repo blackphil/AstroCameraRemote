@@ -11,6 +11,9 @@
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>
+#include <QThread>
+#include <QGraphicsView>
+#include <QMessageBox>
 
 namespace StarTrack {
 
@@ -76,6 +79,7 @@ GraphicsScene::~GraphicsScene()
 
 void GraphicsScene::updateBackground(const QPixmap &pixmap)
 {
+    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
     if(!enabled)
         return;
 
@@ -85,6 +89,7 @@ void GraphicsScene::updateBackground(const QPixmap &pixmap)
 
 void GraphicsScene::updateMarker()
 {
+    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
     if(!enabled)
         return;
 
@@ -104,7 +109,24 @@ void GraphicsScene::setReference()
 
 void GraphicsScene::removeSelectedMarker()
 {
-    if(selectedMarker)
+    if(!selectedMarker)
+        return;
+
+    QWidget* mainWidget = views().first();
+    do
+    {
+        if(mainWidget->parentWidget())
+            mainWidget = mainWidget->parentWidget();
+        else
+            break;
+    }
+    while(mainWidget);
+
+    Q_ASSERT(mainWidget);
+    if(!mainWidget)
+        return;
+
+    if(QMessageBox::Yes == QMessageBox::question(mainWidget, tr("Remote star tracker"), tr("Remove star tracker?")))
     {
         markers.removeAll(selectedMarker);
         selectedMarker->deleteLater();
@@ -132,9 +154,13 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     {
         Marker* m = new Marker(this, this);
         markers << m;
-        m->start(event->scenePos());
+        setSelectedMarker(m);
     }
-    setSelectedMarker(event->scenePos());
+    else
+        setSelectedMarker(event->scenePos());
+
+    if(selectedMarker)
+        selectedMarker->start(event->scenePos());
 }
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -154,6 +180,14 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     selectedMarker->finish();
 }
 
+void GraphicsScene::keyPressEvent(QKeyEvent *event)
+{
+    if(Qt::Key_Delete == event->key())
+        removeSelectedMarker();
+
+    QGraphicsScene::keyPressEvent(event);
+}
+
 namespace helper
 {
 void debugSaveImage(const QImage& img, const QString& prefix)
@@ -166,6 +200,7 @@ void debugSaveImage(const QImage& img, const QString& prefix)
 
 void GraphicsScene::newMark()
 {
+    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
     if(!enabled)
         return;
 
@@ -179,7 +214,18 @@ void GraphicsScene::newMark()
     }
 
     if(selectedMarker == nullptr)
+    {
+        AB_DBG("No selected marker");
         return;
+    }
+
+    if(selectedMarker->getTracker().getRect().isNull())
+    {
+        AB_DBG("Selected marker doesn't track any star for now");
+        return;
+    }
+
+    AB_DBG("Handle selected marker's star tracked ...");
 
     StarInfoPtr info(new StarInfo());
 
@@ -208,9 +254,11 @@ void GraphicsScene::setSelectedMarker(const QPointF &pos)
         if(m->getRect().contains(pos))
         {
             setSelectedMarker(m);
-            break;
+            return;
         }
     }
+
+    setSelectedMarker(nullptr);
 
 }
 
@@ -218,6 +266,7 @@ void GraphicsScene::setSelectedMarker(Marker *m)
 {
     if(selectedMarker)
         selectedMarker->setIsSelected(false);
+
     selectedMarker = m;
 
     if(selectedMarker)
