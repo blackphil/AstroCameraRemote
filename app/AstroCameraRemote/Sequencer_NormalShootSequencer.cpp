@@ -41,6 +41,8 @@ void NormalShootSequencer::handleStarted()
 
     QState* prevState = waitForStart;
     QTimer* currentTimer = startDelayTm;
+    StateWaitForCamReady* waitForCamReady = nullptr;
+
     for(int i=0; i<numShots; i++)
     {
         StateNormalShooting* shooting = new StateNormalShooting(i+1, numShots);
@@ -49,7 +51,7 @@ void NormalShootSequencer::handleStarted()
 
         prevState->addTransition(currentTimer, SIGNAL(timeout()), shooting);
 
-        StateWaitForCamReady* waitForCamReady = new StateWaitForCamReady(i+1, numShots);
+        waitForCamReady = new StateWaitForCamReady(i+1, numShots);
         connect(waitForCamReady, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
         connect(waitForCamReady, SIGNAL(havePostViewUrl(QString, int, int)), this, SIGNAL(havePostViewUrl(QString, int, int)));
         addState(waitForCamReady);
@@ -67,7 +69,12 @@ void NormalShootSequencer::handleStarted()
 
     StateFinish* finish = new StateFinish();
     connect(finish, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
-    prevState->addTransition(finish);
+
+    if(waitForCamReady)
+        prevState->addTransition(waitForCamReady, SIGNAL(havePostViewUrl(QString, int, int)), finish);
+    else
+        prevState->addTransition(finish);
+
     addState(finish);
     QFinalState* done = new QFinalState();
     finish->addTransition(done);

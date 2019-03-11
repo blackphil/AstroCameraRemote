@@ -7,6 +7,7 @@
 #include "StatusPoller.h"
 #include "MessagePoster.h"
 #include "PostView_Info.h"
+#include "Sequencer_Protocol.h"
 
 class Settings;
 
@@ -38,6 +39,8 @@ private:
     StatusPoller* statusPoller;
     BulbShootSequencer* bulbShootSequencer;
     NormalShootSequencer* normalShootSequencer;
+
+    Protocol* currentProtocol;
 
 
     int connectionState;

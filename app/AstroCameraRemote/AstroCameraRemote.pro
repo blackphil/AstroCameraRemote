@@ -67,7 +67,8 @@ SOURCES += main.cpp\
     Sequencer_StateWaitForStart.cpp \
     Settings.cpp \
     StatusPoller.cpp \
-    TimeUnitButton.cpp
+    TimeUnitButton.cpp \
+    Sequencer_Protocol.cpp
 
 HEADERS  += MainWindow.h \
     SsdpClient.h \
@@ -116,7 +117,8 @@ HEADERS  += MainWindow.h \
     Sequencer_StateWaitForStart.h \
     Settings.h \
     StatusPoller.h \
-    TimeUnitButton.h
+    TimeUnitButton.h \
+    Sequencer_Protocol.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

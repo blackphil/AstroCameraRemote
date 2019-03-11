@@ -42,6 +42,7 @@ ControlWidget::ControlWidget(QWidget *parent) :
   , stopBulbShooting(new Json::StopBulbShooting(this))
   , bulbShootSequencer(new BulbShootSequencer(this))
   , normalShootSequencer(new NormalShootSequencer(this))
+  , currentProtocol(nullptr)
 {
     ui->setupUi(this);
 
@@ -328,23 +329,31 @@ void ControlWidget::on_startBulbSequence_clicked()
 
     int duration = 0;
 
+    Sequencer::Base* sequencer = nullptr;
+    int milliSeconds = 0;
+
     if(ui->shutterSpeed->currentText() == "BULB")
     {
-        bulbShootSequencer->setNumShots(ui->numShots->value());
-        bulbShootSequencer->setShutterSpeed(ui->shutterSpeedTuBtn->getValueInMilliseconds());
-        bulbShootSequencer->setPauseDelay(ui->pauseTuBtn->getValueInMilliseconds());
-        bulbShootSequencer->setStartDelay(ui->startDelayTuBtn->getValueInMilliseconds());
-        duration = bulbShootSequencer->calculateSequenceDuration();
+        sequencer = bulbShootSequencer;
+        milliSeconds = ui->shutterSpeedTuBtn->getValueInMilliseconds();
     }
     else
     {
-        int milliSeconds = helper::shutterSpeedStrToMilliseconds(ui->shutterSpeed->currentText());
-        normalShootSequencer->setNumShots(ui->numShots->value());
-        normalShootSequencer->setShutterSpeed(milliSeconds);
-        normalShootSequencer->setPauseDelay(ui->pauseTuBtn->getValueInMilliseconds());
-        normalShootSequencer->setStartDelay(ui->startDelayTuBtn->getValueInMilliseconds());
-        duration = normalShootSequencer->calculateSequenceDuration();
+        sequencer = normalShootSequencer;
+        milliSeconds = helper::shutterSpeedStrToMilliseconds(ui->shutterSpeed->currentText());
     }
+
+    sequencer->setNumShots(ui->numShots->value());
+    sequencer->setShutterSpeed(ui->shutterSpeedTuBtn->getValueInMilliseconds());
+    sequencer->setPauseDelay(ui->pauseTuBtn->getValueInMilliseconds());
+    sequencer->setStartDelay(ui->startDelayTuBtn->getValueInMilliseconds());
+    duration = sequencer->calculateSequenceDuration();
+
+    currentProtocol = new Protocol(this);
+    currentProtocol->setProperties(sequencerSettingsManager->getCurrent()->getProperties());
+    connect(sequencer, SIGNAL(started()), currentProtocol, SLOT(start()));
+    connect(sequencer, SIGNAL(havePostViewUrl(QString, int, int)), currentProtocol, SLOT(shotFinished(QString, int, int)));
+    connect(sequencer, SIGNAL(stopped()), currentProtocol, SLOT(sequenceFinished()));
 
 
     QTime dt = QTime(0,0,0,0).addMSecs(duration);
@@ -358,10 +367,7 @@ void ControlWidget::on_startBulbSequence_clicked()
                      .addMSecs(duration).toString("yyyy-MM-ddTHH:mm:ss:zzz")));
     infoMessage("-------------------------------------------------------------");
 
-    if(ui->shutterSpeed->currentText() == "BULB")
-        bulbShootSequencer->start();
-    else
-        normalShootSequencer->start();
+    sequencer->start();
 }
 
 

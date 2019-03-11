@@ -13,6 +13,7 @@ Base::Base(QObject *parent)
   , stateMachine(nullptr)
   , count(0)
   , numShots(0)
+  , startIndex(0)
 {
     connect(StatusPoller::get(), SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
 }
@@ -73,6 +74,16 @@ void Base::stop()
     stateMachine->stop();
     handleStopped();
     Q_EMIT updateStatus(tr("Sequence \"%0\" stopped").arg(objectName()));
+}
+
+int Base::getStartIndex() const
+{
+    return startIndex;
+}
+
+void Base::setStartIndex(int value)
+{
+    startIndex = value;
 }
 
 void Base::handleCameraStatus(QString status)

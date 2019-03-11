@@ -10,105 +10,148 @@ namespace Sequencer {
 
 QString Settings::getShutterSpeed() const
 {
-    return shutterSpeed;
+    return properties.shutterSpeed;
 }
 
 void Settings::setShutterSpeed(const QString &value)
 {
-    shutterSpeed = value;
+    properties.shutterSpeed = value;
 }
 
 QString Settings::getIso() const
 {
-    return iso;
+    return properties.iso;
 }
 
 void Settings::setIso(const QString &value)
 {
-    iso = value;
+    properties.iso = value;
 }
 
 int Settings::getShutterSpeedBulb() const
 {
-    return shutterSpeedBulb;
+    return properties.shutterSpeedBulb;
 }
 
 void Settings::setShutterSpeedBulb(int value)
 {
-    shutterSpeedBulb = value;
+    properties.shutterSpeedBulb = value;
 }
 
 int Settings::getStartDelay() const
 {
-    return startDelay;
+    return properties.startDelay;
 }
 
 void Settings::setStartDelay(int value)
 {
-    startDelay = value;
+    properties.startDelay = value;
 }
 
 int Settings::getPause() const
 {
-    return pause;
+    return properties.pause;
 }
 
 void Settings::setPause(int value)
 {
-    pause = value;
+    properties.pause = value;
 }
 
 int Settings::getNumShots() const
 {
-    return numShots;
+    return properties.numShots;
 }
 
 void Settings::setNumShots(int value)
 {
-    numShots = value;
+    properties.numShots = value;
 }
 
 int Settings::getShutterspeedBulbUnit() const
 {
-    return shutterspeedBulbUnit;
+    return properties.shutterSpeedBulbUnit;
 }
 
 void Settings::setShutterspeedBulbUnit(int value)
 {
-    shutterspeedBulbUnit = value;
+    properties.shutterSpeedBulbUnit = value;
 }
 
 int Settings::getStartDelayUnit() const
 {
-    return startDelayUnit;
+    return properties.startDelayUnit;
 }
 
 void Settings::setStartDelayUnit(int value)
 {
-    startDelayUnit = value;
+    properties.startDelayUnit = value;
 }
 
 int Settings::getPauseUnit() const
 {
-    return pauseUnit;
+    return properties.pauseUnit;
 }
 
 void Settings::setPauseUnit(int value)
 {
-    pauseUnit = value;
+    properties.pauseUnit = value;
 }
 
-Settings::Settings(Setting *parent)
-    : Setting(parent)
-    , shutterSpeed("BULB")
+Properties::Properties()
+    : shutterSpeed("BULB")
     , iso("800")
     , shutterSpeedBulb(1000)
-    , shutterspeedBulbUnit(2)
+    , shutterSpeedBulbUnit(2)
     , startDelay(0)
     , startDelayUnit(2)
     , pause(1000)
     , pauseUnit(2)
     , numShots(1)
+{}
+
+void Properties::serializeXml(QXmlStreamWriter &writer) const
+{
+    writer.writeStartElement("Properties");
+    writer.writeAttribute("shutterSpeed", shutterSpeed);
+    writer.writeAttribute("iso", iso);
+    writer.writeAttribute("shutterSpeedBulb", QString::number(shutterSpeedBulb));
+    writer.writeAttribute("shutterSpeedBulbUnit", QString::number(shutterSpeedBulbUnit));
+    writer.writeAttribute("startDelay", QString::number(startDelay));
+    writer.writeAttribute("startDelayUnit", QString::number(startDelayUnit));
+    writer.writeAttribute("pause", QString::number(pause));
+    writer.writeAttribute("pauseUnit", QString::number(pauseUnit));
+    writer.writeAttribute("numShots", QString::number(numShots));
+    writer.writeEndElement();
+}
+
+void Properties::deSerializeXml(QXmlStreamReader &reader)
+{
+    if(reader.isStartElement() && reader.name() == "Properties")
+    {
+        shutterSpeed = reader.attributes().value("shutterSpeed").toString();
+        iso = reader.attributes().value("iso").toString();
+        shutterSpeedBulbUnit = reader.attributes().value("shutterSpeedBulbUnit").toInt();
+        startDelay = reader.attributes().value("startDelay").toInt();
+        startDelayUnit = reader.attributes().value("startDelayUnit").toInt();
+        pause = reader.attributes().value("pause").toInt();
+        pauseUnit = reader.attributes().value("pauseUnit").toInt();
+        numShots = reader.attributes().value("numShots").toInt();
+    }
+}
+
+Properties Settings::getProperties() const
+{
+    return properties;
+}
+
+void Settings::setProperties(const Properties &value)
+{
+    properties = value;
+}
+
+Settings::Settings(Setting *parent)
+    : Setting(parent)
 {
     AB_INF("Sequencer::Settings ctor");
 }
@@ -121,30 +164,30 @@ Settings::~Settings()
 void Settings::save()
 {
     qSettings->beginGroup(objectName());
-    qSettings->setValue("shutterSpeed", shutterSpeed);
-    qSettings->setValue("iso", iso);
-    qSettings->setValue("shutterSpeedBulb", shutterSpeedBulb);
-    qSettings->setValue("shutterSpeedBulbUnit", shutterspeedBulbUnit);
-    qSettings->setValue("startDelay", startDelay);
-    qSettings->setValue("startDelayUnit", startDelayUnit);
-    qSettings->setValue("pause", pause);
-    qSettings->setValue("pauseUnit", pauseUnit);
-    qSettings->setValue("numShots", numShots);
+    qSettings->setValue("shutterSpeed", properties.shutterSpeed);
+    qSettings->setValue("iso", properties.iso);
+    qSettings->setValue("shutterSpeedBulb", properties.shutterSpeedBulb);
+    qSettings->setValue("shutterSpeedBulbUnit", properties.shutterSpeedBulbUnit);
+    qSettings->setValue("startDelay", properties.startDelay);
+    qSettings->setValue("startDelayUnit", properties.startDelayUnit);
+    qSettings->setValue("pause", properties.pause);
+    qSettings->setValue("pauseUnit", properties.pauseUnit);
+    qSettings->setValue("numShots", properties.numShots);
     qSettings->endGroup();
 }
 
 void Settings::load()
 {
     qSettings->beginGroup(objectName());
-    shutterSpeed = qSettings->value("shutterSpeed", "BULB").toString();
-    iso = qSettings->value("iso", "800").toString();
-    shutterSpeedBulb = qSettings->value("shutterSpeedBulb", 1000).toInt();
-    shutterspeedBulbUnit = qSettings->value("shutterSpeedBulbUnit", 2).toInt();
-    startDelay = qSettings->value("startDelay", 0).toInt();
-    startDelayUnit = qSettings->value("startDelayUnit", 2).toInt();
-    pause = qSettings->value("pause", 1000).toInt();
-    pauseUnit = qSettings->value("pauseUnit", 2).toInt();
-    numShots = qSettings->value("numShots", 1).toInt();
+    properties.shutterSpeed = qSettings->value("shutterSpeed", "BULB").toString();
+    properties.iso = qSettings->value("iso", "800").toString();
+    properties.shutterSpeedBulb = qSettings->value("shutterSpeedBulb", 1000).toInt();
+    properties.shutterSpeedBulbUnit = qSettings->value("shutterSpeedBulbUnit", 2).toInt();
+    properties.startDelay = qSettings->value("startDelay", 0).toInt();
+    properties.startDelayUnit = qSettings->value("startDelayUnit", 2).toInt();
+    properties.pause = qSettings->value("pause", 1000).toInt();
+    properties.pauseUnit = qSettings->value("pauseUnit", 2).toInt();
+    properties.numShots = qSettings->value("numShots", 1).toInt();
     qSettings->endGroup();
 }
 

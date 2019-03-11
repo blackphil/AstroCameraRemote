@@ -14,7 +14,7 @@ class StateNormalShooting : public StateBase
     Json::ActTakePicture actTakePicture;
 
 public:
-    StateNormalShooting(quint32 i, quint32 maxCount);
+    StateNormalShooting(int i, int maxCount);
 
 protected :
     void onEntry(QEvent* ev);

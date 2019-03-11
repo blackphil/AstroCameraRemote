@@ -6,7 +6,7 @@
 
 namespace Sequencer {
 
-StateBulbShooting::StateBulbShooting(QTimer* t, quint32 i, quint32 maxCount)
+StateBulbShooting::StateBulbShooting(QTimer* t, int i, int maxCount)
     : StateBase(
           tr("start shoot (%0/%1)").arg(i).arg(maxCount)
           , tr("stop shoot (%0/%1)").arg(i).arg(maxCount)

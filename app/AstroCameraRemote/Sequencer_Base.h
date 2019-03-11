@@ -23,6 +23,7 @@ protected :
 
     int count;
     int numShots;
+    int startIndex;
 
     virtual void handleStarted() = 0;
 
@@ -41,8 +42,14 @@ public:
     bool isRunning() const;
 
     virtual int calculateSequenceDuration() const = 0;
+    virtual void setStartDelay(int value) = 0;
+    virtual void setShutterSpeed(int value) = 0;
+    virtual void setPauseDelay(int value) = 0;
 
     static int calculateSequenceDuration(int startDelay, int shutterSpeed, int pauseDelay, int numShots);
+
+    int getStartIndex() const;
+    void setStartIndex(int value);
 
 Q_SIGNALS :
     void started();

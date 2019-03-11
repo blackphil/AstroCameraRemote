@@ -6,31 +6,43 @@
 #include <QWaitCondition>
 #include <QMutex>
 #include <QSharedPointer>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 #include "Settings.h"
 
 
 namespace Sequencer {
 
-class Settings : public Setting
+struct Properties
 {
-    Q_OBJECT
-
+    Properties();
     QString shutterSpeed;
     QString iso;
     int shutterSpeedBulb;
-    int shutterspeedBulbUnit;
+    int shutterSpeedBulbUnit;
     int startDelay;
     int startDelayUnit;
     int pause;
     int pauseUnit;
     int numShots;
 
+    void serializeXml(QXmlStreamWriter& writer) const;
+    void deSerializeXml(QXmlStreamReader& reader);
+
+};
+
+class Settings : public Setting
+{
+    Q_OBJECT
+
+    Properties properties;
+
+
 public:
     Settings(Setting* parent);
     ~Settings();
 
-    void addChildSetting(Setting* child);
     void load();
     void save();
 
@@ -52,6 +64,8 @@ public:
     void setStartDelayUnit(int value);
     int getPauseUnit() const;
     void setPauseUnit(int value);
+    Properties getProperties() const;
+    void setProperties(const Properties &value);
 };
 
 } //namespace Sequencer
