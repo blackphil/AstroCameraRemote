@@ -51,11 +51,24 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     settings->save();
 
+
     if(ui->actionToggleRecordMode->isChecked())
     {
         Sender::get()->send(stopRecMode);
+
+        QTimer* forceCloseTimer = new QTimer(this);
+
         aboutToClose = true;
         event->ignore();
+
+        forceCloseTimer->singleShot(
+                    1000
+                    , [this]()
+        {
+            this->ui->actionToggleRecordMode->toggle();
+            this->close();
+        });
+
     }
     else
     {
@@ -263,7 +276,7 @@ void MainWindow::helloError(QString msg)
 {
     error(msg);
 
-//    ui->centralWidget->setEnabled(false);
+    //    ui->centralWidget->setEnabled(false);
     QMessageBox::StandardButtons btn;
     do
     {
