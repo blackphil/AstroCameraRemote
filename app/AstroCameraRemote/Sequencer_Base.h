@@ -21,9 +21,9 @@ class Base : public QObject
 protected :
     QStateMachine* stateMachine;
 
-    int count;
     int numShots;
     int startIndex;
+    int numShotsFinished;
 
     virtual void handleStarted() = 0;
 
@@ -51,6 +51,8 @@ public:
     int getStartIndex() const;
     void setStartIndex(int value);
 
+    int getNumShotsFinished() const;
+
 Q_SIGNALS :
     void started();
     void stopped();
@@ -65,6 +67,8 @@ Q_SIGNALS :
 public Q_SLOTS :
     void start();
     void stop();
+
+    void shotFinished();
 
 
 };

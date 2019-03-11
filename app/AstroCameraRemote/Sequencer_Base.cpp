@@ -11,11 +11,12 @@ namespace Sequencer {
 Base::Base(QObject *parent)
   : QObject(parent)
   , stateMachine(nullptr)
-  , count(0)
   , numShots(0)
   , startIndex(0)
+  , numShotsFinished(0)
 {
     connect(StatusPoller::get(), SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
+    connect(this, SIGNAL(havePostViewUrl(QString, int, int)), this, SLOT(shotFinished()));
 }
 
 Base::~Base()
@@ -76,6 +77,11 @@ void Base::stop()
     Q_EMIT updateStatus(tr("Sequence \"%0\" stopped").arg(objectName()));
 }
 
+void Base::shotFinished()
+{
+    numShotsFinished++;
+}
+
 int Base::getStartIndex() const
 {
     return startIndex;
@@ -84,6 +90,11 @@ int Base::getStartIndex() const
 void Base::setStartIndex(int value)
 {
     startIndex = value;
+}
+
+int Base::getNumShotsFinished() const
+{
+    return numShotsFinished;
 }
 
 void Base::handleCameraStatus(QString status)

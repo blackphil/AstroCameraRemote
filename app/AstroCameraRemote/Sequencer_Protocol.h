@@ -31,6 +31,9 @@ class Protocol : public QObject
     QList<PhotoShot> photoShots;
 
     QDateTime startTime;
+    bool stashed;
+
+    QString subject;
 
 public:
     explicit Protocol(QObject *parent = nullptr);
@@ -38,13 +41,29 @@ public:
     void serializeXml(QXmlStreamWriter& writer) const;
     void deSerializeXml(QXmlStreamReader& reader);
 
-    Properties getProperties() const;
+    const Properties &getProperties() const;
     void setProperties(const Properties &value);
+
+    bool getStashed() const;
+    void setStashed(bool value);
+
+    QDateTime getStartTime() const;
+    int getNumShotsFinished() const;
+
+    static QString getProtocolPath(bool createIfNotExists = false);
+    static QString getStashPath(bool createIfNotExists = false);
+
+    QString getSubject() const;
+    void setSubject(const QString &value);
+
+    QString getFilePath() const;
 
 public Q_SLOTS :
     void start();
     void shotFinished(QString url, int index, int numShots);
-    void sequenceFinished();
+    void stop();
+
+    void deleteFile();
 
 };
 

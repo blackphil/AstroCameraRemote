@@ -43,7 +43,7 @@ void NormalShootSequencer::handleStarted()
     QTimer* currentTimer = startDelayTm;
     StateWaitForCamReady* waitForCamReady = nullptr;
 
-    for(int i=0; i<numShots; i++)
+    for(int i=startIndex; i<numShots; i++)
     {
         StateNormalShooting* shooting = new StateNormalShooting(i+1, numShots);
         connect(shooting, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));

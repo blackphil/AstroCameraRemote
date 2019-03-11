@@ -70,7 +70,7 @@ void TimeUnitButton::setValueInMilliseconds(int v)
 {
     if(connectedSpinBox)
     {
-        connectedSpinBox->setValue((double)v / unitSettings[unit].convertToMSec);
+        connectedSpinBox->setValue(v / unitSettings[unit].convertToMSec);
         return;
     }
 

@@ -8,6 +8,7 @@
 #include "MessagePoster.h"
 #include "PostView_Info.h"
 #include "Sequencer_Protocol.h"
+#include "Sequencer_ProtocolModel.h"
 
 class Settings;
 
@@ -15,6 +16,7 @@ namespace Sequencer {
 
 class BulbShootSequencer;
 class NormalShootSequencer;
+class Base;
 
 class SettingsManager;
 
@@ -40,10 +42,13 @@ private:
     BulbShootSequencer* bulbShootSequencer;
     NormalShootSequencer* normalShootSequencer;
 
-    Protocol* currentProtocol;
+    QPointer<Protocol> currentProtocol;
 
+    ProtocolModel* stashedShootingsModel;
 
     int connectionState;
+
+    Sequencer::Base* getRunningSequencer() const;
 
 public:
     explicit ControlWidget(QWidget *parent = nullptr);
@@ -60,6 +65,8 @@ public Q_SLOTS :
     void error(QString msg);
     void appendOutputMessage(QString msg);
 
+    void loadStash();
+
 private Q_SLOTS :
 
     void on_isoSpeedRate_activated(const QString &isoSpeedRate);
@@ -70,6 +77,7 @@ private Q_SLOTS :
 
     void addCurrentSequencerSettings();
     void applySequencerSettings(const QString& name, const QStringList& availableSettings);
+    void applySequencerSettingsFromCurrentProtocol();
     void removeSequencerSettings(const QString& name);
 
     bool stopRunningSequence();
@@ -80,12 +88,16 @@ private Q_SLOTS :
 
     void on_startBulbSequence_clicked();
 
+    void startSequence();
+
     void shutterSpeedChanged(const QString& value);
 
     void on_shutterSpeed_activated(const QString &speed);
 
     void on_takeShotBtn_clicked();
 
+    void on_stashSequenceBtn_clicked();
+    void on_cotinueBtn_clicked();
 };
 
 

@@ -31,6 +31,16 @@ int shutterSpeedStrToMilliseconds(QString shutterSpeedStr)
 }
 }
 
+Base *ControlWidget::getRunningSequencer() const
+{
+    if(bulbShootSequencer->isRunning())
+        return bulbShootSequencer;
+    else if(normalShootSequencer->isRunning())
+        return normalShootSequencer;
+
+    return nullptr;
+}
+
 ControlWidget::ControlWidget(QWidget *parent) :
     QWidget(parent)
   ,  ui(new Ui::ControlWidget)
@@ -43,8 +53,11 @@ ControlWidget::ControlWidget(QWidget *parent) :
   , bulbShootSequencer(new BulbShootSequencer(this))
   , normalShootSequencer(new NormalShootSequencer(this))
   , currentProtocol(nullptr)
+  , stashedShootingsModel(new ProtocolModel(this))
 {
     ui->setupUi(this);
+
+    ui->stashedShootings->setModel(stashedShootingsModel);
 
     ::Settings::getInstance()->add(sequencerSettingsManager);
 
@@ -108,7 +121,7 @@ ControlWidget::ControlWidget(QWidget *parent) :
 
     recalcSequenceDuration();
 
-
+    loadStash();
 }
 
 ControlWidget::~ControlWidget()
@@ -138,7 +151,7 @@ void ControlWidget::onPostView(const QString &url)
     Q_EMIT newPostViewInfo(newInfo);
 
     infoMessage(tr("have new image: %0").arg(url));
-//    ui->imageSubTitle->setText(ts.toString("yyyy-MM-ddTHH:mm:ss:zzz"));
+    //    ui->imageSubTitle->setText(ts.toString("yyyy-MM-ddTHH:mm:ss:zzz"));
     Sender::get()->loadPostViewImage(url);
 }
 
@@ -160,7 +173,7 @@ void ControlWidget::onPostView(const QString& url, int i, int numShots)
 
 
     infoMessage(tr("have new image: %0 (%1/%2)").arg(url).arg(i).arg(numShots));
-//    ui->imageSubTitle->setText(tr("image %0/%1").arg(i).arg(numShots));
+    //    ui->imageSubTitle->setText(tr("image %0/%1").arg(i).arg(numShots));
     Sender::get()->loadPostViewImage(url);
 }
 
@@ -200,6 +213,24 @@ void ControlWidget::error(QString msg)
 void ControlWidget::appendOutputMessage(QString msg)
 {
     infoMessage(msg);
+}
+
+void ControlWidget::loadStash()
+{
+    QDir stashDir(Protocol::getStashPath());
+    if(!stashDir.exists())
+        return;
+
+    QFileInfoList protocolFilePaths = stashDir.entryInfoList(QStringList() << "*.xml", QDir::Files, QDir::Name);
+    for(const QFileInfo& fi : protocolFilePaths)
+    {
+        Protocol* p = new Protocol(this);
+        QFile f(fi.absoluteFilePath());
+        f.open(QIODevice::ReadOnly | QIODevice::Text);
+        QXmlStreamReader reader(&f);
+        p->deSerializeXml(reader);
+        stashedShootingsModel->addProtocol(p);
+    }
 }
 
 void ControlWidget::addCurrentSequencerSettings()
@@ -245,6 +276,29 @@ void ControlWidget::applySequencerSettings(const QString &name, const QStringLis
     ui->pauseTuBtn->setValueInMilliseconds(s->getPause());
 
     ui->numShots->setValue(s->getNumShots());
+
+    setShutterSpeed->setShutterSpeed(ui->shutterSpeed->currentText());
+    Sender::get()->send(setShutterSpeed);
+    setIsoSpeedRate->setIsoSpeedRate(ui->isoSpeedRate->currentText());
+    Sender::get()->send(setIsoSpeedRate);
+}
+
+void ControlWidget::applySequencerSettingsFromCurrentProtocol()
+{
+    const Properties& p = currentProtocol->getProperties();
+    ui->shutterSpeed->setCurrentText(p.shutterSpeed);
+    ui->isoSpeedRate->setCurrentText(p.iso);
+
+    ui->shutterSpeedTuBtn->setCurrentUnit(p.shutterSpeedBulbUnit);
+    ui->shutterSpeedTuBtn->setValueInMilliseconds(p.shutterSpeedBulb);
+
+    ui->startDelayTuBtn->setCurrentUnit(p.startDelayUnit);
+    ui->startDelayTuBtn->setValueInMilliseconds(p.startDelay);
+
+    ui->pauseTuBtn->setCurrentUnit(p.pauseUnit);
+    ui->pauseTuBtn->setValueInMilliseconds(p.pause);
+
+    ui->numShots->setValue(p.numShots);
 
     setShutterSpeed->setShutterSpeed(ui->shutterSpeed->currentText());
     Sender::get()->send(setShutterSpeed);
@@ -303,18 +357,19 @@ void ControlWidget::recalcSequenceDuration()
 
 bool ControlWidget::stopRunningSequence()
 {
-    if(bulbShootSequencer->isRunning() || normalShootSequencer->isRunning())
+    Sequencer::Base* sequencer = getRunningSequencer();
+    if(nullptr == sequencer)
+        return false;
+
+
+    if(QMessageBox::Yes == QMessageBox::question(
+                this, tr("Stop shoot sequence"), tr("Do you want to stop current shoot sequence?")))
     {
-        if(QMessageBox::Yes == QMessageBox::question(
-                    this, tr("Stop shoot sequence"), tr("Do you want to stop current shoot sequence?")))
-        {
-            if(bulbShootSequencer->isRunning())
-                bulbShootSequencer->stop();
-            else if(normalShootSequencer->isRunning())
-                normalShootSequencer->stop();
-            return true;
-        }
+        if(sequencer->isRunning())
+            sequencer->stop();
+        return true;
     }
+
 
     return false;
 }
@@ -323,6 +378,16 @@ void ControlWidget::on_startBulbSequence_clicked()
 {
     if(stopRunningSequence())
         return;
+
+    currentProtocol = new Protocol(this);
+    currentProtocol->setSubject(ui->subjectLineEdit->text());
+    currentProtocol->setProperties(sequencerSettingsManager->getCurrent()->getProperties());
+
+    startSequence();
+}
+
+void ControlWidget::startSequence()
+{
 
     infoMessage("-------------------------------------------------------------");
     infoMessage(tr("start sequence at %0").arg(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz")));
@@ -343,17 +408,18 @@ void ControlWidget::on_startBulbSequence_clicked()
         milliSeconds = helper::shutterSpeedStrToMilliseconds(ui->shutterSpeed->currentText());
     }
 
+    sequencer->setStartIndex(currentProtocol->getNumShotsFinished());
     sequencer->setNumShots(ui->numShots->value());
     sequencer->setShutterSpeed(ui->shutterSpeedTuBtn->getValueInMilliseconds());
     sequencer->setPauseDelay(ui->pauseTuBtn->getValueInMilliseconds());
     sequencer->setStartDelay(ui->startDelayTuBtn->getValueInMilliseconds());
     duration = sequencer->calculateSequenceDuration();
 
-    currentProtocol = new Protocol(this);
-    currentProtocol->setProperties(sequencerSettingsManager->getCurrent()->getProperties());
     connect(sequencer, SIGNAL(started()), currentProtocol, SLOT(start()));
     connect(sequencer, SIGNAL(havePostViewUrl(QString, int, int)), currentProtocol, SLOT(shotFinished(QString, int, int)));
-    connect(sequencer, SIGNAL(stopped()), currentProtocol, SLOT(sequenceFinished()));
+    connect(sequencer, SIGNAL(stopped()), currentProtocol, SLOT(stop()));
+
+    applySequencerSettingsFromCurrentProtocol();
 
 
     QTime dt = QTime(0,0,0,0).addMSecs(duration);
@@ -369,8 +435,6 @@ void ControlWidget::on_startBulbSequence_clicked()
 
     sequencer->start();
 }
-
-
 
 void ControlWidget::shutterSpeedChanged(const QString &value)
 {
@@ -399,4 +463,44 @@ void ControlWidget::on_takeShotBtn_clicked()
     Sender::get()->send(actTakePicture);
 }
 
+void ControlWidget::on_stashSequenceBtn_clicked()
+{
+    Sequencer::Base* sequencer = getRunningSequencer();
+    if(nullptr == sequencer)
+        return;
+
+    if(sequencer->getNumShots() > sequencer->getNumShotsFinished())
+    {
+        currentProtocol->setStashed(true);
+        stashedShootingsModel->addProtocol(currentProtocol);
+    }
+
+
+    sequencer->stop();
+}
+
+void ControlWidget::on_cotinueBtn_clicked()
+{
+    QModelIndexList selection = ui->stashedShootings->selectionModel()->selectedIndexes();
+    if(selection.isEmpty())
+        return;
+
+    QModelIndex selIndex = selection.first();
+    if(!selIndex.isValid())
+        return;
+
+    Protocol* selProtocol = stashedShootingsModel->getProtocol(selIndex);
+    if(!selProtocol)
+        return;
+
+    currentProtocol = selProtocol;
+    stashedShootingsModel->removeProtocol(selIndex);
+
+    ui->tabWidget->setCurrentWidget(ui->mainTab);
+
+    startSequence();
+}
+
 } // namespace Sequencer
+
+
