@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
-    <height>356</height>
+    <width>417</width>
+    <height>325</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,13 +38,28 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="mainTab">
       <attribute name="title">
        <string>Main</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
+       <property name="spacing">
+        <number>2</number>
+       </property>
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
@@ -80,33 +95,17 @@
           <string>Settings</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="3">
-           <widget class="QPushButton" name="addSettingsBtn">
-            <property name="maximumSize">
-             <size>
-              <width>50</width>
-              <height>16777215</height>
-             </size>
-            </property>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_8">
             <property name="text">
-             <string>Add</string>
+             <string>Estimated duration:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
-          <item row="0" column="4">
-           <widget class="QPushButton" name="removeSettingsBtn">
-            <property name="maximumSize">
-             <size>
-              <width>50</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Remove</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+          <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Shutter speed:</string>
@@ -116,46 +115,25 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="shutterSpeed"/>
+          <item row="3" column="2">
+           <widget class="TimeUnitButton" name="pauseTuBtn">
+            <property name="maximumSize">
+             <size>
+              <width>30</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>tu</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>ISO:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3" colspan="2">
-           <widget class="QComboBox" name="isoSpeedRate"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Shutter speed (BULB):</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::PlainText</enum>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="shutterSpeedBulb">
-            <property name="showGroupSeparator" stdset="0">
-             <bool>true</bool>
-            </property>
-            <property name="decimals">
-             <number>6</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
            <widget class="TimeUnitButton" name="shutterSpeedTuBtn">
             <property name="maximumSize">
              <size>
@@ -173,31 +151,8 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="3" colspan="2">
-           <widget class="QPushButton" name="takeShotBtn">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Take single shot</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Start delay:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="startDelay">
+           <widget class="QDoubleSpinBox" name="pause">
             <property name="showGroupSeparator" stdset="0">
              <bool>true</bool>
             </property>
@@ -206,7 +161,17 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="2">
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Num shots:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
            <widget class="TimeUnitButton" name="startDelayTuBtn">
             <property name="maximumSize">
              <size>
@@ -230,7 +195,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
              <string>Pause:</string>
@@ -240,8 +205,28 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="pause">
+          <item row="6" column="1">
+           <widget class="QCheckBox" name="lenrCheckbox">
+            <property name="text">
+             <string>Long exp. noise red.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Shutter speed (BULB):</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::PlainText</enum>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="shutterSpeedBulb">
             <property name="showGroupSeparator" stdset="0">
              <bool>true</bool>
             </property>
@@ -250,41 +235,10 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
-           <widget class="TimeUnitButton" name="pauseTuBtn">
-            <property name="maximumSize">
-             <size>
-              <width>30</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>7</pointsize>
-             </font>
-            </property>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label">
             <property name="text">
-             <string>tu</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="3" colspan="2">
-           <widget class="QPushButton" name="startBulbSequence">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Start</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Num shots:</string>
+             <string>ISO:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -292,26 +246,6 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QSpinBox" name="numShots">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Estimated duration:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
            <widget class="QLineEdit" name="estimatedDuration">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -327,8 +261,44 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="3" colspan="2">
-           <widget class="QPushButton" name="stashSequenceBtn">
+          <item row="0" column="1">
+           <widget class="QComboBox" name="shutterSpeed"/>
+          </item>
+          <item row="4" column="1">
+           <widget class="QSpinBox" name="numShots">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" colspan="2">
+           <widget class="QComboBox" name="isoSpeedRate"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="startDelay">
+            <property name="showGroupSeparator" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="decimals">
+             <number>6</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Start delay:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3" rowspan="2">
+           <widget class="QPushButton" name="startBulbSequence">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -336,34 +306,20 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Stash</string>
+             <string>Start</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
-           <widget class="QCheckBox" name="lenrCheckbox">
+          <item row="1" column="3" rowspan="2" colspan="2">
+           <widget class="QPushButton" name="takeShotBtn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Long exp. noise red.</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QComboBox" name="settingsNameCBox">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="editable">
-             <bool>true</bool>
-            </property>
-            <property name="currentText">
-             <string/>
-            </property>
-            <property name="frame">
-             <bool>true</bool>
+             <string>Take single shot</string>
             </property>
            </widget>
           </item>
@@ -385,46 +341,48 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stashTab">
+     <widget class="QWidget" name="protocolTab">
       <attribute name="title">
-       <string>Stash</string>
+       <string>Protocols</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="1">
+       <property name="leftMargin">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <item row="4" column="0">
         <widget class="QPushButton" name="cotinueBtn">
          <property name="text">
           <string>Continue</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="1">
+       <item row="4" column="2">
         <widget class="QPushButton" name="fwdBtn">
          <property name="text">
           <string>&gt;</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="4" column="1">
         <widget class="QPushButton" name="bwdBtn">
          <property name="text">
           <string>&lt;</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0" rowspan="4">
+       <item row="0" column="0" rowspan="4" colspan="3">
         <widget class="QTableView" name="stashedShootings">
          <property name="selectionMode">
           <enum>QAbstractItemView::SingleSelection</enum>

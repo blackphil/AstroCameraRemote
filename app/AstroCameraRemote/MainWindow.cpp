@@ -149,24 +149,24 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::isoSpeedRatesChanged(const QStringList &candidates, const QString &)
+void MainWindow::isoSpeedRatesChanged(const QStringList &candidates, const QString& current)
 {
     if(connectionState & State_IsoSpeeds)
         return;
 
-    ui->sequencerControl->isoSpeedRatesChanged(candidates);
+    ui->sequencerControl->isoSpeedRatesChanged(candidates, current);
 
 
     connectionState |= State_IsoSpeeds;
     connectionStateChanged();
 }
 
-void MainWindow::shutterSpeedsChanged(const QStringList &candidates, const QString &)
+void MainWindow::shutterSpeedsChanged(const QStringList &candidates, const QString& current)
 {
     if(connectionState & State_ShutterSpeeds)
         return;
 
-    ui->sequencerControl->shutterSpeedsChanged(candidates);
+    ui->sequencerControl->shutterSpeedsChanged(candidates, current);
 
     connectionState |= State_ShutterSpeeds;
     connectionStateChanged();

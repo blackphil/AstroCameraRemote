@@ -18,7 +18,7 @@ class BulbShootSequencer;
 class NormalShootSequencer;
 class Base;
 
-class SettingsManager;
+//class SettingsManager;
 
 namespace Ui {
 class ControlWidget;
@@ -30,7 +30,7 @@ class ControlWidget : public QWidget, public MessagePoster
 
 private:
     Ui::ControlWidget *ui;
-    SettingsManager* sequencerSettingsManager;
+//    SettingsManager* sequencerSettingsManager;
 
     Json::SetShutterSpeed* setShutterSpeed;
     Json::SetIsoSpeedRate* setIsoSpeedRate;
@@ -44,7 +44,7 @@ private:
 
     QPointer<Protocol> currentProtocol;
 
-    ProtocolModel* stashedShootingsModel;
+    ProtocolModel* protocolModel;
 
     int connectionState;
 
@@ -59,13 +59,15 @@ Q_SIGNALS :
     void newPostViewInfo(PostView::Info);
 
 public Q_SLOTS :
-    void isoSpeedRatesChanged(const QStringList &candidates);
-    void shutterSpeedsChanged(const QStringList &candidates);
+    void isoSpeedRatesChanged(const QStringList &candidates, const QString& current);
+    void shutterSpeedsChanged(const QStringList &candidates, const QString &current);
 
     void error(QString msg);
     void appendOutputMessage(QString msg);
 
-    void loadStash();
+    void loadProtocols();
+
+    void setupProtocol(Protocol* p) const;
 
 private Q_SLOTS :
 
@@ -75,10 +77,10 @@ private Q_SLOTS :
 
     void onPostView(const QString& url, int i, int numShots);
 
-    void addCurrentSequencerSettings();
-    void applySequencerSettings(const QString& name, const QStringList& availableSettings);
+//    void addCurrentSequencerSettings();
+//    void applySequencerSettings(const QString& name, const QStringList& availableSettings);
     void applySequencerSettingsFromCurrentProtocol();
-    void removeSequencerSettings(const QString& name);
+//    void removeSequencerSettings(const QString& name);
 
     bool stopRunningSequence();
 
@@ -96,7 +98,6 @@ private Q_SLOTS :
 
     void on_takeShotBtn_clicked();
 
-    void on_stashSequenceBtn_clicked();
     void on_cotinueBtn_clicked();
 };
 

@@ -173,6 +173,7 @@ void Widget::loadFiles(const QStringList &files)
 
             QFileInfo fileInfo(fn);
             Info dummyInfo;
+            dummyInfo.setSubject(tr("test image"));
             dummyInfo.setShutterSpeed(fileInfo.baseName());
             dummyInfo.setTimestamp(fileInfo.created());
             dummyInfo.setSeqNr(index++);

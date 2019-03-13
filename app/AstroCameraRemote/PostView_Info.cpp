@@ -31,6 +31,16 @@ void Info::setStarInfo(StarTrack::StarInfoPtr info)
     starInfos << info;
 }
 
+QString Info::getSubject() const
+{
+    return subject;
+}
+
+void Info::setSubject(const QString &value)
+{
+    subject = value;
+}
+
 Info::Info()
     : shutterSpeedBulbMs(0)
     , iso(0)
@@ -45,11 +55,12 @@ Info::Info()
     }
 }
 
-Info::Info(
+Info::Info(QString subject,
         QString shutterSpeed, int shutterSpeedBulbMs, int iso
         , const QDateTime& ts, const QUrl& url, int seqNr, int numShots
         , const QPixmap &image)
-    : shutterSpeed(shutterSpeed)
+    : subject(subject)
+    , shutterSpeed(shutterSpeed)
     , shutterSpeedBulbMs(shutterSpeedBulbMs)
     , iso(iso)
     , timestamp(ts)
@@ -132,6 +143,7 @@ QString Info::toHtml() const
     return htmlPattern
             .arg(timestamp.toString("yyyy-MM-dd"))
             .arg(timestamp.toString("HH:mm:ss:zzz"))
+            .arg(subject)
             .arg(seqNr)
             .arg(numShots)
             .arg(shutterSpeedStr)

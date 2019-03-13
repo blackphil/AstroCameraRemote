@@ -9,7 +9,7 @@
 #include "Sequencer_Settings.h"
 
 namespace Sequencer {
-
+#if 0
 class SettingsManager : public Setting
 {
     Q_OBJECT
@@ -53,7 +53,7 @@ public Q_SLOTS :
     void setNumShots(int value);
 
 };
-
+#endif
 } // namespace Sequencer
 
 #endif // SEQUENCER_SETTINGSMANAGER_H

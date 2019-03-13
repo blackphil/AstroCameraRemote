@@ -4,7 +4,7 @@
 
 TimeUnitButton::TimeUnitButton(QWidget *parent)
     : QPushButton(parent)
-    , connectedSpinBox(NULL)
+    , connectedSpinBox(nullptr)
     , unit(Unit_Minutes)
 {
     unitSettings[Unit_Minutes].name = tr("min");
@@ -60,9 +60,9 @@ void TimeUnitButton::setCurrentUnit(int unit)
 int TimeUnitButton::getValueInMilliseconds() const
 {
     if(connectedSpinBox)
-        return connectedSpinBox->value() * unitSettings[unit].convertToMSec;
+        return qRound(connectedSpinBox->value() * unitSettings[unit].convertToMSec);
 
-    Q_ASSERT(!"no spin box connected!");
+    Q_ASSERT(false && "no spin box connected!");
     return -1;
 }
 
@@ -74,7 +74,7 @@ void TimeUnitButton::setValueInMilliseconds(int v)
         return;
     }
 
-    Q_ASSERT(!"no spin box connected!");
+    Q_ASSERT(false && "no spin box connected!");
 }
 
 void TimeUnitButton::connectToSpinbox(QDoubleSpinBox *spinBox)
@@ -91,7 +91,7 @@ void TimeUnitButton::connectToSpinbox(QDoubleSpinBox *spinBox)
 void TimeUnitButton::nextCheckState()
 {
     int nextUnit = (unit + 1) % NumUnits;
-    unit = (Unit)nextUnit;
+    unit = static_cast<Unit>(nextUnit);
     internalUpdate(true);
     Q_EMIT unitChanged(unit);
 }

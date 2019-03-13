@@ -12,6 +12,7 @@ namespace PostView {
 
 class Info
 {
+    QString subject;
     QString shutterSpeed;
     int shutterSpeedBulbMs;
     int iso;
@@ -29,7 +30,8 @@ class Info
 public:
     Info();
     Info(
-            QString shutterSpeed, int shutterSpeedBulbMs, int iso
+            QString subject
+            , QString shutterSpeed, int shutterSpeedBulbMs, int iso
             , const QDateTime &ts, const QUrl &url, int seqNr, int numShots
             , const QPixmap& image = QPixmap());
     int getIso() const;
@@ -52,6 +54,8 @@ public:
     void setShutterSpeedBulbMs(int value);
 
     void setStarInfo(StarTrack::StarInfoPtr info);
+    QString getSubject() const;
+    void setSubject(const QString &value);
 };
 
 } // namespace PostView

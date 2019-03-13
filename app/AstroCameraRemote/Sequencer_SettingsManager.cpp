@@ -5,7 +5,7 @@
 
 namespace Sequencer {
 
-
+#if 0
 
 SettingsManager::SettingsManager(Setting* parent)
     : Setting(parent)
@@ -178,5 +178,5 @@ void SettingsManager::setNumShots(int value)
     current->setNumShots(value);
 }
 
-
+#endif
 } // namespace Sequencer

@@ -30,8 +30,12 @@ struct Properties
     void serializeXml(QXmlStreamWriter& writer) const;
     void deSerializeXml(QXmlStreamReader& reader);
 
+    int getShutterSpeedInMilliseconds() const;
+    bool isBulb() const;
+
 };
 
+#if 0
 class Settings : public Setting
 {
     Q_OBJECT
@@ -67,7 +71,7 @@ public:
     Properties getProperties() const;
     void setProperties(const Properties &value);
 };
-
+#endif
 } //namespace Sequencer
 
 #endif // SHOOTSEQUENCE_H

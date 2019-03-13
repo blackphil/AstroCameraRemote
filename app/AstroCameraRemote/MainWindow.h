@@ -76,8 +76,8 @@ public:
 
 private Q_SLOTS:
 
-    void isoSpeedRatesChanged(const QStringList& candidates, const QString&);
-    void shutterSpeedsChanged(const QStringList& candidates, const QString&);
+    void isoSpeedRatesChanged(const QStringList& candidates, const QString& current);
+    void shutterSpeedsChanged(const QStringList& candidates, const QString& current);
 
     void toggleStarTrackViewFullScreen(bool yes);
 

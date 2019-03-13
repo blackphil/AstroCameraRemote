@@ -1,5 +1,7 @@
 #include "Sequencer_Protocol.h"
 
+#include "AstroBase.h"
+
 #include <QStandardPaths>
 #include <QDir>
 #include <QFile>
@@ -19,15 +21,6 @@ void Protocol::setProperties(const Properties &value)
     properties = value;
 }
 
-bool Protocol::getStashed() const
-{
-    return stashed;
-}
-
-void Protocol::setStashed(bool value)
-{
-    stashed = value;
-}
 
 QDateTime Protocol::getStartTime() const
 {
@@ -57,21 +50,6 @@ QString Protocol::getProtocolPath(bool createIfNotExists)
     return dataPath;
 }
 
-QString Protocol::getStashPath(bool createIfNotExists)
-{
-
-    QString dataPath = getProtocolPath(createIfNotExists);
-    dataPath += "/stashed";
-
-    QDir dataDir(dataPath);
-    if(!dataDir.exists() && createIfNotExists)
-    {
-        QDir().mkpath(dataPath);
-    }
-
-    return dataPath;
-}
-
 QString Protocol::getSubject() const
 {
     return subject;
@@ -84,12 +62,7 @@ void Protocol::setSubject(const QString &value)
 
 QString Protocol::getFilePath() const
 {
-    QString dataPath;
-    if(stashed)
-        dataPath = getStashPath(true);
-    else
-        dataPath = getProtocolPath(true);
-
+    QString dataPath = getProtocolPath(true);
     QDir dataDir(dataPath);
     Q_ASSERT(dataDir.exists());
 
@@ -103,11 +76,19 @@ QString Protocol::getFilePath() const
     return protocolFileInfo.absoluteFilePath();
 }
 
+static int objCount(0);
+
 Protocol::Protocol(QObject *parent)
     : QObject(parent)
-    , stashed(false)
 {
+    objCount++;
+    AB_DBG("CTOR(" << objCount << ")");
+}
 
+Protocol::~Protocol()
+{
+    objCount--;
+    AB_DBG("DTOR(" << objCount << ")");
 }
 
 void Protocol::start()

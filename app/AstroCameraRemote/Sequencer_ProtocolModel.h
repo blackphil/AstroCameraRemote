@@ -11,7 +11,7 @@ class ProtocolModel : public QAbstractItemModel
 {
     Q_OBJECT
 
-    QList<Protocol*> protocols;
+    QList<QPointer<Protocol> > protocols;
 
 public:
     ProtocolModel(QObject* parent = nullptr);

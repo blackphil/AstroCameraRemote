@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QTime>
+#include <QThread>
 
 namespace AstroBase
 {
@@ -39,10 +40,18 @@ void Logging::messageOutput(QtMsgType type, const QMessageLogContext &context, c
         instance->stream << "ERR|";
     }
 
-    instance->stream << QTime::currentTime().toString("HH:mm:ss:zzz") << "|" << context.file << ":" << context.line << "(" << context.function << ")\t" << localMsg << "\n";
+    instance->stream
+            << QTime::currentTime().toString("HH:mm:ss:zzz")
+            << "[" << QThread::currentThread()->objectName() << "(" << QThread::currentThreadId() << ")]"
+            << "|" << context.file
+            << ":" << context.line
+            << "(" << context.function << ")"
+            << "\t" << localMsg
+            << "\n";
+
     instance->stream.flush();
-    if(QtFatalMsg == type)
-        abort();
+//    if(QtFatalMsg == type)
+//        abort();
 }
 
 } //namespace AstroBase

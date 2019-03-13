@@ -4,10 +4,11 @@
 #include "Json_Command.h"
 #include "AstroBase.h"
 
+#include <QRegularExpression>
 
 namespace Sequencer {
 
-
+#if 0
 QString Settings::getShutterSpeed() const
 {
     return properties.shutterSpeed;
@@ -98,6 +99,8 @@ void Settings::setPauseUnit(int value)
     properties.pauseUnit = value;
 }
 
+#endif
+
 Properties::Properties()
     : shutterSpeed("BULB")
     , iso("800")
@@ -140,6 +143,33 @@ void Properties::deSerializeXml(QXmlStreamReader &reader)
     }
 }
 
+int Properties::getShutterSpeedInMilliseconds() const
+{
+    if("BULB" == shutterSpeed)
+    {
+        return shutterSpeedBulb;
+    }
+    else
+    {
+        QRegularExpressionMatch match1 = QRegularExpression("1/(\\d+)").match(shutterSpeed);
+        QRegularExpressionMatch match2 = QRegularExpression("(\\d+)\"").match(shutterSpeed);
+        int milliSeconds = 0;
+        if(match1.hasMatch())
+            milliSeconds = static_cast<int>(1000. / match1.captured(1).toDouble());
+        else if(match2.hasMatch())
+            milliSeconds = static_cast<int>(1000. * match2.captured(1).toDouble());
+
+        return milliSeconds;
+
+    }
+}
+
+bool Properties::isBulb() const
+{
+    return shutterSpeed == "BULB" ? true : false;
+}
+
+#if 0
 Properties Settings::getProperties() const
 {
     return properties;
@@ -190,5 +220,5 @@ void Settings::load()
     properties.numShots = qSettings->value("numShots", 1).toInt();
     qSettings->endGroup();
 }
-
+#endif
 } //namespace Sequencer

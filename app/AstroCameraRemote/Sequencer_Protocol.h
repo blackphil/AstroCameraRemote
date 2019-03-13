@@ -31,12 +31,12 @@ class Protocol : public QObject
     QList<PhotoShot> photoShots;
 
     QDateTime startTime;
-    bool stashed;
 
     QString subject;
 
 public:
     explicit Protocol(QObject *parent = nullptr);
+    ~Protocol();
 
     void serializeXml(QXmlStreamWriter& writer) const;
     void deSerializeXml(QXmlStreamReader& reader);
@@ -44,14 +44,10 @@ public:
     const Properties &getProperties() const;
     void setProperties(const Properties &value);
 
-    bool getStashed() const;
-    void setStashed(bool value);
-
     QDateTime getStartTime() const;
     int getNumShotsFinished() const;
 
     static QString getProtocolPath(bool createIfNotExists = false);
-    static QString getStashPath(bool createIfNotExists = false);
 
     QString getSubject() const;
     void setSubject(const QString &value);
