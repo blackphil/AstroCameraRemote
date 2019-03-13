@@ -11,7 +11,7 @@
 
 #include "LiveView_Commands.h"
 #include "LiveView_Reader.h"
-#include "SonyAlphaRemote_Sender.h"
+#include "Sender.h"
 #include "LiveView_ImageQueue.h"
 #include "LiveView_ReaderThread.h"
 #include "LiveView_Settings.h"
@@ -33,7 +33,6 @@ class Widget : public QWidget
 
     StartLiveView* startLiveView;
     StopLiveView* stopLiveView;
-    SonyAlphaRemote::Sender* sender;
 
     ImageQueue* imageQueue;
     QTimer* pollImageTimer;
@@ -52,9 +51,6 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
-
-    void setSender(SonyAlphaRemote::Sender *value);
-
 
     StarTrack::GraphicsScene *getStarTrackScene() const;
 

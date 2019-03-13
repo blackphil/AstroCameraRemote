@@ -27,14 +27,6 @@ StarTrack::GraphicsScene *Widget::getStarTrackScene() const
     return starTrackScene;
 }
 
-void Widget::keyPressEvent(QKeyEvent *event)
-{
-    if(Qt::Key_Delete == event->key())
-        removeSelectedMarker();
-
-    QWidget::keyPressEvent(event);
-}
-
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , cursor(0)
@@ -50,6 +42,29 @@ Widget::Widget(QWidget *parent)
 Widget::~Widget()
 {
     delete ui;
+}
+
+void Widget::updatePostViewImage(const QByteArray &data)
+{
+    QImage img = QImage::fromData(data);
+    updatePostViewImage(QPixmap::fromImage(img));
+}
+
+void Widget::updatePostViewImage(const QPixmap &pixmap)
+{
+    //    Q_ASSERT(!imageStack.isEmpty());
+    if(imageStack.isEmpty())
+    {
+        AB_ERR(tr("post view image stack is empty!!!"));
+        starTrackScene->updateBackground(pixmap);
+        return;
+    }
+
+
+    imageStack.back().setImage(pixmap);
+    cursor = imageStack.count()-1;
+    updatePostView();
+
 }
 
 void Widget::updatePostView()
@@ -84,10 +99,10 @@ void Widget::updatePostView()
 
 void Widget::newInfo(const Info &info)
 {
+    imageStack.push_back(info);
+
     if(info.getImage().isNull())
         return;
-
-    imageStack.push_back(info);
 
     if(ui->autoFwd->isChecked())
         on_latestImg_clicked();
@@ -98,14 +113,6 @@ void Widget::newHfdValue(StarTrack::StarInfoPtr starInfo)
     if(0 <= cursor && cursor < imageStack.count())
     {
         imageStack[cursor].setStarInfo(StarTrack::StarInfoPtr(new StarTrack::StarInfo(*starInfo)));
-    }
-}
-
-void Widget::removeSelectedMarker()
-{
-    if(QMessageBox::Yes == QMessageBox::question(this, tr("Remote star tracker"), tr("Remove star tracker?")))
-    {
-        starTrackScene->removeSelectedMarker();
     }
 }
 
@@ -166,6 +173,7 @@ void Widget::loadFiles(const QStringList &files)
 
             QFileInfo fileInfo(fn);
             Info dummyInfo;
+            dummyInfo.setSubject(tr("test image"));
             dummyInfo.setShutterSpeed(fileInfo.baseName());
             dummyInfo.setTimestamp(fileInfo.created());
             dummyInfo.setSeqNr(index++);

@@ -3,12 +3,12 @@
 
 #include <QSettings>
 
-#include "SonyAlphaRemote_Settings.h"
+#include "Settings.h"
 #include "Settings_General.h"
 #include "StarTrack_Settings.h"
 
 
-SettingsDialog::SettingsDialog(SonyAlphaRemote::Settings *settings, QWidget *parent)
+SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent)
     : QDialog(parent)
     , settings(settings)
     , ui(new Ui::SettingsDialog)

@@ -9,15 +9,11 @@
 #include <QBrush>
 #include <QMouseEvent>
 
-using namespace SonyAlphaRemote;
+
 
 namespace LiveView {
 
 
-void Widget::setSender(SonyAlphaRemote::Sender *value)
-{
-    sender = value;
-}
 
 
 Widget::Widget(QWidget *parent)
@@ -25,7 +21,6 @@ Widget::Widget(QWidget *parent)
     , ui(new Ui::Widget)
     , startLiveView(new StartLiveView(this))
     , stopLiveView(new StopLiveView(this))
-    , sender(nullptr)
     , imageQueue(new ImageQueue(this))
     , pollImageTimer(new QTimer(this))
     , readerThread(nullptr)
@@ -53,18 +48,12 @@ Widget::~Widget()
 
 void Widget::start()
 {
-    Q_ASSERT(sender);
-    if(!sender)
-        AB_ERR("no sender available!!!");
-    sender->send(startLiveView);
+    Sender::get()->send(startLiveView);
 }
 
 void Widget::stop()
 {
-    Q_ASSERT(sender);
-    if(!sender)
-        AB_ERR("no sender available!!!");
-    sender->send(stopLiveView);
+    Sender::get()->send(stopLiveView);
     stopReaderThread();
 }
 
@@ -98,6 +87,7 @@ void Widget::updateLiveViewImage()
     ui->metaInfo->setText(metaInfo.toHtml());
 
     QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data->payload, "JPG"));
+    Q_ASSERT(!pixmap.isNull());
     starTrackScene->updateBackground(pixmap);
 }
 

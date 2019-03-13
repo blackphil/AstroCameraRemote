@@ -29,7 +29,7 @@ class ImageQueue : public QObject
     Q_OBJECT
 
 public :
-    ImageQueue(QObject* parent = 0);
+    ImageQueue(QObject* parent = nullptr);
 
 private :
 

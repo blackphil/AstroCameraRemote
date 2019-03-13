@@ -1,12 +1,12 @@
-#ifndef SONYALPHAREMOTE_LIVEVIEW_COMMAND_H
-#define SONYALPHAREMOTE_LIVEVIEW_COMMAND_H
+#ifndef LIVEVIEW_COMMAND_H
+#define LIVEVIEW_COMMAND_H
 
-#include <SonyAlphaRemote_Json_Command.h>
+#include <Json_Command.h>
 
 
 namespace LiveView {
 
-class StartLiveView : public SonyAlphaRemote::Json::Command
+class StartLiveView : public Json::Command
 {
     Q_OBJECT
 
@@ -22,7 +22,7 @@ public :
 
 
 
-class StopLiveView : public SonyAlphaRemote::Json::Command
+class StopLiveView : public Json::Command
 {
     Q_OBJECT
 
@@ -40,4 +40,4 @@ public :
 
 } // namespace LiveView
 
-#endif // SONYALPHAREMOTE_LIVEVIEW_COMMAND_H
+#endif // LIVEVIEW_COMMAND_H

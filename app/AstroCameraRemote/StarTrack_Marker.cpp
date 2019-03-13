@@ -19,6 +19,7 @@ Marker::Marker(GraphicsScene *scene, QObject *parent)
     , tracking(true )
     , status(Status_Idle)
     , isSelected(false)
+    , haveStar(false)
 {
 
     connect(this, SIGNAL(newMark()), scene, SLOT(newMark()));
@@ -100,15 +101,15 @@ bool Marker::update(const QRectF& r)
     if(isSelected)
     {
         rectItem->setPen(selectedPen);
-        crosshair[0]->setPen(hasError ? errorPen : selectedPen);
-        crosshair[1]->setPen(hasError ? errorPen : selectedPen);
+        crosshair[0]->setPen(haveStar ? selectedPen : errorPen);
+        crosshair[1]->setPen(haveStar ? selectedPen : errorPen);
         info->setPen(selectedPen);
     }
     else
     {
         rectItem->setPen(unSelectedPen);
-        crosshair[0]->setPen(hasError ? errorPen : unSelectedPen);
-        crosshair[1]->setPen(hasError ? errorPen : unSelectedPen);
+        crosshair[0]->setPen(haveStar ? unSelectedPen : errorPen);
+        crosshair[1]->setPen(haveStar ? unSelectedPen : errorPen);
         info->setPen(unSelectedPen);
     }
 
@@ -140,6 +141,7 @@ bool Marker::update(const QRectF& r)
 
 void Marker::start(const QPointF &pos)
 {
+    AB_DBG("VISIT");
 
     QRectF r;
     switch(Settings::getMarkerModus())
@@ -164,6 +166,9 @@ void Marker::start(const QPointF &pos)
 
 void Marker::finish()
 {
+    AB_DBG("VISIT");
+
+    status = Status_Finished;
     tracker.setRect(getRect());
     Q_EMIT newMark();
 
@@ -173,6 +178,7 @@ void Marker::mouseMoved(const QPointF &pos)
 {
     if(Status_Moving != status)
         return;
+    AB_DBG("VISIT");
 
     QRectF r = rectItem->rect();
 
@@ -254,10 +260,19 @@ void Marker::update()
 
 void Marker::update(const QPixmap& image)
 {
+    if(Status_Moving == status)
+        return;
+
+    Q_ASSERT(!image.isNull());
     if(!tracker.update(image))
-        hasError = true;
+    {
+        AB_WRN("star lost");
+        haveStar = false;
+    }
     else
-        hasError = false;
+    {
+        haveStar = true;
+    }
 
     update(tracker.getRect());
     setInfo(QString("hfd(%0)").arg(tracker.getHfd()));
