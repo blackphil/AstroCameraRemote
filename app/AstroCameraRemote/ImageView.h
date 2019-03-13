@@ -41,6 +41,11 @@ public:
   void gentleZoom(double factor);
   void setZoomFactorBase(double value);
 
+public Q_SLOTS :
+  void zoom1to1();
+  void zoomIn();
+  void zoomOut();
+
 private:
   double zoomFactorBbase;
   QPointF targetScenePos, targetViewportPos;

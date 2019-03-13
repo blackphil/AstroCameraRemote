@@ -49,6 +49,10 @@ Widget::Widget(QWidget *parent)
     ui->setupUi(this);
     ui->graphicsView->setScene(starTrackScene);
 
+    connect(ui->zoomIn, SIGNAL(clicked()), ui->graphicsView, SLOT(zoomIn()));
+    connect(ui->zoomOut, SIGNAL(clicked()), ui->graphicsView, SLOT(zoomOut()));
+    connect(ui->zoom1to1, SIGNAL(clicked()), ui->graphicsView, SLOT(zoom1to1()));
+
     reset();
 }
 

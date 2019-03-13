@@ -31,6 +31,22 @@ void ImageView::setZoomFactorBase(double value)
     zoomFactorBbase = value;
 }
 
+void ImageView::zoom1to1()
+{
+    QTransform t = transform();
+    gentleZoom(1./t.m11());
+}
+
+void ImageView::zoomIn()
+{
+    gentleZoom(1.2);
+}
+
+void ImageView::zoomOut()
+{
+    gentleZoom(0.84);
+}
+
 bool ImageView::eventFilter(QObject *object, QEvent *event)
 {
     if (event->type() == QEvent::MouseMove)
