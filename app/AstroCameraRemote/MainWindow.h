@@ -100,8 +100,6 @@ private Q_SLOTS:
 
     void on_actionSettings_triggered();
 
-    void viewsTabChanged(int index);
-
     void on_lenrCheckbox_clicked(bool checked);
 
     void on_viewsTabWidget_currentChanged(int index);

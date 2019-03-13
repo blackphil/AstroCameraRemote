@@ -92,10 +92,15 @@ void Widget::updatePostView()
         {
             starTrackScene->updateBackground(image);
         }
+
+        ui->refImg->setEnabled(true);
+        ui->setAsRefImg->setEnabled(true);
     }
     else
     {
         starTrackScene->setEnabled(false);
+        ui->refImg->setEnabled(false);
+        ui->setAsRefImg->setEnabled(false);
     }
 
     if(cursor >= imageStack.count()-1)

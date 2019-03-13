@@ -33,6 +33,7 @@ Widget::Widget(QWidget *parent)
     ui->setupUi(this);
 
     ui->graphicsView->setScene(starTrackScene);
+    starTrackScene->setEnabled(false);
 
     connect(startLiveView, SIGNAL(newLiveViewUrl(QString)), this, SLOT(startReaderThread(QString)));
     connect(stopLiveView, SIGNAL(liveViewStopped()), this, SLOT(stopReaderThread()));
@@ -48,11 +49,13 @@ Widget::~Widget()
 
 void Widget::start()
 {
+    starTrackScene->setEnabled(true);
     Sender::get()->send(startLiveView);
 }
 
 void Widget::stop()
 {
+    starTrackScene->setEnabled(false);
     Sender::get()->send(stopLiveView);
     stopReaderThread();
 }

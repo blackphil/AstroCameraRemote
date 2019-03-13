@@ -124,7 +124,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(stopRecMode, SIGNAL(confirmed()), this, SLOT(toggleRecordModeBtnStopped()));
     connect(stopRecMode, SIGNAL(error(QString)), this, SLOT(error(QString)));
 
-    connect(ui->viewsTabWidget, SIGNAL(currentChanged(int)), this, SLOT(viewsTabChanged(int)));
     connect(this, SIGNAL(connectedToCamera()), ui->liveViewWidget, SLOT(start()));
     connect(this, SIGNAL(disconnectedFromCamera()), ui->liveViewWidget, SLOT(stop()));
 
@@ -352,16 +351,6 @@ void MainWindow::on_actionSettings_triggered()
 
 }
 
-void MainWindow::viewsTabChanged(int index)
-{
-
-    QWidget* currentTab = ui->viewsTabWidget->widget(index);
-    if(currentTab == ui->liveViewWidget)
-        ui->liveViewWidget->start();
-    else
-        ui->liveViewWidget->stop();
-}
-
 void MainWindow::on_lenrCheckbox_clicked(bool checked)
 {
     GeneralSettings::setLenrEnabled(checked);
@@ -374,12 +363,12 @@ void MainWindow::on_viewsTabWidget_currentChanged(int index)
     if(ui->viewsTabWidget->currentWidget() == ui->liveViewWidget)
     {
         ui->postViewWidget->setEnabled(false);
-        ui->liveViewWidget->getStarTrackScene()->setEnabled(true);
+        ui->liveViewWidget->start();
     }
     else if(ui->viewsTabWidget->currentWidget() == ui->postViewWidget)
     {
         ui->postViewWidget->setEnabled(true);
-        ui->liveViewWidget->getStarTrackScene()->setEnabled(false);
+        ui->liveViewWidget->stop();
     }
 }
 
