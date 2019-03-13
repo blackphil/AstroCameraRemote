@@ -4,7 +4,6 @@
 #include "AstroBase.h"
 
 #include "Settings.h"
-#include "Sequencer_SettingsManager.h"
 #include "Settings_General.h"
 #include "Sender.h"
 #include "Sequencer_BulbShootSequencer.h"
@@ -30,7 +29,6 @@ Base *ControlWidget::getRunningSequencer() const
 ControlWidget::ControlWidget(QWidget *parent) :
     QWidget(parent)
   ,  ui(new Ui::ControlWidget)
-//  , sequencerSettingsManager(new Sequencer::SettingsManager(::Settings::getInstance()))
   , setShutterSpeed(new Json::SetShutterSpeed(this))
   , setIsoSpeedRate(new Json::SetIsoSpeedRate(this))
   , actTakePicture(new Json::ActTakePicture(this))
@@ -48,7 +46,6 @@ ControlWidget::ControlWidget(QWidget *parent) :
 
     ui->stashedShootings->setModel(protocolModel);
 
-//    ::Settings::getInstance()->add(sequencerSettingsManager);
 
     connect(setShutterSpeed, SIGNAL(error(QString)), this, SLOT(error(QString)));
     connect(setIsoSpeedRate, SIGNAL(error(QString)), this, SLOT(error(QString)));
@@ -78,35 +75,13 @@ ControlWidget::ControlWidget(QWidget *parent) :
     connect(ui->shutterSpeed, SIGNAL(currentTextChanged(QString)), this, SLOT(shutterSpeedChanged(QString)));
 
     ui->startDelayTuBtn->connectToSpinbox(ui->startDelay);
-//    connect(ui->startDelayTuBtn, SIGNAL(valueChanged(int)), sequencerSettingsManager, SLOT(setStartDelay(int)));
-//    connect(ui->startDelayTuBtn, SIGNAL(unitChanged(int)), sequencerSettingsManager, SLOT(setStartDelayUnit(int)));
-
     ui->shutterSpeedTuBtn->connectToSpinbox(ui->shutterSpeedBulb);
-//    connect(ui->shutterSpeedTuBtn, SIGNAL(valueChanged(int)), sequencerSettingsManager, SLOT(setShutterSpeedBulb(int)));
-//    connect(ui->shutterSpeedTuBtn, SIGNAL(unitChanged(int)), sequencerSettingsManager, SLOT(setShutterSpeedBulbUnit(int)));
-
     ui->pauseTuBtn->connectToSpinbox(ui->pause);
-//    connect(ui->pauseTuBtn, SIGNAL(valueChanged(int)), sequencerSettingsManager, SLOT(setPause(int)));
-//    connect(ui->pauseTuBtn, SIGNAL(unitChanged(int)), sequencerSettingsManager, SLOT(setPauseUnit(int)));
-
-//    connect(ui->isoSpeedRate, SIGNAL(currentTextChanged(QString)), sequencerSettingsManager, SLOT(setIso(QString)));
-//    connect(ui->shutterSpeed, SIGNAL(currentTextChanged(QString)), sequencerSettingsManager, SLOT(setShutterSpeed(QString)));
-//    connect(ui->numShots, SIGNAL(valueChanged(int)), sequencerSettingsManager, SLOT(setNumShots(int)));
 
     connect(ui->startDelay, SIGNAL(valueChanged(double)), this, SLOT(recalcSequenceDuration()));
     connect(ui->shutterSpeedBulb, SIGNAL(valueChanged(double)), this, SLOT(recalcSequenceDuration()));
     connect(ui->pause, SIGNAL(valueChanged(double)), this, SLOT(recalcSequenceDuration()));
     connect(ui->numShots, SIGNAL(valueChanged(int)), this, SLOT(recalcSequenceDuration()));
-
-//    connect(ui->addSettingsBtn, SIGNAL(clicked()), this, SLOT(addCurrentSequencerSettings()));
-//    connect(ui->removeSettingsBtn, SIGNAL(clicked()), sequencerSettingsManager, SLOT(removeCurrent()));
-//    connect(ui->settingsNameCBox, SIGNAL(currentIndexChanged(QString)), sequencerSettingsManager, SLOT(setCurrent(QString)));
-//    connect(sequencerSettingsManager, SIGNAL(removed(QString)), this, SLOT(removeSequencerSettings(QString)));
-
-//    connect(
-//                sequencerSettingsManager, SIGNAL(currentChanged(QString,QStringList))
-//                , this, SLOT(applySequencerSettings(QString,QStringList)));
-//    ui->settingsNameCBox->addItems(sequencerSettingsManager->getSettingsNames());
 
     recalcSequenceDuration();
 

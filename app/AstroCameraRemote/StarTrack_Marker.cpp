@@ -264,14 +264,18 @@ void Marker::update(const QPixmap& image)
         return;
 
     Q_ASSERT(!image.isNull());
-    if(!tracker.update(image))
+
+    if(tracking)
     {
-        AB_WRN("star lost");
-        haveStar = false;
-    }
-    else
-    {
-        haveStar = true;
+        if(!tracker.update(image))
+        {
+            AB_WRN("star lost");
+            haveStar = false;
+        }
+        else
+        {
+            haveStar = true;
+        }
     }
 
     update(tracker.getRect());

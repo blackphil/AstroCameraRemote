@@ -56,8 +56,6 @@ SOURCES += main.cpp\
     Sequencer_Base.cpp \
     Sequencer_BulbShootSequencer.cpp \
     Sequencer_NormalShootSequencer.cpp \
-    Sequencer_Settings.cpp \
-    Sequencer_SettingsManager.cpp \
     Sequencer_StateBase.cpp \
     Sequencer_StateBulbShooting.cpp \
     Sequencer_StateFinish.cpp \
@@ -69,7 +67,8 @@ SOURCES += main.cpp\
     StatusPoller.cpp \
     TimeUnitButton.cpp \
     Sequencer_Protocol.cpp \
-    Sequencer_ProtocolModel.cpp
+    Sequencer_ProtocolModel.cpp \
+    Sequencer_Properties.cpp
 
 HEADERS  += MainWindow.h \
     SsdpClient.h \
@@ -107,8 +106,6 @@ HEADERS  += MainWindow.h \
     Sequencer_Base.h \
     Sequencer_BulbShootSequencer.h \
     Sequencer_NormalShootSequencer.h \
-    Sequencer_Settings.h \
-    Sequencer_SettingsManager.h \
     Sequencer_StateBase.h \
     Sequencer_StateBulbShooting.h \
     Sequencer_StateFinish.h \
@@ -120,7 +117,8 @@ HEADERS  += MainWindow.h \
     StatusPoller.h \
     TimeUnitButton.h \
     Sequencer_Protocol.h \
-    Sequencer_ProtocolModel.h
+    Sequencer_ProtocolModel.h \
+    Sequencer_Properties.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

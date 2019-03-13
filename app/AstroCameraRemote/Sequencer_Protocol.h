@@ -7,7 +7,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include "Sequencer_Settings.h"
+#include "Sequencer_Properties.h"
 
 namespace Sequencer {
 

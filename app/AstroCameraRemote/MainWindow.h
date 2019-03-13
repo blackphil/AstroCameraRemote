@@ -10,7 +10,6 @@
 #include "StatusPoller.h"
 #include "BatteryInfo.h"
 #include "Settings.h"
-#include "Sequencer_SettingsManager.h"
 #include "PostView_Info.h"
 #include "Settings_General.h"
 #include "LiveView_Settings.h"

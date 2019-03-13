@@ -152,7 +152,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>track star</string>
+         <string>track stars</string>
         </property>
         <property name="checked">
          <bool>true</bool>

@@ -6,6 +6,8 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QRegularExpression>
+#include <QProcess>
 
 #include <Windows.h>
 
@@ -121,7 +123,8 @@ void Protocol::stop()
 
 void Protocol::deleteFile()
 {
-    DeleteFileA(getFilePath().toStdString().c_str());
+    bool ok = QProcess::execute("rm", QStringList() << getFilePath()) == 0 ? true : false;
+    AB_DBG("Remove protocol file:" << getFilePath() << QString(" ... %0").arg(ok == true ? "ok" : "failed"));
 }
 
 void Protocol::serializeXml(QXmlStreamWriter &writer) const
