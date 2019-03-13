@@ -219,6 +219,11 @@ void Marker::setReferencePos()
     referencePos = tracker.getRect().center();
 }
 
+void Marker::unsetReferencePos()
+{
+    referencePos = QPointF();
+}
+
 bool Marker::getIsSelected() const
 {
     return isSelected;

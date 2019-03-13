@@ -95,16 +95,20 @@ void GraphicsScene::updateMarker()
 
     QPixmap pm = imageLayer->pixmap();
 
-    foreach(Marker* marker, markers)
-    {
+    for(auto marker : markers)
         marker->update(pm);
-    }
 }
 
 void GraphicsScene::setReference()
 {
-    foreach(Marker* marker, markers)
+    for(auto marker : markers)
         marker->setReferencePos();
+}
+
+void GraphicsScene::unsetReference()
+{
+    for(auto marker : markers)
+        marker->unsetReferencePos();
 }
 
 void GraphicsScene::removeSelectedMarker()
@@ -142,13 +146,13 @@ void GraphicsScene::cleanUpMarkers()
 {
     setSelectedMarker(nullptr);
     qDeleteAll(markers);
+    markers.clear();
 }
 
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(!enabled)
         return;
-
 
     if(markers.isEmpty() || event->modifiers().testFlag(Qt::ControlModifier))
     {
@@ -208,10 +212,8 @@ void GraphicsScene::newMark()
     if(pixmap.isNull())
         return;
 
-    foreach(Marker* m, markers)
-    {
+    for(auto m : markers)
         m->update(pixmap);
-    }
 
     if(selectedMarker == nullptr)
     {
@@ -249,7 +251,7 @@ void GraphicsScene::newMark()
 void GraphicsScene::setSelectedMarker(const QPointF &pos)
 {
 
-    foreach(Marker* m, markers)
+    for(auto m : markers)
     {
         if(m->getRect().contains(pos))
         {

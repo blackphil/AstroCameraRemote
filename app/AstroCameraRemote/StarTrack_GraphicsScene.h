@@ -44,6 +44,7 @@ public Q_SLOTS :
     void updateBackground(const QPixmap& pixmap);
     void updateMarker();
     void setReference();
+    void unsetReference();
     void removeSelectedMarker();
     void cleanUpMarkers();
 

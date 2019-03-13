@@ -27,16 +27,29 @@ StarTrack::GraphicsScene *Widget::getStarTrackScene() const
     return starTrackScene;
 }
 
+bool Widget::getEnabled() const
+{
+    return enabled;
+}
+
+void Widget::setEnabled(bool value)
+{
+    enabled = value;
+    starTrackScene->setEnabled(enabled && !imageStack.isEmpty());
+}
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
-    , cursor(0)
-    , refImageIndex(0)
+    , cursor(-1)
+    , refImageIndex(-1)
     , starTrackScene(new StarTrack::GraphicsScene(this))
     , ui(new Ui::Widget)
 {
     AB_INF("ctor");
     ui->setupUi(this);
     ui->graphicsView->setScene(starTrackScene);
+
+    reset();
 }
 
 Widget::~Widget()
@@ -71,29 +84,41 @@ void Widget::updatePostView()
 {
     if(0 <= cursor && imageStack.count() > cursor)
     {
+        starTrackScene->setEnabled(enabled);
         const Info& info = imageStack[cursor];
         const QPixmap& image = info.getImage();
         ui->postViewMetaInfo->setText(info.toHtml());
         if(!image.isNull())
         {
-            starTrackScene->updateBackground(
-                        image.scaled(starTrackScene->sceneRect().toRect().size()
-                                     , Qt::KeepAspectRatio
-                                     , Qt::SmoothTransformation));
-
+            starTrackScene->updateBackground(image);
         }
-
+    }
+    else
+    {
+        starTrackScene->setEnabled(false);
     }
 
     if(cursor >= imageStack.count()-1)
+    {
         ui->postViewFwd->setEnabled(false);
+        ui->latestImg->setEnabled(false);
+    }
     else
+    {
         ui->postViewFwd->setEnabled(true);
+        ui->latestImg->setEnabled(true);
+    }
 
     if(cursor <= 0)
+    {
         ui->postViewBwd->setEnabled(false);
+        ui->firstImg->setEnabled(false);
+    }
     else
+    {
         ui->postViewBwd->setEnabled(true);
+        ui->firstImg->setEnabled(true);
+    }
 
 }
 
@@ -106,6 +131,20 @@ void Widget::newInfo(const Info &info)
 
     if(ui->autoFwd->isChecked())
         on_latestImg_clicked();
+}
+
+void Widget::reset()
+{
+    imageStack.clear();
+    cursor = -1;
+    refImageIndex = -1;
+    starTrackScene->cleanUpMarkers();
+
+    QFile defaultImage(":/images/LiveView_NoImage.jpg");
+    defaultImage.open(QIODevice::ReadOnly);
+    QByteArray imageData = defaultImage.readAll();
+    starTrackScene->updateBackground(QPixmap::fromImage(QImage::fromData(imageData)));
+    updatePostView();
 }
 
 void Widget::newHfdValue(StarTrack::StarInfoPtr starInfo)
@@ -260,16 +299,7 @@ void Widget::on_clearBtn_clicked()
                 this
                 , tr("Clear post view"), tr("Do you really want to clear the post view?")))
     {
-        imageStack.clear();
-
-        QFile defaultImage(":/images/LiveView_NoImage.jpg");
-        defaultImage.open(QIODevice::ReadOnly);
-        QByteArray imageData = defaultImage.readAll();
-        QRect defaultRect(0, 0, 808, 540);
-
-        starTrackScene->cleanUpMarkers();
-
-        starTrackScene->updateBackground(QPixmap::fromImage(QImage::fromData(imageData, "JPG").scaled(defaultRect.size())));
+        reset();
     }
 }
 

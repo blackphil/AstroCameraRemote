@@ -373,12 +373,12 @@ void MainWindow::on_viewsTabWidget_currentChanged(int index)
     Q_UNUSED(index);
     if(ui->viewsTabWidget->currentWidget() == ui->liveViewWidget)
     {
+        ui->postViewWidget->setEnabled(false);
         ui->liveViewWidget->getStarTrackScene()->setEnabled(true);
-        ui->postViewWidget->getStarTrackScene()->setEnabled(false);
     }
     else if(ui->viewsTabWidget->currentWidget() == ui->postViewWidget)
     {
-        ui->postViewWidget->getStarTrackScene()->setEnabled(true);
+        ui->postViewWidget->setEnabled(true);
         ui->liveViewWidget->getStarTrackScene()->setEnabled(false);
     }
 }

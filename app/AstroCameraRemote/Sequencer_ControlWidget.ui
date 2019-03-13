@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
-    <height>325</height>
+    <width>405</width>
+    <height>296</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -66,6 +72,24 @@
           <string>Shooting Info</string>
          </property>
          <layout class="QFormLayout" name="formLayout">
+          <property name="horizontalSpacing">
+           <number>2</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>2</number>
+          </property>
+          <property name="leftMargin">
+           <number>3</number>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>3</number>
+          </property>
+          <property name="bottomMargin">
+           <number>3</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_7">
             <property name="text">
@@ -75,6 +99,12 @@
           </item>
           <item row="0" column="1">
            <widget class="QLineEdit" name="subjectLineEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="placeholderText">
              <string>enter name of the sky object here</string>
             </property>
@@ -95,6 +125,21 @@
           <string>Settings</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
+          <property name="leftMargin">
+           <number>3</number>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>3</number>
+          </property>
+          <property name="bottomMargin">
+           <number>3</number>
+          </property>
+          <property name="spacing">
+           <number>2</number>
+          </property>
           <item row="5" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
@@ -153,6 +198,12 @@
           </item>
           <item row="3" column="1">
            <widget class="QDoubleSpinBox" name="pause">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="showGroupSeparator" stdset="0">
              <bool>true</bool>
             </property>
@@ -207,6 +258,12 @@
           </item>
           <item row="6" column="1">
            <widget class="QCheckBox" name="lenrCheckbox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Long exp. noise red.</string>
             </property>
@@ -227,6 +284,12 @@
           </item>
           <item row="1" column="1">
            <widget class="QDoubleSpinBox" name="shutterSpeedBulb">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="showGroupSeparator" stdset="0">
              <bool>true</bool>
             </property>
@@ -248,7 +311,7 @@
           <item row="5" column="1">
            <widget class="QLineEdit" name="estimatedDuration">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -262,10 +325,23 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="shutterSpeed"/>
+           <widget class="QComboBox" name="shutterSpeed">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </item>
           <item row="4" column="1">
            <widget class="QSpinBox" name="numShots">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimum">
              <number>1</number>
             </property>
@@ -275,10 +351,23 @@
            </widget>
           </item>
           <item row="0" column="3" colspan="2">
-           <widget class="QComboBox" name="isoSpeedRate"/>
+           <widget class="QComboBox" name="isoSpeedRate">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </item>
           <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="startDelay">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="showGroupSeparator" stdset="0">
              <bool>true</bool>
             </property>
@@ -297,29 +386,29 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="3" rowspan="2">
-           <widget class="QPushButton" name="startBulbSequence">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Start</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="3" rowspan="2" colspan="2">
            <widget class="QPushButton" name="takeShotBtn">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="text">
              <string>Take single shot</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3" rowspan="2" colspan="2">
+           <widget class="QPushButton" name="startBulbSequence">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Start</string>
             </property>
            </widget>
           </item>

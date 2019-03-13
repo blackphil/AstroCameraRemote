@@ -72,6 +72,7 @@ public:
 
     QPointF getReferencePos() const;
     void setReferencePos();
+    void unsetReferencePos();
 
     bool getIsSelected() const;
     void setIsSelected(bool value);

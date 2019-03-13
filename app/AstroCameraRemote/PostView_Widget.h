@@ -25,6 +25,7 @@ class Widget : public QWidget
     QList<Info> imageStack;
     int cursor;
     int refImageIndex;
+    bool enabled;
 
     StarTrack::GraphicsScene* starTrackScene;
 
@@ -34,6 +35,9 @@ public:
 
     StarTrack::GraphicsScene *getStarTrackScene() const;
 
+    bool getEnabled() const;
+    void setEnabled(bool value);
+
 public Q_SLOTS :
     void updatePostViewImage(const QByteArray &data);
     void updatePostViewImage(const QPixmap &pixmap);
@@ -42,6 +46,8 @@ public Q_SLOTS :
     void newInfo(const PostView::Info& info);
 
 private Q_SLOTS :
+
+    void reset();
 
     void newHfdValue(StarTrack::StarInfoPtr starInfo);
 
