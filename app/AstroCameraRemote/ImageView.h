@@ -36,6 +36,13 @@
 class ImageView : public QGraphicsView
 {
   Q_OBJECT
+
+  double zoomFactorBbase;
+  QPointF targetScenePos, targetViewportPos;
+
+  bool eventFilter(QObject* object, QEvent* event);
+
+
 public:
   ImageView(QWidget *parent);
   void gentleZoom(double factor);
@@ -45,14 +52,12 @@ public Q_SLOTS :
   void zoom1to1();
   void zoomIn();
   void zoomOut();
+  void fitToWindow(bool yes);
 
-private:
-  double zoomFactorBbase;
-  QPointF targetScenePos, targetViewportPos;
-  bool eventFilter(QObject* object, QEvent* event);
+
 
 Q_SIGNALS:
-  void zoomed();
+  void zoomed(bool);
 };
 
 

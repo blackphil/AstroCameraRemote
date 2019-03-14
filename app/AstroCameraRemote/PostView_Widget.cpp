@@ -38,6 +38,15 @@ void Widget::setEnabled(bool value)
     starTrackScene->setEnabled(enabled && !imageStack.isEmpty());
 }
 
+void Widget::resizeEvent(QResizeEvent *re)
+{
+    if(ui->zoomControl->fitInWindowEnabled())
+    {
+        ui->graphicsView->fitToWindow(true);
+    }
+    QWidget::resizeEvent(re);
+}
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , cursor(-1)
@@ -49,9 +58,7 @@ Widget::Widget(QWidget *parent)
     ui->setupUi(this);
     ui->graphicsView->setScene(starTrackScene);
 
-    connect(ui->zoomIn, SIGNAL(clicked()), ui->graphicsView, SLOT(zoomIn()));
-    connect(ui->zoomOut, SIGNAL(clicked()), ui->graphicsView, SLOT(zoomOut()));
-    connect(ui->zoom1to1, SIGNAL(clicked()), ui->graphicsView, SLOT(zoom1to1()));
+    ui->zoomControl->setup(ui->graphicsView);
 
     reset();
 }

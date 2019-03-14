@@ -15,6 +15,9 @@ ImageView::ImageView(QWidget* parent)
 
 void ImageView::gentleZoom(double factor)
 {
+    AB_DBG("viewport size:" << viewport()->size().width() << "," << viewport()->size().height());
+    AB_DBG("   scene size:" << sceneRect().size().width() << "," << sceneRect().size().height());
+    AB_DBG("   frame size:" << frameSize().width() << "," << frameSize().height());
     scale(factor, factor);
     centerOn(targetScenePos);
     QPointF delta_viewport_pos =
@@ -22,7 +25,7 @@ void ImageView::gentleZoom(double factor)
                                         viewport()->height() / 2.0);
     QPointF viewport_center = mapFromScene(targetScenePos) - delta_viewport_pos;
     centerOn(mapToScene(viewport_center.toPoint()));
-    Q_EMIT zoomed();
+    Q_EMIT zoomed(true);
 }
 
 
@@ -73,7 +76,24 @@ bool ImageView::eventFilter(QObject *object, QEvent *event)
             }
         }
     }
+
     Q_UNUSED(object)
     return false;
+}
+
+void ImageView::fitToWindow(bool yes)
+{
+    if(!yes)
+        return;
+
+    QTransform t = transform();
+
+    QSizeF absFactors(viewport()->width()/sceneRect().width(), viewport()->height()/sceneRect().height());
+    qreal absFactor = qMin(absFactors.width(), absFactors.height()) / t.m11();
+
+    t.scale(absFactor, absFactor);
+    setTransform(t);
+
+    Q_EMIT zoomed(false);
 }
 

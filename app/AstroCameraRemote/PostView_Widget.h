@@ -29,6 +29,8 @@ class Widget : public QWidget
 
     StarTrack::GraphicsScene* starTrackScene;
 
+    void resizeEvent(QResizeEvent* re);
+
 public:
     explicit Widget(QWidget *parent = Q_NULLPTR);
     ~Widget();

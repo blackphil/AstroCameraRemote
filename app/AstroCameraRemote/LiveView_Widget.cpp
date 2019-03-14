@@ -35,6 +35,8 @@ Widget::Widget(QWidget *parent)
     ui->graphicsView->setScene(starTrackScene);
     starTrackScene->setEnabled(false);
 
+    ui->zoomControl->setup(ui->graphicsView);
+
     connect(startLiveView, SIGNAL(newLiveViewUrl(QString)), this, SLOT(startReaderThread(QString)));
     connect(stopLiveView, SIGNAL(liveViewStopped()), this, SLOT(stopReaderThread()));
     connect(pollImageTimer, SIGNAL(timeout()), this, SLOT(updateLiveViewImage()));
@@ -74,6 +76,17 @@ int Widget::calcFps()
     lastTimeStamp = QTime::currentTime();
 
     return qRound(fps);
+}
+
+void Widget::resizeEvent(QResizeEvent *re)
+{
+    Q_UNUSED(re)
+
+    if(ui->zoomControl->fitInWindowEnabled())
+    {
+        ui->graphicsView->fitToWindow(true);
+    }
+    QWidget::resizeEvent(re);
 }
 
 void Widget::updateLiveViewImage()

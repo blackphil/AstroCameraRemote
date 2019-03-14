@@ -69,7 +69,8 @@ SOURCES += main.cpp\
     Sequencer_Protocol.cpp \
     Sequencer_ProtocolModel.cpp \
     Sequencer_Properties.cpp \
-    Sequencer_ProtocolView.cpp
+    Sequencer_ProtocolView.cpp \
+    ImageViewZoomControl.cpp
 
 HEADERS  += MainWindow.h \
     SsdpClient.h \
@@ -120,14 +121,16 @@ HEADERS  += MainWindow.h \
     Sequencer_Protocol.h \
     Sequencer_ProtocolModel.h \
     Sequencer_Properties.h \
-    Sequencer_ProtocolView.h
+    Sequencer_ProtocolView.h \
+    ImageViewZoomControl.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \
     PostView_Widget.ui \
     LiveView_Widget.ui \
     StarTrack_StarTrackView.ui \
-    Sequencer_ControlWidget.ui
+    Sequencer_ControlWidget.ui \
+    ImageViewZoomControl.ui
 
 #DEFINES += DRY_RUN
 

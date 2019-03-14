@@ -48,6 +48,8 @@ class Widget : public QWidget
 
     int calcFps();
 
+    void resizeEvent(QResizeEvent* re);
+
 public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();

@@ -71,6 +71,16 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="4" rowspan="3">
+    <widget class="ImageViewZoomControl" name="zoomControl" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -78,6 +88,12 @@
    <class>ImageView</class>
    <extends>QGraphicsView</extends>
    <header>ImageView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ImageViewZoomControl</class>
+   <extends>QWidget</extends>
+   <header>ImageViewZoomControl.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
