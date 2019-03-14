@@ -26,7 +26,7 @@ public:
     Protocol* getProtocol(const QModelIndex& index) const;
 
     void addProtocol(Protocol* protocol);
-    void removeProtocol(const QModelIndex& index);
+    bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
 };
 
 } // namespace Sequencer

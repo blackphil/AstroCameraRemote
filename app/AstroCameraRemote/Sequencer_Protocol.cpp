@@ -71,17 +71,21 @@ QString Protocol::getFilePath() const
 
     QString fileName = QString("%0_%1.xml").arg(subject.trimmed()).arg(startTime.toString("yyyy-MM-ddThhmmss"));
     fileName.replace(QRegularExpression("[/\\\\:\\*\\?<>\\\"]"), "_");
-    QFileInfo protocolFileInfo(QDir(dataPath), QString("%0_%1.xml")
-                               .arg(fileName)
-                               .arg(startTime.toString("yyyy-MM-ddThhmmss")));
+    QFileInfo protocolFileInfo(QDir(dataPath), fileName);
 
     return protocolFileInfo.absoluteFilePath();
 }
 
 static int objCount(0);
 
+bool Protocol::getRecording() const
+{
+    return recording;
+}
+
 Protocol::Protocol(QObject *parent)
     : QObject(parent)
+    , recording(false)
 {
     objCount++;
     AB_DBG("CTOR(" << objCount << ")");
@@ -95,6 +99,7 @@ Protocol::~Protocol()
 
 void Protocol::start()
 {
+    recording = true;
     startTime = QDateTime::currentDateTime();
 }
 
@@ -119,12 +124,26 @@ void Protocol::stop()
     serializeXml(writer);
 
     f.close();
+
+    recording = false;
 }
 
-void Protocol::deleteFile()
+bool Protocol::deleteFile()
 {
-    bool ok = QProcess::execute("rm", QStringList() << getFilePath()) == 0 ? true : false;
-    AB_DBG("Remove protocol file:" << getFilePath() << QString(" ... %0").arg(ok == true ? "ok" : "failed"));
+    if(recording)
+    {
+        AB_WRN("Cannot delete protocol file while the protocol is recording");
+        return false;
+    }
+
+    QFileInfo fi = getFilePath();
+    if(!fi.absoluteDir().remove(fi.fileName()))
+    {
+        AB_DBG(QString("Removing protocol file \"%0\" failed!").arg(fi.absoluteFilePath()));
+        return false;
+    }
+
+    return true;
 }
 
 void Protocol::serializeXml(QXmlStreamWriter &writer) const

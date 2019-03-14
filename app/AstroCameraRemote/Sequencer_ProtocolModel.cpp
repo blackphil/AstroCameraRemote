@@ -2,6 +2,8 @@
 
 #include <QPointer>
 
+#include "AstroBase.h"
+
 namespace Sequencer {
 
 ProtocolModel::ProtocolModel(QObject *parent)
@@ -111,16 +113,34 @@ void ProtocolModel::addProtocol(Protocol *protocol)
     endInsertRows();
 }
 
-void ProtocolModel::removeProtocol(const QModelIndex &index)
+bool ProtocolModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    Protocol* toRemove = getProtocol(index);
-    if(!toRemove)
-        return;
+    Q_UNUSED(parent)
 
-    toRemove->deleteFile();
-    beginRemoveRows(QModelIndex(), index.row(), index.row());
-    removeRow(index.row(), QModelIndex());
-    endRemoveRows();
+    Q_ASSERT(0 <= row && row < protocols.count());
+    if(0 > row || row >= protocols.count())
+        return false;
+    Q_ASSERT(row+count <= protocols.count());
+    if(row+count > protocols.count())
+        return false;
+
+    while(0 < count)
+    {
+        Protocol* toRemove = protocols[row];
+        Q_ASSERT(toRemove);
+        if(!toRemove)
+            return false;
+        if(!toRemove->deleteFile())
+        {
+            AB_WRN("Failed to delete protocol file:" << toRemove->getFilePath());
+            return false;
+        }
+        toRemove->deleteLater();
+        protocols.removeAt(row);
+        count--;
+    }
+
+    return true;
 }
 
 

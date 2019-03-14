@@ -472,7 +472,7 @@
         </widget>
        </item>
        <item row="0" column="0" rowspan="4" colspan="3">
-        <widget class="QTableView" name="stashedShootings">
+        <widget class="Sequencer::ProtocolView" name="stashedShootings">
          <property name="selectionMode">
           <enum>QAbstractItemView::SingleSelection</enum>
          </property>
@@ -492,6 +492,11 @@
    <class>TimeUnitButton</class>
    <extends>QPushButton</extends>
    <header>TimeUnitButton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Sequencer::ProtocolView</class>
+   <extends>QTableView</extends>
+   <header>Sequencer_ProtocolView.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

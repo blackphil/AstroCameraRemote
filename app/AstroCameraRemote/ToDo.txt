@@ -2,12 +2,12 @@
 - gui verriegelungen
 - metadata download
 - ssdp abfrage für kamera suche
-- namespaces neu organisieren ("SonyAlphaRemote" is zu lang und eigentlich überflüssig)
 - command source code aufräumen
 - FITS Laden der Pixeldaten nach Fits::File verlagern. Plugin Klasse soll nur noch anhand min/max +optionen(?) auf 256er skalieren
 - PostView Laden vieler Dateien parallelisieren
 - PostView soll bei FITS Dateien Einstellmöglichkeiten für Farbskalierung und Gamma bekommen
 
+- DONE neu organisieren ("SonyAlphaRemote" is zu lang und eigentlich überflüssig)
 - WORKSFORME: bugfix: je nach länge/breite des mainwindows wird das preview-image nicht vollständig angezeit.
 - DONE live view
 - DONE metadata anzeige

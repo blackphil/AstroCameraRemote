@@ -34,6 +34,8 @@ class Protocol : public QObject
 
     QString subject;
 
+    bool recording;
+
 public:
     explicit Protocol(QObject *parent = nullptr);
     ~Protocol();
@@ -54,12 +56,14 @@ public:
 
     QString getFilePath() const;
 
+    bool getRecording() const;
+
 public Q_SLOTS :
     void start();
     void shotFinished(QString url, int index, int numShots);
     void stop();
 
-    void deleteFile();
+    bool deleteFile();
 
 };
 
