@@ -38,7 +38,8 @@ public:
 Q_SIGNALS :
     void starCentered(const QImage&);
     void newHfdValue(StarInfoPtr);
-    void starTrackingEnabled(bool yes);
+    void starTrackingEnabled(bool);
+    void newReferenceMarkers(const QList<QRectF>&);
 
 public Q_SLOTS :
     void updateBackground(const QPixmap& pixmap);
@@ -47,6 +48,7 @@ public Q_SLOTS :
     void unsetReference();
     void removeSelectedMarker();
     void cleanUpMarkers();
+    void applyReferenceMarkers(const QList<QRectF>& refMarkers);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

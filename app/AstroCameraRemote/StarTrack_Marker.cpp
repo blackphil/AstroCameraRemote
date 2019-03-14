@@ -85,6 +85,12 @@ const Tracker &Marker::getTracker() const
     return tracker;
 }
 
+void Marker::forceRect(const QRectF &r)
+{
+    update(r);
+    tracker.setRect(r);
+}
+
 void Marker::setTracking(bool value)
 {
     tracking = value;

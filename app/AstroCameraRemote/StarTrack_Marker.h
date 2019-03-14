@@ -68,7 +68,7 @@ public:
 
     const Tracker& getTracker() const;
 
-
+    void forceRect(const QRectF& r);
 
     QPointF getReferencePos() const;
     void setReferencePos();

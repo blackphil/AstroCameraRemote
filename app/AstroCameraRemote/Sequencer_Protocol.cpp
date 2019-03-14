@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QProcess>
+#include <QStringList>
 
 #include <Windows.h>
 
@@ -83,6 +84,11 @@ bool Protocol::getRecording() const
     return recording;
 }
 
+QList<QRectF> Protocol::getReferenceMarkers() const
+{
+    return markers;
+}
+
 Protocol::Protocol(QObject *parent)
     : QObject(parent)
     , recording(false)
@@ -111,6 +117,16 @@ void Protocol::shotFinished(QString url, int index, int numShots)
     fs.timeStamp = QDateTime::currentDateTime();
 
     photoShots << fs;
+}
+
+void Protocol::setReferenceMarkers(const QList<QRectF> &markers)
+{
+    this->markers = markers;
+}
+
+void Protocol::cleanUpMarkers()
+{
+    markers.clear();
 }
 
 void Protocol::stop()
@@ -151,6 +167,23 @@ void Protocol::serializeXml(QXmlStreamWriter &writer) const
     writer.writeStartElement("Protocol");
     writer.writeAttribute("subject", subject);
     writer.writeAttribute("startTime", startTime.toString("yyyy-MM-ddThh:mm:ss.zzz"));
+
+    if(!markers.isEmpty())
+    {
+        for(auto m : markers)
+        {
+            writer.writeStartElement("Marker");
+            writer.writeAttribute(
+                        "rect"
+                        , QString("%0;%1;%2;%3")
+                        .arg(m.x())
+                        .arg(m.y())
+                        .arg(m.width())
+                        .arg(m.height()));
+            writer.writeEndElement();
+        }
+    }
+
     properties.serializeXml(writer);
 
     Q_FOREACH(const PhotoShot& fs, photoShots)
@@ -181,6 +214,18 @@ void Protocol::deSerializeXml(QXmlStreamReader &reader)
                 PhotoShot ps;
                 ps.deSerializeXml(reader);
                 photoShots << ps;
+            }
+            else if(reader.name() == "Marker")
+            {
+                QStringList values = reader.attributes().value("rect").toString().split(";");
+                Q_ASSERT(values.count() == 4);
+                if(values.count() == 4)
+                {
+                    QRectF m(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+                    if(!m.isNull())
+                        markers << m;
+                }
+
             }
             break;
         default :

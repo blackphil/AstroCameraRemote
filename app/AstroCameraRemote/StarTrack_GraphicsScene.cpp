@@ -101,8 +101,14 @@ void GraphicsScene::updateMarker()
 
 void GraphicsScene::setReference()
 {
+    QList<QRectF> refRects;
     for(auto marker : markers)
+    {
         marker->setReferencePos();
+        refRects << marker->getRect();
+    }
+
+    Q_EMIT newReferenceMarkers(refRects);
 }
 
 void GraphicsScene::unsetReference()
@@ -147,6 +153,18 @@ void GraphicsScene::cleanUpMarkers()
     setSelectedMarker(nullptr);
     qDeleteAll(markers);
     markers.clear();
+}
+
+void GraphicsScene::applyReferenceMarkers(const QList<QRectF> &refMarkers)
+{
+    cleanUpMarkers();
+    for(auto m : refMarkers)
+    {
+        Marker* marker = new Marker(this, this);
+        marker->forceRect(m);
+        marker->setReferencePos();
+        markers << marker;
+    }
 }
 
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)

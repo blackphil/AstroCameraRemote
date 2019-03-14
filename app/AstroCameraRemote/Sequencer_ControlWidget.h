@@ -57,6 +57,7 @@ public:
 Q_SIGNALS :
 
     void newPostViewInfo(PostView::Info);
+    void newReferenceMarkers(const QList<QRectF>&);
 
 public Q_SLOTS :
     void isoSpeedRatesChanged(const QStringList &candidates, const QString& current);
@@ -68,6 +69,8 @@ public Q_SLOTS :
     void loadProtocols();
 
     void setupProtocol(Protocol* p) const;
+
+    void handleNewReferenceMarkers(const QList<QRectF>& markers);
 
 private Q_SLOTS :
 
@@ -99,6 +102,7 @@ private Q_SLOTS :
     void on_takeShotBtn_clicked();
 
     void on_cotinueBtn_clicked();
+    void on_loadMarkersBtn_clicked();
 };
 
 

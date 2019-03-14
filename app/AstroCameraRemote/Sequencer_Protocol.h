@@ -30,6 +30,8 @@ class Protocol : public QObject
     };
     QList<PhotoShot> photoShots;
 
+    QList<QRectF> markers;
+
     QDateTime startTime;
 
     QString subject;
@@ -58,9 +60,13 @@ public:
 
     bool getRecording() const;
 
+    QList<QRectF> getReferenceMarkers() const;
+
 public Q_SLOTS :
     void start();
     void shotFinished(QString url, int index, int numShots);
+    void setReferenceMarkers(const QList<QRectF>& markers);
+    void cleanUpMarkers();
     void stop();
 
     bool deleteFile();

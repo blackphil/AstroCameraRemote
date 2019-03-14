@@ -5,6 +5,8 @@
 
 namespace Sequencer {
 
+class Protocol;
+
 
 class ProtocolView : public QTableView
 {
@@ -13,6 +15,8 @@ class ProtocolView : public QTableView
 public:
     explicit ProtocolView(QWidget *parent = nullptr);
     ~ProtocolView();
+
+    Protocol* getSelectedProtocol() const;
 
 protected:
     void keyPressEvent(QKeyEvent* ke);

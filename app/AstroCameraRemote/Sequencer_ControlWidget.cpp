@@ -220,6 +220,15 @@ void ControlWidget::setupProtocol(Protocol *p) const
 
 }
 
+void ControlWidget::handleNewReferenceMarkers(const QList<QRectF> &markers)
+{
+    if(currentProtocol)
+    {
+        currentProtocol->cleanUpMarkers();
+        currentProtocol->setReferenceMarkers(markers);
+    }
+}
+
 void ControlWidget::applySequencerSettingsFromCurrentProtocol()
 {
     Q_ASSERT(currentProtocol);
@@ -454,15 +463,7 @@ void ControlWidget::on_cotinueBtn_clicked()
         return;
     }
 
-    QModelIndexList selection = ui->stashedShootings->selectionModel()->selectedIndexes();
-    if(selection.isEmpty())
-        return;
-
-    QModelIndex selIndex = selection.first();
-    if(!selIndex.isValid())
-        return;
-
-    Protocol* selProtocol = protocolModel->getProtocol(selIndex);
+    Protocol* selProtocol = ui->stashedShootings->getSelectedProtocol();
     if(!selProtocol)
         return;
 
@@ -475,6 +476,18 @@ void ControlWidget::on_cotinueBtn_clicked()
     startSequence();
 }
 
+void ControlWidget::on_loadMarkersBtn_clicked()
+{
+    Protocol* selProtocol = ui->stashedShootings->getSelectedProtocol();
+    if(!selProtocol)
+        return;
+
+    QList<QRectF> markers = selProtocol->getReferenceMarkers();
+    if(!markers.isEmpty())
+        Q_EMIT newReferenceMarkers(markers);
+}
+
 } // namespace Sequencer
+
 
 

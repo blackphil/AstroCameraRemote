@@ -17,6 +17,24 @@ ProtocolView::~ProtocolView()
 {
 }
 
+Protocol *ProtocolView::getSelectedProtocol() const
+{
+    QModelIndexList selection = selectionModel()->selectedIndexes();
+    if(selection.isEmpty())
+        return nullptr;
+
+    QModelIndex selIndex = selection.first();
+    if(!selIndex.isValid())
+        return nullptr;
+
+    ProtocolModel* pModel = qobject_cast<ProtocolModel*>(model());
+    Q_ASSERT(pModel);
+    if(!pModel)
+        return nullptr;
+
+    return pModel->getProtocol(selIndex);
+}
+
 void ProtocolView::keyPressEvent(QKeyEvent *ke)
 {
     QModelIndexList selectedIndexes = selectionModel()->selectedRows();

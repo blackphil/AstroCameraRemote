@@ -109,6 +109,31 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(Sender::get(), SIGNAL(loadedPostViewImage(QByteArray)), ui->postViewWidget, SLOT(updatePostViewImage(QByteArray)));
     connect(ui->sequencerControl, SIGNAL(newPostViewInfo(PostView::Info)), ui->postViewWidget, SLOT(newInfo(PostView::Info)));
+
+    connect(
+                ui->liveViewWidget->getStarTrackScene()
+                , SIGNAL(newReferenceMarkers(const QList<QRectF>&))
+                , ui->sequencerControl
+                , SLOT(handleNewReferenceMarkers(const QList<QRectF>&)));
+
+    connect(
+                ui->sequencerControl
+                , SIGNAL(newReferenceMarkers(const QList<QRectF>&))
+                , ui->liveViewWidget->getStarTrackScene()
+                , SLOT(applyReferenceMarkers(const QList<QRectF>&)));
+
+    connect(
+                ui->postViewWidget->getStarTrackScene()
+                , SIGNAL(newReferenceMarkers(const QList<QRectF>&))
+                , ui->sequencerControl
+                , SLOT(handleNewReferenceMarkers(const QList<QRectF>&)));
+
+    connect(
+                ui->sequencerControl
+                , SIGNAL(newReferenceMarkers(const QList<QRectF>&))
+                , ui->postViewWidget->getStarTrackScene()
+                , SLOT(applyReferenceMarkers(const QList<QRectF>&)));
+
     connect(StatusPoller::get(), SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
     connect(StatusPoller::get(), SIGNAL(isoSpeedRatesChanged(QStringList,QString))
             , this, SLOT(isoSpeedRatesChanged(QStringList,QString)));

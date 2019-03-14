@@ -44,7 +44,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="mainTab">
       <attribute name="title">
@@ -458,6 +458,23 @@
         </widget>
        </item>
        <item row="4" column="2">
+        <widget class="QPushButton" name="bwdBtn">
+         <property name="text">
+          <string>&lt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" rowspan="4" colspan="4">
+        <widget class="Sequencer::ProtocolView" name="stashedShootings">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="3">
         <widget class="QPushButton" name="fwdBtn">
          <property name="text">
           <string>&gt;</string>
@@ -465,19 +482,9 @@
         </widget>
        </item>
        <item row="4" column="1">
-        <widget class="QPushButton" name="bwdBtn">
+        <widget class="QPushButton" name="loadMarkersBtn">
          <property name="text">
-          <string>&lt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" rowspan="4" colspan="3">
-        <widget class="Sequencer::ProtocolView" name="stashedShootings">
-         <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
+          <string>Load markers</string>
          </property>
         </widget>
        </item>
