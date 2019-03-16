@@ -44,11 +44,16 @@ private:
 
     QPointer<Protocol> currentProtocol;
 
+    QList<QRectF> referenceMarkers;
+
     ProtocolModel* protocolModel;
 
     int connectionState;
 
     Sequencer::Base* getRunningSequencer() const;
+    Sequencer::Base* getActiveSequencer() const;
+
+    void setCurrentProtocol(Protocol* p);
 
 public:
     explicit ControlWidget(QWidget *parent = nullptr);
@@ -63,12 +68,9 @@ public Q_SLOTS :
     void isoSpeedRatesChanged(const QStringList &candidates, const QString& current);
     void shutterSpeedsChanged(const QStringList &candidates, const QString &current);
 
-    void error(QString msg);
-    void appendOutputMessage(QString msg);
-
     void loadProtocols();
 
-    void setupProtocol(Protocol* p) const;
+    void setupProtocol() const;
 
     void handleNewReferenceMarkers(const QList<QRectF>& markers);
 
@@ -101,8 +103,10 @@ private Q_SLOTS :
 
     void on_takeShotBtn_clicked();
 
-    void on_cotinueBtn_clicked();
-    void on_loadMarkersBtn_clicked();
+    void on_newSequenceBtn_clicked();
+
+    void handleCameraStatus(const QString&status);
+    void on_loadBtn_clicked();
 };
 
 

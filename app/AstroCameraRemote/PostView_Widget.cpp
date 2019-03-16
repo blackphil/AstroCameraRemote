@@ -35,6 +35,8 @@ bool Widget::getEnabled() const
 void Widget::setEnabled(bool value)
 {
     enabled = value;
+    if(enabled && ui->zoomControl->fitInWindowEnabled())
+        ui->graphicsView->fitToWindow(true);
     starTrackScene->setEnabled(enabled && !imageStack.isEmpty());
 }
 

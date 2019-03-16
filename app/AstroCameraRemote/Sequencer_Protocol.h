@@ -15,6 +15,22 @@ class Protocol : public QObject
 {
     Q_OBJECT
 
+public :
+    enum Type
+    {
+        Type_Focusing
+        , Type_Light
+        , Type_Dark
+        , Type_Flat
+        , NumTypes
+    };
+
+    static QString typeToString(Type t);
+    static Type typeFromString(const QString& t);
+
+private :
+    Type type;
+
     Properties properties;
 
     struct PhotoShot
@@ -62,12 +78,16 @@ public:
 
     QList<QRectF> getReferenceMarkers() const;
 
+    Type getType() const;
+    void setType(const Type &value);
+
 public Q_SLOTS :
     void start();
     void shotFinished(QString url, int index, int numShots);
     void setReferenceMarkers(const QList<QRectF>& markers);
     void cleanUpMarkers();
     void stop();
+    void save();
 
     bool deleteFile();
 

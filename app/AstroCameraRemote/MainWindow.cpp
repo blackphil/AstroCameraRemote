@@ -280,6 +280,10 @@ void MainWindow::setupStarTrackView(StarTrack::StarTrackView *v)
     connect(v, SIGNAL(updateMarker()), ui->liveViewWidget->getStarTrackScene(), SLOT(updateMarker()));
     connect(v, SIGNAL(updateMarker()), ui->postViewWidget->getStarTrackScene(), SLOT(updateMarker()));
     connect(v, SIGNAL(toggleFullScreen(bool)), this, SLOT(toggleStarTrackViewFullScreen(bool)));
+    connect(v, SIGNAL(selectNextStar()), ui->postViewWidget->getStarTrackScene(), SLOT(selectNextStar()));
+    connect(v, SIGNAL(selectPreviousStar()), ui->postViewWidget->getStarTrackScene(), SLOT(selectPrevoiusStar()));
+    connect(v, SIGNAL(selectNextStar()), ui->liveViewWidget->getStarTrackScene(), SLOT(selectNextStar()));
+    connect(v, SIGNAL(selectPreviousStar()), ui->liveViewWidget->getStarTrackScene(), SLOT(selectPrevoiusStar()));
 }
 
 
@@ -323,12 +327,6 @@ void MainWindow::error(QString msg)
 {
     ui->output->append(msg);
 }
-
-
-
-
-
-
 
 void MainWindow::appendOutputMessage(QString msg)
 {

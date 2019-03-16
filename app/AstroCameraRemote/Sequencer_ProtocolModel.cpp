@@ -15,7 +15,7 @@ ProtocolModel::ProtocolModel(QObject *parent)
 int ProtocolModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return 7;
+    return 8;
 }
 
 QVariant ProtocolModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -25,12 +25,13 @@ QVariant ProtocolModel::headerData(int section, Qt::Orientation orientation, int
         switch(section)
         {
         case 0 : return tr("Subject");
-        case 1 : return tr("Start time");
-        case 2 : return tr("# shots/total");
-        case 3 : return tr("Shutter speed");
-        case 4 : return tr("ISO");
-        case 5 : return tr("Start delay");
-        case 6 : return tr("Pause");
+        case 1 : return tr("Type");
+        case 2 : return tr("Start time");
+        case 3 : return tr("# shots/total");
+        case 4 : return tr("Shutter speed");
+        case 5 : return tr("ISO");
+        case 6 : return tr("Start delay");
+        case 7 : return tr("Pause");
         default : break;
         }
     }
@@ -53,18 +54,23 @@ QVariant ProtocolModel::data(const QModelIndex &index, int role) const
         switch(index.column())
         {
         case 0 : return item->getSubject();
-        case 1 : return item->getStartTime().toString("dd. MM. yyyy hh:mm:ss");
-        case 2 : return QString("%0/%1").arg(item->getNumShotsFinished()).arg(item->getProperties().numShots);
-        case 3 : return item->getProperties().shutterSpeed;
-        case 4 : return item->getProperties().iso;
-        case 5 : return item->getProperties().startDelay;
-        case 6 : return item->getProperties().pause;
+        case 1 : return Protocol::typeToString(item->getType());
+        case 2 : return item->getStartTime().toString("dd. MM. yyyy hh:mm:ss");
+        case 3 : return QString("%0/%1").arg(item->getNumShotsFinished()).arg(item->getProperties().numShots);
+        case 4 : return item->getProperties().shutterSpeed;
+        case 5 : return item->getProperties().iso;
+        case 6 : return item->getProperties().startDelay;
+        case 7 : return item->getProperties().pause;
         }
         break;
     }
     case Qt::TextAlignmentRole :
-        if(1 == index.column())
-            return Qt::AlignHCenter;
+        if(2 == index.column())
+            return static_cast<int>(Qt::AlignHCenter | Qt::AlignVCenter);
+        else
+            return static_cast<int>(Qt::AlignLeft | Qt::AlignVCenter);
+
+
         break;
     }
 
@@ -108,6 +114,16 @@ Protocol *ProtocolModel::getProtocol(const QModelIndex &index) const
 
 void ProtocolModel::addProtocol(Protocol *protocol)
 {
+    for(int i=0; i<protocols.count(); i++)
+    {
+        if(protocols[i]->getSubject() == protocol->getSubject())
+        {
+            protocols.removeAt(i);
+            protocols.insert(i, protocol);
+            return;
+        }
+    }
+
     beginInsertRows(QModelIndex(), protocols.count(), protocols.count()+1);
     protocols << protocol;
     endInsertRows();

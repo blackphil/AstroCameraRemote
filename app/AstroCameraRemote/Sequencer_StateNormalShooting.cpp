@@ -4,7 +4,7 @@
 namespace Sequencer {
 
 StateNormalShooting::StateNormalShooting(int i, int maxCount)
-    : StateBase(tr("take shoot (%0/%1").arg(i).arg(maxCount), "", nullptr)
+    : StateBase(tr("take shoot (%0/%1").arg(i+1).arg(maxCount), "", nullptr)
 {
     setObjectName("StateNormalShooting");
 }

@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QTime>
 #include <QThread>
+#include <QMutexLocker>
 
 namespace AstroBase
 {
@@ -19,8 +20,11 @@ void Logging::initLogging(QString applicationName)
     qInstallMessageHandler(messageOutput);
 }
 
+static QMutex m;
 void Logging::messageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
+    QMutexLocker l(&m);
+    Q_UNUSED(l);
 
     QByteArray localMsg = msg.toLocal8Bit();
     switch (type) {

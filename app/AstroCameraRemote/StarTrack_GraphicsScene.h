@@ -49,6 +49,8 @@ public Q_SLOTS :
     void removeSelectedMarker();
     void cleanUpMarkers();
     void applyReferenceMarkers(const QList<QRectF>& refMarkers);
+    void selectNextStar();
+    void selectPreviousStar();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

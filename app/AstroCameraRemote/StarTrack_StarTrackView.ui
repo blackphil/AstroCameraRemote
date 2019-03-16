@@ -7,46 +7,28 @@
     <x>0</x>
     <y>0</y>
     <width>453</width>
-    <height>210</height>
+    <height>209</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="3">
-    <widget class="QPushButton" name="toggleFullscreenBtn">
-     <property name="minimumSize">
-      <size>
-       <width>40</width>
-       <height>40</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>40</width>
-       <height>40</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset resource="resources.qrc">
-       <normaloff>:/images/FullScreen.svg</normaloff>
-       <normalon>:/images/ExitFullScreen.svg</normalon>:/images/FullScreen.svg</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>32</width>
-       <height>32</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
+   <property name="spacing">
+    <number>2</number>
+   </property>
    <item row="1" column="1" rowspan="2" colspan="3">
     <widget class="QGroupBox" name="settingsGroupBox">
      <property name="sizePolicy">
@@ -162,18 +144,18 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="2" colspan="2">
-    <widget class="QSpinBox" name="hfdFontPointSize">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="5" column="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="value">
-      <number>20</number>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
      </property>
-    </widget>
+    </spacer>
    </item>
    <item row="3" column="1">
     <widget class="QLabel" name="label">
@@ -191,7 +173,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="5">
+   <item row="0" column="0" rowspan="6">
     <widget class="StarTrack::GraphicsView" name="starTrackView">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -250,18 +232,65 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="3" column="2" colspan="2">
+    <widget class="QSpinBox" name="hfdFontPointSize">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="sizeHint" stdset="0">
+     <property name="value">
+      <number>20</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QPushButton" name="toggleFullscreenBtn">
+     <property name="minimumSize">
       <size>
-       <width>20</width>
+       <width>40</width>
        <height>40</height>
       </size>
      </property>
-    </spacer>
+     <property name="maximumSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="resources.qrc">
+       <normaloff>:/images/FullScreen.svg</normaloff>
+       <normalon>:/images/ExitFullScreen.svg</normalon>:/images/FullScreen.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QPushButton" name="prev">
+     <property name="text">
+      <string>&lt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" colspan="2">
+    <widget class="QPushButton" name="next">
+     <property name="text">
+      <string>&gt;</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

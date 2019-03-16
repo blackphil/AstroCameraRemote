@@ -45,13 +45,13 @@ void NormalShootSequencer::handleStarted()
 
     for(int i=startIndex; i<numShots; i++)
     {
-        StateNormalShooting* shooting = new StateNormalShooting(i+1, numShots);
+        StateNormalShooting* shooting = new StateNormalShooting(i, numShots);
         connect(shooting, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
         addState(shooting);
 
         prevState->addTransition(currentTimer, SIGNAL(timeout()), shooting);
 
-        waitForCamReady = new StateWaitForCamReady(i+1, numShots);
+        waitForCamReady = new StateWaitForCamReady(i, numShots);
         connect(waitForCamReady, SIGNAL(message(QString)), this, SIGNAL(statusMessage(QString)));
         connect(waitForCamReady, SIGNAL(havePostViewUrl(QString, int, int)), this, SIGNAL(havePostViewUrl(QString, int, int)));
         addState(waitForCamReady);

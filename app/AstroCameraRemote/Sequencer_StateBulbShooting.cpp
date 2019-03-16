@@ -8,8 +8,8 @@ namespace Sequencer {
 
 StateBulbShooting::StateBulbShooting(QTimer* t, int i, int maxCount)
     : StateBase(
-          tr("start shoot (%0/%1)").arg(i).arg(maxCount)
-          , tr("stop shoot (%0/%1)").arg(i).arg(maxCount)
+          tr("start shoot (%0/%1)").arg(i+1).arg(maxCount)
+          , tr("stop shoot (%0/%1)").arg(i+1).arg(maxCount)
           , t)
 {
     setObjectName("StateBulbShooting");

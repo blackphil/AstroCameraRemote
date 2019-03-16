@@ -125,6 +125,14 @@ void StarTrackView::on_hfdFontPointSize_valueChanged(int v)
     Settings::setHfdDisplayFontSize(v);
 }
 
+void StarTrackView::on_prev_clicked()
+{
+    Q_EMIT selectPreviousStar();
+}
+
+void StarTrackView::on_next_clicked()
+{
+    Q_EMIT selectNextStar();
+}
+
 } // namespace StarTrack
-
-

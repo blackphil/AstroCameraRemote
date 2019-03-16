@@ -51,6 +51,7 @@ Widget::~Widget()
 
 void Widget::start()
 {
+    ui->graphicsView->fitToWindow(ui->zoomControl->fitInWindowEnabled());
     starTrackScene->setEnabled(true);
     Sender::get()->send(startLiveView);
 }

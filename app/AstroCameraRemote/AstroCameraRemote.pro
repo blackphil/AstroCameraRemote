@@ -70,7 +70,8 @@ SOURCES += main.cpp\
     Sequencer_ProtocolModel.cpp \
     Sequencer_Properties.cpp \
     Sequencer_ProtocolView.cpp \
-    ImageViewZoomControl.cpp
+    ImageViewZoomControl.cpp \
+    Sequencer_CreateNewDialog.cpp
 
 HEADERS  += MainWindow.h \
     SsdpClient.h \
@@ -122,7 +123,8 @@ HEADERS  += MainWindow.h \
     Sequencer_ProtocolModel.h \
     Sequencer_Properties.h \
     Sequencer_ProtocolView.h \
-    ImageViewZoomControl.h
+    ImageViewZoomControl.h \
+    Sequencer_CreateNewDialog.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \
@@ -130,7 +132,8 @@ FORMS    += MainWindow.ui \
     LiveView_Widget.ui \
     StarTrack_StarTrackView.ui \
     Sequencer_ControlWidget.ui \
-    ImageViewZoomControl.ui
+    ImageViewZoomControl.ui \
+    Sequencer_CreateNewDialog.ui
 
 #DEFINES += DRY_RUN
 

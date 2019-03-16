@@ -9,10 +9,46 @@
 #include <QRegularExpression>
 #include <QProcess>
 #include <QStringList>
+#include <QMap>
 
 #include <Windows.h>
 
 namespace Sequencer {
+
+
+namespace helper
+{
+const QMap<Protocol::Type, QString>& typeStringMap()
+{
+    static QMap<Protocol::Type, QString> map;
+    if(map.isEmpty())
+    {
+        map[Protocol::Type_Focusing] = Protocol::tr("Focusing (no protocol)");
+        map[Protocol::Type_Light] = Protocol::tr("Light");
+        map[Protocol::Type_Dark] = Protocol::tr("Dark");
+        map[Protocol::Type_Flat] = Protocol::tr("Flat");
+    }
+    return map;
+}
+}
+
+QString Protocol::typeToString(Type t)
+{
+    if(helper::typeStringMap().contains(t))
+        return helper::typeStringMap()[t];
+    return tr("Undefined");
+}
+
+Protocol::Type typeFromString(const QString& t)
+{
+    for(QMap<Protocol::Type, QString>::ConstIterator it=helper::typeStringMap().begin(); it!=helper::typeStringMap().end(); ++it)
+    {
+        if(it.value() == t)
+            return it.key();
+    }
+
+    return Protocol::NumTypes;
+}
 
 const Properties& Protocol::getProperties() const
 {
@@ -70,7 +106,7 @@ QString Protocol::getFilePath() const
     Q_ASSERT(dataDir.exists());
 
 
-    QString fileName = QString("%0_%1.xml").arg(subject.trimmed()).arg(startTime.toString("yyyy-MM-ddThhmmss"));
+    QString fileName = QString("%0.xml").arg(subject.trimmed());
     fileName.replace(QRegularExpression("[/\\\\:\\*\\?<>\\\"]"), "_");
     QFileInfo protocolFileInfo(QDir(dataPath), fileName);
 
@@ -87,6 +123,16 @@ bool Protocol::getRecording() const
 QList<QRectF> Protocol::getReferenceMarkers() const
 {
     return markers;
+}
+
+Protocol::Type Protocol::getType() const
+{
+    return type;
+}
+
+void Protocol::setType(const Type &value)
+{
+    type = value;
 }
 
 Protocol::Protocol(QObject *parent)
@@ -106,7 +152,9 @@ Protocol::~Protocol()
 void Protocol::start()
 {
     recording = true;
-    startTime = QDateTime::currentDateTime();
+    if(startTime.isNull())
+        startTime = QDateTime::currentDateTime();
+    save();
 }
 
 void Protocol::shotFinished(QString url, int index, int numShots)
@@ -117,31 +165,41 @@ void Protocol::shotFinished(QString url, int index, int numShots)
     fs.timeStamp = QDateTime::currentDateTime();
 
     photoShots << fs;
+    save();
 }
 
 void Protocol::setReferenceMarkers(const QList<QRectF> &markers)
 {
     this->markers = markers;
+    save();
 }
 
 void Protocol::cleanUpMarkers()
 {
     markers.clear();
+    save();
 }
 
 void Protocol::stop()
 {
-
-    QFile f(getFilePath());
-    f.open(QIODevice::WriteOnly | QIODevice::Text);
-    QXmlStreamWriter writer(&f);
-    writer.setAutoFormatting(true);
-
-    serializeXml(writer);
-
-    f.close();
-
+    save();
     recording = false;
+}
+
+void Protocol::save()
+{
+    if(Type_Focusing != type)
+    {
+        QFile f(getFilePath());
+        f.open(QIODevice::WriteOnly | QIODevice::Text);
+        QXmlStreamWriter writer(&f);
+        writer.setAutoFormatting(true);
+
+        serializeXml(writer);
+
+        f.close();
+    }
+
 }
 
 bool Protocol::deleteFile()
@@ -166,6 +224,7 @@ void Protocol::serializeXml(QXmlStreamWriter &writer) const
 {
     writer.writeStartElement("Protocol");
     writer.writeAttribute("subject", subject);
+    writer.writeAttribute("type", QString::number(type));
     writer.writeAttribute("startTime", startTime.toString("yyyy-MM-ddThh:mm:ss.zzz"));
 
     if(!markers.isEmpty())
@@ -204,6 +263,7 @@ void Protocol::deSerializeXml(QXmlStreamReader &reader)
             {
                 startTime = QDateTime::fromString(reader.attributes().value("startTime").toString(), "yyyy-MM-ddThh:mm:ss.zzz");
                 subject = reader.attributes().value("subject").toString();
+                type = static_cast<Type>(reader.attributes().value("type").toInt());
             }
             else if(reader.name() == "Properties")
             {

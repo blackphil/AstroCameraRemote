@@ -29,6 +29,8 @@ Q_SIGNALS :
     void trackingEnabledStatusToggled(bool);
     void updateMarker();
     void toggleFullScreen(bool);
+    void selectNextStar();
+    void selectPreviousStar();
 
 public Q_SLOTS :
 
@@ -43,6 +45,10 @@ private slots:
     void on_markerFixedRectSpinbox_editingFinished();
 
     void on_hfdFontPointSize_valueChanged(int arg1);
+
+    void on_prev_clicked();
+
+    void on_next_clicked();
 
 private:
     Ui::StarTrackView *ui;

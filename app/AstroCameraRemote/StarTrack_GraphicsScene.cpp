@@ -167,6 +167,46 @@ void GraphicsScene::applyReferenceMarkers(const QList<QRectF> &refMarkers)
     }
 }
 
+void GraphicsScene::selectNextStar()
+{
+    if(markers.isEmpty())
+        return;
+
+    Q_ASSERT(selectedMarker);
+    if(!selectedMarker)
+        return;
+
+    int index = markers.indexOf(selectedMarker);
+    Q_ASSERT(0 <= index && index < markers.count());
+    if(0 > index || index >= markers.count())
+        return;
+
+    index++;
+    if(markers.count() == index)
+        index = 0;
+    setSelectedMarker(markers[index]);
+}
+
+void GraphicsScene::selectPreviousStar()
+{
+    if(markers.isEmpty())
+        return;
+
+    Q_ASSERT(selectedMarker);
+    if(!selectedMarker)
+        return;
+
+    int index = markers.indexOf(selectedMarker);
+    Q_ASSERT(0 <= index && index < markers.count());
+    if(0 > index || index >= markers.count())
+        return;
+
+    index--;
+    if(0 > index)
+        index = markers.count()-1;
+    setSelectedMarker(markers[index]);
+}
+
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(!enabled)

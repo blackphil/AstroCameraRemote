@@ -7,19 +7,19 @@ TimeUnitButton::TimeUnitButton(QWidget *parent)
     , connectedSpinBox(nullptr)
     , unit(Unit_Minutes)
 {
-    unitSettings[Unit_Minutes].name = tr("min");
+    unitSettings[Unit_Minutes].name = tr( "min");
     unitSettings[Unit_Minutes].decimals = 3;
     unitSettings[Unit_Minutes].conversionFactor = 1. / 60000.;
     unitSettings[Unit_Minutes].convertToMSec = 60000.;
     unitSettings[Unit_Minutes].maxValue = 60;
 
-    unitSettings[Unit_Seconds].name = tr("sec");
+    unitSettings[Unit_Seconds].name = tr(" sec");
     unitSettings[Unit_Seconds].decimals = 3;
     unitSettings[Unit_Seconds].conversionFactor = 60.;
     unitSettings[Unit_Seconds].convertToMSec = 1000.;
     unitSettings[Unit_Seconds].maxValue = 60 * 60;
 
-    unitSettings[Unit_Milliseconds].name = tr("msec");
+    unitSettings[Unit_Milliseconds].name = tr(" msec");
     unitSettings[Unit_Milliseconds].decimals = 0;
     unitSettings[Unit_Milliseconds].conversionFactor = 1000.;
     unitSettings[Unit_Milliseconds].convertToMSec = 1.;
@@ -80,12 +80,15 @@ void TimeUnitButton::setValueInMilliseconds(int v)
 void TimeUnitButton::connectToSpinbox(QDoubleSpinBox *spinBox)
 {
     if(connectedSpinBox)
-        disconnect(spinBox, SIGNAL(valueChanged(double)), this, SLOT(handleValueChanged(double)));
+        disconnect(spinBox, nullptr, this, nullptr);
 
     connectedSpinBox = spinBox;
 
     if(connectedSpinBox)
+    {
+        connectedSpinBox->setSuffix(unitSettings[unit].name);
         connect(connectedSpinBox, SIGNAL(valueChanged(double)), this, SLOT(handleValueChanged(double)));
+    }
 }
 
 void TimeUnitButton::nextCheckState()

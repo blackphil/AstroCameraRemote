@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>405</width>
-    <height>296</height>
+    <height>250</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -66,55 +66,54 @@
        <property name="spacing">
         <number>2</number>
        </property>
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Shooting Info</string>
+       <item row="3" column="1">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <layout class="QFormLayout" name="formLayout">
-          <property name="horizontalSpacing">
-           <number>2</number>
-          </property>
-          <property name="verticalSpacing">
-           <number>2</number>
-          </property>
-          <property name="leftMargin">
-           <number>3</number>
-          </property>
-          <property name="topMargin">
-           <number>3</number>
-          </property>
-          <property name="rightMargin">
-           <number>3</number>
-          </property>
-          <property name="bottomMargin">
-           <number>3</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Subject:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="subjectLineEdit">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="placeholderText">
-             <string>enter name of the sky object here</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Subject:</string>
+         </property>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QGroupBox" name="groupBox">
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="subjectLineEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="placeholderText">
+          <string notr="true"/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="newSequenceBtn">
+         <property name="text">
+          <string>New</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="3">
+        <widget class="QGroupBox" name="settingsGroup">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -415,19 +414,6 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="1">
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="protocolTab">
@@ -451,20 +437,13 @@
         <number>2</number>
        </property>
        <item row="4" column="0">
-        <widget class="QPushButton" name="cotinueBtn">
+        <widget class="QPushButton" name="loadBtn">
          <property name="text">
-          <string>Continue</string>
+          <string>Load</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="2">
-        <widget class="QPushButton" name="bwdBtn">
-         <property name="text">
-          <string>&lt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" rowspan="4" colspan="4">
+       <item row="0" column="0" rowspan="4" colspan="3">
         <widget class="Sequencer::ProtocolView" name="stashedShootings">
          <property name="selectionMode">
           <enum>QAbstractItemView::SingleSelection</enum>
@@ -474,17 +453,17 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="3">
-        <widget class="QPushButton" name="fwdBtn">
+       <item row="4" column="1">
+        <widget class="QPushButton" name="bwdBtn">
          <property name="text">
-          <string>&gt;</string>
+          <string>&lt;</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QPushButton" name="loadMarkersBtn">
+       <item row="4" column="2">
+        <widget class="QPushButton" name="fwdBtn">
          <property name="text">
-          <string>Load markers</string>
+          <string>&gt;</string>
          </property>
         </widget>
        </item>

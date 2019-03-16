@@ -5,7 +5,7 @@
 namespace Sequencer {
 
 StateWaitForCamReady::StateWaitForCamReady(int i, int numShots)
-    : StateBase(tr("wait for camera IDLE mode (%0/%1)").arg(i).arg(numShots), "", nullptr)
+    : StateBase(tr("wait for camera IDLE mode (%0/%1)").arg(i+1).arg(numShots), "", nullptr)
     , i(i)
     , numShots(numShots)
 
