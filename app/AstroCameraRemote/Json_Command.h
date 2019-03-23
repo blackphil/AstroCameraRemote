@@ -33,7 +33,7 @@ protected Q_SLOTS :
     virtual void handleReply();
 
 public:
-    Command(QObject* parent = 0) : QObject(parent) {}
+    Command(QObject* parent = nullptr) : QObject(parent) {}
     virtual ~Command() {}
     virtual QJsonDocument getJson() const = 0;
     void setReply(QNetworkReply *value);
@@ -46,7 +46,7 @@ class SetShutterSpeed : public Command
     QString shutterSpeed;
 
 public :
-    SetShutterSpeed(QObject* parent = 0);
+    SetShutterSpeed(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 
     void setShutterSpeed(const QString &value);
@@ -60,7 +60,7 @@ class SetIsoSpeedRate : public Command
     QString isoSpeedRate;
 
 public :
-    SetIsoSpeedRate(QObject* parent = 0);
+    SetIsoSpeedRate(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 
     void setIsoSpeedRate(const QString &value);
@@ -74,7 +74,7 @@ class GetShutterSpeed : public Command
     QString shutterSpeed;
 
 public :
-    GetShutterSpeed(QObject* parent = 0);
+    GetShutterSpeed(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 //    void handleReply(const QJsonDocument &replyJson);
 };
@@ -84,7 +84,7 @@ class StartRecMode : public Command
     Q_OBJECT
 
 public :
-    StartRecMode(QObject* parent = 0);
+    StartRecMode(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 };
 
@@ -93,7 +93,7 @@ class StopRecMode : public Command
     Q_OBJECT
 
 public :
-    StopRecMode(QObject* parent = 0);
+    StopRecMode(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 };
 
@@ -110,7 +110,7 @@ private :
     Mode mode;
 
 public :
-    SetContShootingMode(QObject* parent = 0);
+    SetContShootingMode(QObject* parent = nullptr);
     QJsonDocument getJson() const;
     Mode getMode() const;
     void setMode(const Mode &value);
@@ -126,7 +126,7 @@ class GetAvailableContShootingModes : public Command
     QString currentContShootingMode;
 
 public:
-    GetAvailableContShootingModes(QObject *parent = 0);
+    GetAvailableContShootingModes(QObject *parent = nullptr);
     QJsonDocument getJson() const;
     void handleReply(const QJsonDocument &replyJson);
 
@@ -138,7 +138,7 @@ class StartBulbShooting : public Command
 {
     Q_OBJECT
 public :
-    StartBulbShooting(QObject* parent = NULL);
+    StartBulbShooting(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 
 };
@@ -154,7 +154,7 @@ Q_SIGNALS :
     void havePostViewUrl(QString);
 
 public :
-    PostViewProviderCommand(QObject* parent = 0);
+    PostViewProviderCommand(QObject* parent = nullptr);
     QString getPostViewUrl() const;
 };
 
@@ -163,7 +163,7 @@ class ActTakePicture : public PostViewProviderCommand
     Q_OBJECT
 
 public :
-    ActTakePicture(QObject* parent = 0);
+    ActTakePicture(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 
 };
@@ -174,7 +174,7 @@ class StopBulbShooting : public Command
     Q_OBJECT
 
 public :
-    StopBulbShooting(QObject* parent = NULL);
+    StopBulbShooting(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 
 
@@ -185,7 +185,7 @@ class AwaitTakePicture : public PostViewProviderCommand
     Q_OBJECT
 
 public :
-    AwaitTakePicture(QObject* parent = NULL);
+    AwaitTakePicture(QObject* parent = nullptr);
     QJsonDocument getJson() const;
 };
 

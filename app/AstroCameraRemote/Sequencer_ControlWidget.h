@@ -70,7 +70,7 @@ public Q_SLOTS :
 
     void loadProtocols();
 
-    void setupProtocol() const;
+    void uiToProtocol(Protocol *protocol) const;
 
     void handleNewReferenceMarkers(const QList<QRectF>& markers);
 
@@ -84,7 +84,7 @@ private Q_SLOTS :
 
 //    void addCurrentSequencerSettings();
 //    void applySequencerSettings(const QString& name, const QStringList& availableSettings);
-    void applySequencerSettingsFromCurrentProtocol();
+    void protocolToUi(Protocol* protocol);
 //    void removeSequencerSettings(const QString& name);
 
     bool stopRunningSequence();

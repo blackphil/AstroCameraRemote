@@ -8,6 +8,7 @@
 #include <QXmlStreamWriter>
 
 #include "Sequencer_Properties.h"
+#include "EasyExif_Exif.h"
 
 namespace Sequencer {
 
@@ -29,9 +30,16 @@ public :
     static Type typeFromString(const QString& t);
 
 private :
-    Type type;
 
-    Properties properties;
+    enum Status
+    {
+          Status_Stopped
+        , Status_Recording
+        , Status_Stopping
+    };
+
+    Status status;
+
 
     struct PhotoShot
     {
@@ -41,22 +49,28 @@ private :
         QDateTime timeStamp;
         QString fileName;
 
+        EasyExif::EXIFInfo exif;
+
         void serializeXml(QXmlStreamWriter& writer) const;
         void deSerializeXml(QXmlStreamReader& reader);
+
+        void serializeExif(QXmlStreamWriter& writer) const;
+        void deSerializeExif(QXmlStreamReader& reader);
     };
+
+    Type type;
+    Properties properties;
     QList<PhotoShot> photoShots;
-
     QList<QRectF> markers;
-
     QDateTime startTime;
-
     QString subject;
 
-    bool recording;
 
 public:
     explicit Protocol(QObject *parent = nullptr);
     ~Protocol();
+
+    bool isRecording() const;
 
     void serializeXml(QXmlStreamWriter& writer) const;
     void deSerializeXml(QXmlStreamReader& reader);
@@ -74,16 +88,18 @@ public:
 
     QString getFilePath() const;
 
-    bool getRecording() const;
-
     QList<QRectF> getReferenceMarkers() const;
 
     Type getType() const;
     void setType(const Type &value);
 
+    EasyExif::EXIFInfo getExif() const;
+    void setExif(const EasyExif::EXIFInfo &value);
+
 public Q_SLOTS :
     void start();
-    void shotFinished(QString url, int index, int numShots);
+    void havePostViewUrl(QString url, int index, int numShots);
+    void havePostViewImage(const QByteArray& data);
     void setReferenceMarkers(const QList<QRectF>& markers);
     void cleanUpMarkers();
     void stop();

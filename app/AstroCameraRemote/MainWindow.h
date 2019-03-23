@@ -108,6 +108,8 @@ private Q_SLOTS:
 
     void on_actionFits_repair_triggered();
 
+    void on_setCamDateTime_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

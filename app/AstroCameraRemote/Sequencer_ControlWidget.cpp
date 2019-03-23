@@ -46,6 +46,9 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
     {
         disconnect(bulbShootSequencer, nullptr, currentProtocol, nullptr);
         disconnect(normalShootSequencer, nullptr, currentProtocol, nullptr);
+        disconnect(Sender::get(), nullptr, currentProtocol, nullptr);
+
+        ui->subjectLineEdit->setText("");
     }
 
     currentProtocol = p;
@@ -63,17 +66,26 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
             sequencer = normalShootSequencer;
         }
 
-        applySequencerSettingsFromCurrentProtocol();
         connect(sequencer, SIGNAL(started()), currentProtocol, SLOT(start()));
-        connect(sequencer, SIGNAL(havePostViewUrl(QString, int, int)), currentProtocol, SLOT(shotFinished(QString, int, int)));
+        connect(sequencer, SIGNAL(havePostViewUrl(QString, int, int)), currentProtocol, SLOT(havePostViewUrl(QString, int, int)));
         connect(sequencer, SIGNAL(stopped()), currentProtocol, SLOT(stop()));
+        connect(Sender::get(), SIGNAL(loadedPostViewImage(QByteArray)), currentProtocol, SLOT(havePostViewImage(QByteArray)));
 
         sequencer->setStartIndex(currentProtocol->getNumShotsFinished());
         sequencer->setNumShots(currentProtocol->getProperties().numShots);
         sequencer->setShutterSpeed(currentProtocol->getProperties().getShutterSpeedInMilliseconds());
         sequencer->setPauseDelay(currentProtocol->getProperties().pause);
         sequencer->setStartDelay(currentProtocol->getProperties().startDelay);
-//        duration = sequencer->calculateSequenceDuration();
+        //        duration = sequencer->calculateSequenceDuration();
+
+        if(currentProtocol->getType() != Protocol::Type_Focusing)
+            protocolModel->addProtocol(currentProtocol);
+
+        currentProtocol->setReferenceMarkers(referenceMarkers);
+        currentProtocol->save();
+
+        ui->subjectLineEdit->setText(currentProtocol->getSubject());
+
     }
 }
 
@@ -248,35 +260,27 @@ void ControlWidget::loadProtocols()
     }
 }
 
-void ControlWidget::setupProtocol() const
+void ControlWidget::uiToProtocol(Protocol* protocol) const
 {
-    if(currentProtocol)
-    {
-        Properties properties;
-        properties.shutterSpeed = ui->shutterSpeed->currentText();
-        properties.shutterSpeedBulb = ui->shutterSpeedTuBtn->getValueInMilliseconds();
-        properties.shutterSpeedBulbUnit = ui->shutterSpeedTuBtn->currentUnit();
-        properties.iso = ui->isoSpeedRate->currentText();
-        properties.startDelay = ui->startDelayTuBtn->getValueInMilliseconds();
-        properties.startDelayUnit = ui->startDelayTuBtn->currentUnit();
-        properties.pause = ui->pauseTuBtn->getValueInMilliseconds();
-        properties.pauseUnit = ui->pauseTuBtn->currentUnit();
-        properties.numShots = ui->numShots->value();
+    Q_ASSERT(protocol);
+    if(!protocol)
+        return;
 
-        currentProtocol->setProperties(properties);
 
-        if(currentProtocol->getType() != Protocol::Type_Focusing)
-            protocolModel->addProtocol(currentProtocol);
+    Properties properties;
+    properties.shutterSpeed = ui->shutterSpeed->currentText();
+    properties.shutterSpeedBulb = ui->shutterSpeedTuBtn->getValueInMilliseconds();
+    properties.shutterSpeedBulbUnit = ui->shutterSpeedTuBtn->currentUnit();
+    properties.iso = ui->isoSpeedRate->currentText();
+    properties.startDelay = ui->startDelayTuBtn->getValueInMilliseconds();
+    properties.startDelayUnit = ui->startDelayTuBtn->currentUnit();
+    properties.pause = ui->pauseTuBtn->getValueInMilliseconds();
+    properties.pauseUnit = ui->pauseTuBtn->currentUnit();
+    properties.numShots = ui->numShots->value();
 
-        currentProtocol->setReferenceMarkers(referenceMarkers);
-        currentProtocol->save();
+    protocol->setProperties(properties);
 
-        ui->subjectLineEdit->setText(currentProtocol->getSubject());
-    }
-    else
-    {
-        ui->subjectLineEdit->setText("");
-    }
+
 
 
 }
@@ -295,19 +299,19 @@ void ControlWidget::handleNewReferenceMarkers(const QList<QRectF> &markers)
 
 }
 
-void ControlWidget::applySequencerSettingsFromCurrentProtocol()
+void ControlWidget::protocolToUi(Protocol *protocol)
 {
-    Q_ASSERT(currentProtocol);
-    if(!currentProtocol)
+    Q_ASSERT(protocol);
+    if(!protocol)
     {
         errorMessage(tr("Cannot apply settings: no data available"));
-        AB_WRN("currentProtocol missing");
+        AB_WRN("Protocol missing");
         return;
     }
 
-    ui->subjectLineEdit->setText(currentProtocol->getSubject());
+    ui->subjectLineEdit->setText(protocol->getSubject());
 
-    const Properties& p = currentProtocol->getProperties();
+    const Properties& p = protocol->getProperties();
     ui->shutterSpeed->setCurrentText(p.shutterSpeed);
     ui->isoSpeedRate->setCurrentText(p.iso);
 
@@ -322,7 +326,7 @@ void ControlWidget::applySequencerSettingsFromCurrentProtocol()
 
     ui->numShots->setValue(p.numShots);
 
-    referenceMarkers = currentProtocol->getReferenceMarkers();
+    referenceMarkers = protocol->getReferenceMarkers();
 
     setShutterSpeed->setShutterSpeed(ui->shutterSpeed->currentText());
     Sender::get()->send(setShutterSpeed);
@@ -418,7 +422,7 @@ void ControlWidget::on_startBulbSequence_clicked()
 
 void ControlWidget::startSequence()
 {
-//    Q_ASSERT(currentProtocol);
+    //    Q_ASSERT(currentProtocol);
     if(!currentProtocol)
     {
         errorMessage("No active protocol ... cannot start any sequence");
@@ -426,7 +430,7 @@ void ControlWidget::startSequence()
         return;
     }
 
-    setupProtocol();
+    uiToProtocol(currentProtocol);
 
 
     infoMessage("-------------------------------------------------------------");
@@ -448,7 +452,13 @@ void ControlWidget::startSequence()
 
     Base* sequencer = getActiveSequencer();
     Q_ASSERT(sequencer);
-    sequencer->setStartIndex(currentProtocol->getNumShotsFinished());
+    if(!sequencer)
+    {
+        errorMessage(tr("No sequencer available"));
+        AB_WRN("no sequencer");
+        return;
+    }
+
     sequencer->start();
 }
 
@@ -492,9 +502,9 @@ void ControlWidget::on_loadBtn_clicked()
     if(!markers.isEmpty())
         Q_EMIT newReferenceMarkers(markers);
 
+    protocolToUi(selProtocol);
     setCurrentProtocol(selProtocol);
 
-    applySequencerSettingsFromCurrentProtocol();
 
     ui->tabWidget->setCurrentWidget(ui->mainTab);
 
@@ -502,10 +512,10 @@ void ControlWidget::on_loadBtn_clicked()
 
 void ControlWidget::on_newSequenceBtn_clicked()
 {
-    Q_ASSERT(currentProtocol == nullptr || !currentProtocol->getRecording());
+    Q_ASSERT(currentProtocol == nullptr || !currentProtocol->isRecording());
     if(currentProtocol != nullptr)
     {
-        if(currentProtocol->getRecording())
+        if(currentProtocol->isRecording())
         {
             errorMessage(tr("Cannot create sequence: another seuqence is running"));
             AB_WRN("already have a running sequence");
@@ -522,7 +532,7 @@ void ControlWidget::on_newSequenceBtn_clicked()
         newProtocol->setSubject(dlg.getSubject());
         newProtocol->setType(dlg.getType());
         setCurrentProtocol(newProtocol);
-        setupProtocol();
+        uiToProtocol(newProtocol);
 
 
         QMessageBox::information(this, tr("New sequence"), tr("New sequence \"%0\" created.").arg(currentProtocol->getSubject()));

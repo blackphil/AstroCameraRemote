@@ -39,6 +39,55 @@ QString Protocol::typeToString(Type t)
     return tr("Undefined");
 }
 
+void Protocol::PhotoShot::serializeExif(QXmlStreamWriter &writer) const
+{
+    writer.writeStartElement("Exif");
+    writer.writeAttribute("exposureTime", QString::number(exif.ExposureTime));
+    writer.writeAttribute("isoSpeedRatings", QString::number(exif.ISOSpeedRatings));
+
+    writer.writeStartElement("DateTime");
+    writer.writeAttribute("changed", QString::fromStdString(exif.DateTime));
+    writer.writeAttribute("original", QString::fromStdString(exif.DateTimeOriginal));
+    writer.writeAttribute("digitized", QString::fromStdString(exif.DateTimeDigitized));
+    writer.writeAttribute("subSecOriginal", QString::fromStdString(exif.SubSecTimeOriginal));
+    writer.writeEndElement();
+    writer.writeEndElement();
+}
+
+void Protocol::PhotoShot::deSerializeExif(QXmlStreamReader &reader)
+{
+    if(!reader.isStartElement() || reader.name() != "Exif")
+        return;
+
+    while(!reader.atEnd())
+    {
+        if(reader.isStartElement())
+        {
+            if(reader.name() == "Exif")
+            {
+                exif.ExposureTime = reader.attributes().value("exposureTime").toDouble();
+                exif.ISOSpeedRatings = reader.attributes().value("isoSpeedRatings").toUShort();
+            }
+            else if(reader.name() == ("DateTime"))
+            {
+                exif.DateTime = reader.attributes().value("changed").toString().toStdString();
+                exif.DateTimeOriginal = reader.attributes().value("original").toString().toStdString();
+                exif.DateTimeDigitized = reader.attributes().value("digitized").toString().toStdString();
+                exif.SubSecTimeOriginal = reader.attributes().value("subSecOriginal").toString().toStdString();
+            }
+        }
+        else if(reader.isEndElement())
+        {
+            if(reader.name() == "Exif")
+                return;
+        }
+
+        reader.readNext();
+    }
+
+}
+
+
 Protocol::Type typeFromString(const QString& t)
 {
     for(QMap<Protocol::Type, QString>::ConstIterator it=helper::typeStringMap().begin(); it!=helper::typeStringMap().end(); ++it)
@@ -115,10 +164,6 @@ QString Protocol::getFilePath() const
 
 static int objCount(0);
 
-bool Protocol::getRecording() const
-{
-    return recording;
-}
 
 QList<QRectF> Protocol::getReferenceMarkers() const
 {
@@ -137,7 +182,7 @@ void Protocol::setType(const Type &value)
 
 Protocol::Protocol(QObject *parent)
     : QObject(parent)
-    , recording(false)
+    , status(Status_Stopped)
 {
     objCount++;
     AB_DBG("CTOR(" << objCount << ")");
@@ -149,23 +194,62 @@ Protocol::~Protocol()
     AB_DBG("DTOR(" << objCount << ")");
 }
 
+bool Protocol::isRecording() const
+{
+    return status != Status_Stopped ? true : false;
+}
+
 void Protocol::start()
 {
-    recording = true;
+    status = Status_Recording;
     if(startTime.isNull())
         startTime = QDateTime::currentDateTime();
     save();
 }
 
-void Protocol::shotFinished(QString url, int index, int numShots)
+void Protocol::havePostViewUrl(QString url, int index, int numShots)
 {
     Q_UNUSED(numShots);
+
+    if(Status_Stopped == status)
+        return;
 
     PhotoShot fs(index, url);
     fs.timeStamp = QDateTime::currentDateTime();
 
     photoShots << fs;
+
+}
+
+void Protocol::havePostViewImage(const QByteArray &data)
+{
+    Q_ASSERT(!photoShots.isEmpty());
+    if(photoShots.isEmpty())
+        return;
+
+    if(Status_Stopped == status)
+        return;
+
+
+    PhotoShot& current = photoShots.last();
+    Q_ASSERT(!current.exif.isValid());
+    if(current.exif.isValid())
+    {
+        AB_WRN("Cannot get exif data for two times!");
+        return;
+    }
+
+    const unsigned char* rawData = reinterpret_cast<const unsigned char*>(data.data());
+    unsigned int rawLength = static_cast<unsigned int>(data.length());
+    current.exif.parseFrom(rawData, rawLength);
+
     save();
+
+
+    if(Status_Stopping == status)
+        status = Status_Stopped;
+
+
 }
 
 void Protocol::setReferenceMarkers(const QList<QRectF> &markers)
@@ -182,8 +266,7 @@ void Protocol::cleanUpMarkers()
 
 void Protocol::stop()
 {
-    save();
-    recording = false;
+    status = Status_Stopping;
 }
 
 void Protocol::save()
@@ -204,7 +287,7 @@ void Protocol::save()
 
 bool Protocol::deleteFile()
 {
-    if(recording)
+    if(Status_Stopped != status)
     {
         AB_WRN("Cannot delete protocol file while the protocol is recording");
         return false;
@@ -312,19 +395,40 @@ void Protocol::PhotoShot::serializeXml(QXmlStreamWriter &writer) const
     writer.writeAttribute("index", QString::number(index));
     writer.writeAttribute("fileName", fileName);
     writer.writeAttribute("timeStamp", timeStamp.toString("yyyy-MM-ddThh:mm:ss.zzz"));
+
+    serializeExif(writer);
     writer.writeEndElement();
 }
 
 void Protocol::PhotoShot::deSerializeXml(QXmlStreamReader &reader)
 {
-    if(reader.isStartElement() && reader.name() == "PhotoShot")
+    if(!reader.isStartElement() || reader.name() != "PhotoShot")
+        return;
+
+    while(!reader.atEnd())
     {
-        index = reader.attributes().value("index").toInt();
-        fileName = reader.attributes().value("fileName").toString();
-        timeStamp = QDateTime::fromString(reader.attributes().value("timeStamp").toString(), "yyyy-MM-ddThh:mm:ss.zzz");
+        if(reader.isStartElement())
+        {
+            if(reader.name() == "PhotoShot")
+            {
+                index = reader.attributes().value("index").toInt();
+                fileName = reader.attributes().value("fileName").toString();
+                timeStamp = QDateTime::fromString(reader.attributes().value("timeStamp").toString(), "yyyy-MM-ddThh:mm:ss.zzz");
+            }
+            else if(reader.name() == "Exif")
+            {
+                deSerializeExif(reader);
+            }
+        }
+        else if(reader.isEndElement())
+        {
+            if(reader.name() == "PhotoShot")
+                return;
+        }
+
+        reader.readNext();
     }
 }
-
 
 
 } // namespace Sequencer

@@ -409,3 +409,8 @@ void MainWindow::on_actionFits_repair_triggered()
     dlg.setTaskPrototype(&repairProcessor);
     dlg.exec();
 }
+
+void MainWindow::on_setCamDateTime_clicked()
+{
+
+}

@@ -15,7 +15,7 @@ class Sender : public QObject
 
     QNetworkAccessManager* manager;
     QJsonObject noReplyError;
-    uint replyDelay;
+    int replyDelay;
     QTimer* timeoutTimer;
     QNetworkReply* postViewImageReply;
 

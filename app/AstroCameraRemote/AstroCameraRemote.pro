@@ -17,7 +17,8 @@ QTPLUGIN += svg
 DLL_DEPS += \
     AstroBase \
     BatchProcess \
-    DataFormat/Fits
+    DataFormat/Fits \
+    EasyExif
 
 SOURCES += main.cpp\
         MainWindow.cpp \
