@@ -12,7 +12,7 @@ QT       += widgets
 TARGET = BatchProcess
 TEMPLATE = lib
 
-DLL_DEPS += AstroBase DataFormat/Fits
+DLL_DEPS += AstroBase DataFormat/Fits EasyExif
 
 DEFINES += BATCHPROCESS_LIBRARY
 
@@ -44,7 +44,8 @@ SOURCES += \
     BatchProcess_Visual_Connection.cpp \
     BatchProcess_Visual_Pin.cpp \
     BatchProcess_SaveImagesTask.cpp \
-    BatchProcess_SaveImagesEditDlg.cpp
+    BatchProcess_SaveImagesEditDlg.cpp \
+    BatchProcess_RawImageGrabber.cpp
 
 HEADERS += \
         BatchProcess.h \
@@ -65,7 +66,8 @@ HEADERS += \
     BatchProcess_Visual_Connection.h \
     BatchProcess_Visual_Pin.h \
     BatchProcess_SaveImagesTask.h \
-    BatchProcess_SaveImagesEditDlg.h
+    BatchProcess_SaveImagesEditDlg.h \
+    BatchProcess_RawImageGrabber.h
 
 FORMS += \
     BatchProcess_SelectFilesDialog.ui \

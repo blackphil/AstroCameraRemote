@@ -37,6 +37,8 @@
 #include "easyexif_global.h"
 
 #include <string>
+#include <QSharedPointer>
+#include <QList>
 
 namespace EasyExif {
 
@@ -157,6 +159,9 @@ class EASYEXIFSHARED_EXPORT EXIFInfo {
 
   bool isValid() const;
 };
+
+typedef QSharedPointer<EXIFInfo> EXIFInfoPtr;
+typedef QList<EXIFInfoPtr> EXIFInfoList;
 
 }
 

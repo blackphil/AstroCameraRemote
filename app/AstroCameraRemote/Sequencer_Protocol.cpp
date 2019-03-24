@@ -23,11 +23,27 @@ const QMap<Protocol::Type, QString>& typeStringMap()
     static QMap<Protocol::Type, QString> map;
     if(map.isEmpty())
     {
-        map[Protocol::Type_Focusing] = Protocol::tr("Focusing (no protocol)");
-        map[Protocol::Type_Light] = Protocol::tr("Light");
-        map[Protocol::Type_Dark] = Protocol::tr("Dark");
-        map[Protocol::Type_Flat] = Protocol::tr("Flat");
+        map[Protocol::Type_Focusing] = "Focusing (no protocol)";
+        map[Protocol::Type_Light   ] = "Light";
+        map[Protocol::Type_Dark    ] = "Dark";
+        map[Protocol::Type_Flat    ] = "Flat";
     }
+    return map;
+}
+
+const QMap<Protocol::ColorChannel, QString>& colorChannelStringMap()
+{
+    static QMap<Protocol::ColorChannel, QString> map;
+    if(map.isEmpty())
+    {
+        map[Protocol::Color_RGB      ] = "RGB"      ;
+        map[Protocol::Color_Luminance] = "Luminance";
+        map[Protocol::Color_Red      ] = "Red"      ;
+        map[Protocol::Color_Green    ] = "Green"    ;
+        map[Protocol::Color_Blue     ] = "Blue"     ;
+
+    }
+
     return map;
 }
 }
@@ -36,11 +52,59 @@ QString Protocol::typeToString(Type t)
 {
     if(helper::typeStringMap().contains(t))
         return helper::typeStringMap()[t];
-    return tr("Undefined");
+    return "Undefined";
+}
+
+Protocol::Type typeFromString(const QString& t)
+{
+    for(QMap<Protocol::Type, QString>::ConstIterator it=helper::typeStringMap().begin(); it!=helper::typeStringMap().end(); ++it)
+    {
+        if(it.value() == t)
+            return it.key();
+    }
+
+    return Protocol::NumTypes;
+}
+
+
+QString Protocol::colorChannelToString(ColorChannel c)
+{
+    if(helper::colorChannelStringMap().contains(c))
+        return helper::colorChannelStringMap()[c];
+    return "undefined";
+}
+
+Protocol::ColorChannel Protocol::colorChannelFromString(const QString& c)
+{
+    for(QMap<Protocol::ColorChannel, QString>::ConstIterator it=helper::colorChannelStringMap().begin(); it!=helper::colorChannelStringMap().end(); ++it)
+    {
+        if(it.value() == c)
+            return it.key();
+    }
+
+    return Protocol::NumColorChannels;
+}
+
+Protocol::ColorChannel Protocol::getColorChannel() const
+{
+    return colorChannel;
+}
+
+void Protocol::setColorChannel(const ColorChannel &value)
+{
+    colorChannel = value;
+}
+
+const QList<Protocol::PhotoShot> &Protocol::getPhotoShots() const
+{
+    return photoShots;
 }
 
 void Protocol::PhotoShot::serializeExif(QXmlStreamWriter &writer) const
 {
+    if(!exif.isValid())
+        return;
+
     writer.writeStartElement("Exif");
     writer.writeAttribute("exposureTime", QString::number(exif.ExposureTime));
     writer.writeAttribute("isoSpeedRatings", QString::number(exif.ISOSpeedRatings));
@@ -65,6 +129,7 @@ void Protocol::PhotoShot::deSerializeExif(QXmlStreamReader &reader)
         {
             if(reader.name() == "Exif")
             {
+                exif.valid = true;
                 exif.ExposureTime = reader.attributes().value("exposureTime").toDouble();
                 exif.ISOSpeedRatings = reader.attributes().value("isoSpeedRatings").toUShort();
             }
@@ -87,17 +152,6 @@ void Protocol::PhotoShot::deSerializeExif(QXmlStreamReader &reader)
 
 }
 
-
-Protocol::Type typeFromString(const QString& t)
-{
-    for(QMap<Protocol::Type, QString>::ConstIterator it=helper::typeStringMap().begin(); it!=helper::typeStringMap().end(); ++it)
-    {
-        if(it.value() == t)
-            return it.key();
-    }
-
-    return Protocol::NumTypes;
-}
 
 const Properties& Protocol::getProperties() const
 {
@@ -308,6 +362,7 @@ void Protocol::serializeXml(QXmlStreamWriter &writer) const
     writer.writeStartElement("Protocol");
     writer.writeAttribute("subject", subject);
     writer.writeAttribute("type", QString::number(type));
+    writer.writeAttribute("colorChannel", QString::number(colorChannel));
     writer.writeAttribute("startTime", startTime.toString("yyyy-MM-ddThh:mm:ss.zzz"));
 
     if(!markers.isEmpty())
@@ -347,6 +402,7 @@ void Protocol::deSerializeXml(QXmlStreamReader &reader)
                 startTime = QDateTime::fromString(reader.attributes().value("startTime").toString(), "yyyy-MM-ddThh:mm:ss.zzz");
                 subject = reader.attributes().value("subject").toString();
                 type = static_cast<Type>(reader.attributes().value("type").toInt());
+                colorChannel = static_cast<ColorChannel>(reader.attributes().value("colorChannel").toInt());
             }
             else if(reader.name() == "Properties")
             {

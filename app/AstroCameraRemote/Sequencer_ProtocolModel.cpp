@@ -15,7 +15,7 @@ ProtocolModel::ProtocolModel(QObject *parent)
 int ProtocolModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return 8;
+    return 9;
 }
 
 QVariant ProtocolModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -26,12 +26,13 @@ QVariant ProtocolModel::headerData(int section, Qt::Orientation orientation, int
         {
         case 0 : return tr("Subject");
         case 1 : return tr("Type");
-        case 2 : return tr("Start time");
-        case 3 : return tr("# shots/total");
-        case 4 : return tr("Shutter speed");
-        case 5 : return tr("ISO");
-        case 6 : return tr("Start delay");
-        case 7 : return tr("Pause");
+        case 2 : return tr("Color channel");
+        case 3 : return tr("Start time");
+        case 4 : return tr("# shots/total");
+        case 5 : return tr("Shutter speed");
+        case 6 : return tr("ISO");
+        case 7 : return tr("Start delay");
+        case 8 : return tr("Pause");
         default : break;
         }
     }
@@ -55,23 +56,21 @@ QVariant ProtocolModel::data(const QModelIndex &index, int role) const
         {
         case 0 : return item->getSubject();
         case 1 : return Protocol::typeToString(item->getType());
-        case 2 : return item->getStartTime().toString("dd. MM. yyyy hh:mm:ss");
-        case 3 : return QString("%0/%1").arg(item->getNumShotsFinished()).arg(item->getProperties().numShots);
-        case 4 : return item->getProperties().shutterSpeed;
-        case 5 : return item->getProperties().iso;
-        case 6 : return item->getProperties().startDelay;
-        case 7 : return item->getProperties().pause;
+        case 2 : return Protocol::colorChannelToString(item->getColorChannel());
+        case 3 : return item->getStartTime().toString("dd. MM. yyyy hh:mm:ss");
+        case 4 : return QString("%0/%1").arg(item->getNumShotsFinished()).arg(item->getProperties().numShots);
+        case 5 : return item->getProperties().shutterSpeed;
+        case 6 : return item->getProperties().iso;
+        case 7 : return item->getProperties().startDelay;
+        case 8 : return item->getProperties().pause;
         }
         break;
     }
     case Qt::TextAlignmentRole :
-        if(2 == index.column())
+        if(3 == index.column())
             return static_cast<int>(Qt::AlignHCenter | Qt::AlignVCenter);
         else
             return static_cast<int>(Qt::AlignLeft | Qt::AlignVCenter);
-
-
-        break;
     }
 
 

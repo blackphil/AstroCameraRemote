@@ -20,6 +20,7 @@ public:
 
     QString getSubject() const;
     Protocol::Type getType() const;
+    Protocol::ColorChannel getColorChannel() const;
 
 private:
     Ui::CreateNewDialog *ui;

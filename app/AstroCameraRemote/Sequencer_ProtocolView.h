@@ -6,7 +6,7 @@
 namespace Sequencer {
 
 class Protocol;
-
+class ProtocolModel;
 
 class ProtocolView : public QTableView
 {
@@ -18,8 +18,13 @@ public:
 
     Protocol* getSelectedProtocol() const;
 
+private Q_SLOTS :
+    void contextMenu(const QPoint& pos);
+
 protected:
     void keyPressEvent(QKeyEvent* ke);
+
+    ProtocolModel *getProtocolModel() const;
 
 };
 

@@ -531,6 +531,7 @@ void ControlWidget::on_newSequenceBtn_clicked()
         Protocol* newProtocol = new Protocol(this);
         newProtocol->setSubject(dlg.getSubject());
         newProtocol->setType(dlg.getType());
+        newProtocol->setColorChannel(dlg.getColorChannel());
         setCurrentProtocol(newProtocol);
         uiToProtocol(newProtocol);
 

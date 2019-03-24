@@ -197,13 +197,6 @@
            </layout>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QPushButton" name="setCamDateTime">
-           <property name="text">
-            <string>Set date/time to camera</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
        <widget class="QTabWidget" name="viewsTabWidget">
@@ -264,7 +257,14 @@
     </property>
     <addaction name="actionFits_repair"/>
    </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuBatch_processing"/>
+   <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="ToolBar" name="toolBar_2">
@@ -368,6 +368,11 @@
   <action name="actionFits_repair">
    <property name="text">
     <string>Fits repair</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

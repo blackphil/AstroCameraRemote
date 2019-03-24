@@ -16,6 +16,12 @@ CreateNewDialog::CreateNewDialog(QWidget *parent) :
         ui->type->addItem(Protocol::typeToString(static_cast<Protocol::Type>(i)));
     }
     ui->type->setCurrentIndex(0);
+
+    for(int i=0; i<Protocol::NumColorChannels; i++)
+    {
+        ui->colorChannel->addItem(Protocol::colorChannelToString(static_cast<Protocol::ColorChannel>(i)));
+    }
+    ui->colorChannel->setCurrentIndex(0);
 }
 
 QString CreateNewDialog::getSubject() const
@@ -26,6 +32,11 @@ QString CreateNewDialog::getSubject() const
 Protocol::Type CreateNewDialog::getType() const
 {
     return static_cast<Protocol::Type>(ui->type->currentIndex());
+}
+
+Protocol::ColorChannel CreateNewDialog::getColorChannel() const
+{
+    return static_cast<Protocol::ColorChannel>(ui->colorChannel->currentIndex());
 }
 
 void CreateNewDialog::accept()

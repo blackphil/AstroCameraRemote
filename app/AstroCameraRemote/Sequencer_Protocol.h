@@ -26,20 +26,21 @@ public :
         , NumTypes
     };
 
+    enum ColorChannel
+    {
+        Color_RGB
+        , Color_Luminance
+        , Color_Red
+        , Color_Green
+        , Color_Blue
+        , NumColorChannels
+    };
+
     static QString typeToString(Type t);
     static Type typeFromString(const QString& t);
 
-private :
-
-    enum Status
-    {
-          Status_Stopped
-        , Status_Recording
-        , Status_Stopping
-    };
-
-    Status status;
-
+    static QString colorChannelToString(ColorChannel c);
+    static ColorChannel colorChannelFromString(const QString& c);
 
     struct PhotoShot
     {
@@ -58,7 +59,21 @@ private :
         void deSerializeExif(QXmlStreamReader& reader);
     };
 
+private :
+
+    enum Status
+    {
+          Status_Stopped
+        , Status_Recording
+        , Status_Stopping
+    };
+
+    Status status;
+
+
+
     Type type;
+    ColorChannel colorChannel;
     Properties properties;
     QList<PhotoShot> photoShots;
     QList<QRectF> markers;
@@ -93,8 +108,10 @@ public:
     Type getType() const;
     void setType(const Type &value);
 
-    EasyExif::EXIFInfo getExif() const;
-    void setExif(const EasyExif::EXIFInfo &value);
+    const QList<PhotoShot>& getPhotoShots() const;
+
+    ColorChannel getColorChannel() const;
+    void setColorChannel(const ColorChannel &value);
 
 public Q_SLOTS :
     void start();

@@ -410,7 +410,8 @@ void MainWindow::on_actionFits_repair_triggered()
     dlg.exec();
 }
 
-void MainWindow::on_setCamDateTime_clicked()
+void MainWindow::on_actionAbout_triggered()
 {
 
 }
+

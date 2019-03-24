@@ -108,7 +108,7 @@ private Q_SLOTS:
 
     void on_actionFits_repair_triggered();
 
-    void on_setCamDateTime_clicked();
+    void on_actionAbout_triggered();
 
 private:
     Ui::MainWindow *ui;

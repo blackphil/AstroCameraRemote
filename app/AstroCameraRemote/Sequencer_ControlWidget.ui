@@ -445,6 +445,9 @@
        </item>
        <item row="0" column="0" rowspan="4" colspan="3">
         <widget class="Sequencer::ProtocolView" name="stashedShootings">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
          <property name="selectionMode">
           <enum>QAbstractItemView::SingleSelection</enum>
          </property>
