@@ -8,9 +8,19 @@ MessagePoster::MessagePoster()
 {
 }
 
+MessagePoster::~MessagePoster()
+{
+
+}
+
 void MessagePoster::setMsgHandler(MessageHandler *value)
 {
     msgHandler = value;
+}
+
+MessageHandler *MessagePoster::getMessageHandler() const
+{
+    return msgHandler;
 }
 
 void MessagePoster::infoMessage(QString msg)

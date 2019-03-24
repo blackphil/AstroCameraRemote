@@ -12,9 +12,15 @@ namespace BatchProcess {
 
 
 
+void RawImageGrabber::cancel()
+{
+    wasCanceled = true;
+}
+
 RawImageGrabber::RawImageGrabber(QObject *parent)
     : QObject(parent)
     , sourceDir("E:/DCIM/100MSDCF")
+    , wasCanceled(false)
 {
 
 }
@@ -95,10 +101,16 @@ void RawImageGrabber::process()
     if(!targetDir.exists())
         throw AstroBase::DirNotFoundException(targetDir.absolutePath());
 
+    int count = 0;
+    Q_EMIT progress(count, input.count());
+
     helper::TimeWindowSelection selection(input);
     QFileInfoList jpegFiles = sourceDir.entryInfoList(QStringList() << "*.jpeg" << "*.jpg", QDir::Files, QDir::Name);
     for(auto info : jpegFiles)
     {
+        if(wasCanceled)
+            return;
+
         QDateTime dt = info.birthTime();
         if(selection.intersect(dt))
         {
@@ -112,6 +124,9 @@ void RawImageGrabber::process()
 
             for(auto inputExif : input)
             {
+                if(wasCanceled)
+                    return;
+
                 QDateTime inputDt = QDateTime::fromString(QString::fromStdString(inputExif->DateTimeOriginal), "yyyy:MM:dd hh:mm:ss");
                 QDateTime inputFrom = inputDt.addSecs(-1);
                 QDateTime inputTo = inputDt.addSecs(1);
@@ -121,10 +136,11 @@ void RawImageGrabber::process()
                     QFileInfo sourceFileInfo(sourceDir, QString("%0.%1").arg(info.baseName()).arg(fileSuffix));
                     QFileInfo targetFileInfo(targetDir, QString("%0.%1").arg(info.baseName()).arg(fileSuffix));
 
-                    if(QFile::copy(sourceFileInfo.absoluteFilePath(), targetFileInfo.absoluteFilePath()))
-                    {
-                        Q_EMIT imageGrabbed(targetFileInfo.absoluteFilePath(), inputExif);
-                    }
+                    QFile::copy(sourceFileInfo.absoluteFilePath(), targetFileInfo.absoluteFilePath());
+
+                    count++;
+                    Q_EMIT progress(count, input.count());
+
                 }
             }
         }

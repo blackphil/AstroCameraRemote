@@ -3,12 +3,14 @@
 
 #include <QTableView>
 
+#include "MessagePoster.h"
+
 namespace Sequencer {
 
 class Protocol;
 class ProtocolModel;
 
-class ProtocolView : public QTableView
+class ProtocolView : public QTableView, public MessagePoster
 {
     Q_OBJECT
 

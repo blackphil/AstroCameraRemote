@@ -18,9 +18,14 @@ class BATCHPROCESSSHARED_EXPORT RawImageGrabber : public QObject
     QDir targetDir;
     QString fileSuffix;
 
-Q_SIGNALS :
-    void imageGrabbed(QString, EasyExif::EXIFInfoPtr);
+    bool wasCanceled;
 
+Q_SIGNALS :
+
+    void progress(int done, int maxCount);
+
+public Q_SLOTS :
+    void cancel();
 
 public:
     explicit RawImageGrabber(QObject *parent = nullptr);

@@ -6,6 +6,7 @@
 #include <QMenu>
 #include <QDir>
 #include <QFileInfo>
+#include <QProgressDialog>
 
 #include "EasyExif_Exif.h"
 #include "AstroBase.h"
@@ -45,51 +46,73 @@ Protocol *ProtocolView::getSelectedProtocol() const
 void ProtocolView::contextMenu(const QPoint &pos)
 {
 
-    QModelIndex index = indexAt(pos);
-    if(index.isValid())
+    try
     {
-        QMenu m(this);
-        QAction* grabImagesAction = m.addAction(tr("Grab images"));
-        connect(grabImagesAction, &QAction::triggered, [this, index]()
+
+
+        QModelIndex index = indexAt(pos);
+        if(index.isValid())
         {
-            ProtocolModel* model = this->getProtocolModel();
-            if(!model)
-                return;
-            Protocol* protocol = model->getProtocol(index);
-            if(!protocol)
-                return;
-
-            QDir protocolPath = protocol->getProtocolPath(false);
-            if(!protocolPath.exists())
-                throw AstroBase::DirNotFoundException(protocolPath.absolutePath());
-
-            QString subPath = QString("%0/%1/%2")
-                    .arg(protocol->getSubject())
-                    .arg(Protocol::typeToString(protocol->getType()))
-                    .arg(Protocol::colorChannelToString(protocol->getColorChannel()));
-
-            protocolPath.mkpath(subPath);
-            QDir targetPath = protocolPath;
-            targetPath.cd(subPath);
-
-            BatchProcess::RawImageGrabber grabber;
-            grabber.setTargetDir(targetPath.absolutePath());
-            grabber.setRawFileSuffix("arw");
-
-            EasyExif::EXIFInfoList input;
-            for(auto ps : protocol->getPhotoShots())
+            QMenu m(this);
+            QAction* grabImagesAction = m.addAction(tr("Grab images"));
+            connect(grabImagesAction, &QAction::triggered, [this, index]()
             {
-                if(ps.exif.isValid())
-                    input << EasyExif::EXIFInfoPtr(new EasyExif::EXIFInfo(ps.exif));
-            }
-            grabber.setInput(input);
+                ProtocolModel* model = this->getProtocolModel();
+                if(!model)
+                    return;
+                Protocol* protocol = model->getProtocol(index);
+                if(!protocol)
+                    return;
 
-            grabber.process();
+                QDir protocolPath = protocol->getProtocolPath(false);
+                if(!protocolPath.exists())
+                    throw AstroBase::DirNotFoundException(protocolPath.absolutePath());
+
+                QString subPath = QString("%0/%1/%2")
+                        .arg(protocol->getSubject())
+                        .arg(Protocol::typeToString(protocol->getType()))
+                        .arg(Protocol::colorChannelToString(protocol->getColorChannel()));
+
+                protocolPath.mkpath(subPath);
+                QDir targetPath = protocolPath;
+                targetPath.cd(subPath);
+
+                BatchProcess::RawImageGrabber grabber;
 
 
-        });
 
-        m.exec(mapToGlobal(pos));
+
+                grabber.setTargetDir(targetPath.absolutePath());
+                grabber.setRawFileSuffix("arw");
+
+                EasyExif::EXIFInfoList input;
+                for(auto ps : protocol->getPhotoShots())
+                {
+                    if(ps.exif.isValid())
+                        input << EasyExif::EXIFInfoPtr(new EasyExif::EXIFInfo(ps.exif));
+                }
+                grabber.setInput(input);
+
+                QProgressDialog progress(tr("Grabbing images"), tr("Cancel"), 0, input.count(), this);
+                progress.setAutoClose(true);
+                progress.setMinimumDuration(0);
+
+                connect(&grabber, &BatchProcess::RawImageGrabber::progress, [&progress](int done, int maxCount)
+                {
+                    Q_UNUSED(maxCount);
+                    progress.setValue(done);
+                });
+                grabber.process();
+
+            });
+
+            m.exec(mapToGlobal(pos));
+        }
+
+    }
+    catch(AstroBase::Exception& e)
+    {
+        errorMessage(tr("Grabbing imaged failed: %0").arg(e.what()));
     }
 }
 

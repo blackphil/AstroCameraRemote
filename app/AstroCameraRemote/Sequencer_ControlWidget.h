@@ -59,6 +59,8 @@ public:
     explicit ControlWidget(QWidget *parent = nullptr);
     ~ControlWidget();
 
+    void setMsgHandler(MessageHandler* msgHandler);
+
 Q_SIGNALS :
 
     void newPostViewInfo(PostView::Info);

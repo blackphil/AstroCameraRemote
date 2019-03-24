@@ -163,6 +163,12 @@ ControlWidget::~ControlWidget()
     delete ui;
 }
 
+void ControlWidget::setMsgHandler(MessageHandler *msgHandler)
+{
+    ui->stashedShootings->setMsgHandler(msgHandler);
+    MessagePoster::setMsgHandler(msgHandler);
+}
+
 
 void ControlWidget::on_isoSpeedRate_activated(const QString &isoSpeedRate)
 {

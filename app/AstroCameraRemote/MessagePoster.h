@@ -21,14 +21,17 @@ class MessagePoster
 {
     MessageHandler* msgHandler;
 
+
 public:
     explicit MessagePoster();
+    virtual ~MessagePoster();
 
     void infoMessage(QString msg);
     void warningMessage(QString msg);
     void errorMessage(QString);
 
-    void setMsgHandler(MessageHandler *value);
+    virtual void setMsgHandler(MessageHandler *value);
+    MessageHandler* getMessageHandler() const;
 };
 
 
