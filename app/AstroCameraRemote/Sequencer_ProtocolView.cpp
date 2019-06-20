@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QProgressDialog>
+#include <QSettings>
 
 #include "EasyExif_Exif.h"
 #include "AstroBase.h"
@@ -48,63 +49,77 @@ void ProtocolView::contextMenu(const QPoint &pos)
 
     try
     {
-
-
         QModelIndex index = indexAt(pos);
         if(index.isValid())
         {
             QMenu m(this);
             QAction* grabImagesAction = m.addAction(tr("Grab images"));
-            connect(grabImagesAction, &QAction::triggered, [this, index]()
+            grabImagesAction->setEnabled(false);
+
+            QDir sourceDir("F:/DCIM/100MSDCF");
+
+            ProtocolModel* model = this->getProtocolModel();
+            if(!model)
+                return;
+            Protocol* protocol = model->getProtocol(index);
+            if(!protocol)
+                return;
+
+            QDir protocolPath = protocol->getProtocolPath(false);
+            if(!protocolPath.exists())
+                throw AstroBase::DirNotFoundException(protocolPath.absolutePath());
+
+            QString subPath = QString("%0/%1/%2")
+                    .arg(protocol->getSubject())
+                    .arg(Protocol::typeToString(protocol->getType()))
+                    .arg(Protocol::colorChannelToString(protocol->getColorChannel()));
+
+            protocolPath.mkpath(subPath);
+            QDir targetDir = protocolPath;
+            targetDir.cd(subPath);
+
+            if(!sourceDir.exists())
             {
-                ProtocolModel* model = this->getProtocolModel();
-                if(!model)
-                    return;
-                Protocol* protocol = model->getProtocol(index);
-                if(!protocol)
-                    return;
-
-                QDir protocolPath = protocol->getProtocolPath(false);
-                if(!protocolPath.exists())
-                    throw AstroBase::DirNotFoundException(protocolPath.absolutePath());
-
-                QString subPath = QString("%0/%1/%2")
-                        .arg(protocol->getSubject())
-                        .arg(Protocol::typeToString(protocol->getType()))
-                        .arg(Protocol::colorChannelToString(protocol->getColorChannel()));
-
-                protocolPath.mkpath(subPath);
-                QDir targetPath = protocolPath;
-                targetPath.cd(subPath);
-
-                BatchProcess::RawImageGrabber grabber;
-
-
-
-
-                grabber.setTargetDir(targetPath.absolutePath());
-                grabber.setRawFileSuffix("arw");
-
-                EasyExif::EXIFInfoList input;
-                for(auto ps : protocol->getPhotoShots())
+                grabImagesAction->setToolTip(tr("Source dir not found: %0").arg(sourceDir.absolutePath()));
+            }
+            else if(!targetDir.exists())
+            {
+                grabImagesAction->setToolTip(tr("Target dir not found: %0").arg(targetDir.absolutePath()));
+            }
+            else
+            {
+                grabImagesAction->setEnabled(true);
+                connect(grabImagesAction, &QAction::triggered, [this, sourceDir, targetDir, protocol]()
                 {
-                    if(ps.exif.isValid())
-                        input << EasyExif::EXIFInfoPtr(new EasyExif::EXIFInfo(ps.exif));
-                }
-                grabber.setInput(input);
 
-                QProgressDialog progress(tr("Grabbing images"), tr("Cancel"), 0, input.count(), this);
-                progress.setAutoClose(true);
-                progress.setMinimumDuration(0);
+                    BatchProcess::RawImageGrabber grabber;
 
-                connect(&grabber, &BatchProcess::RawImageGrabber::progress, [&progress](int done, int maxCount)
-                {
-                    Q_UNUSED(maxCount);
-                    progress.setValue(done);
+                    grabber.setSourceDir(sourceDir);
+                    grabber.setTargetDir(targetDir);
+                    grabber.setRawFileSuffix("arw");
+
+                    EasyExif::EXIFInfoList input;
+                    for(auto ps : protocol->getPhotoShots())
+                    {
+                        if(ps.exif.isValid())
+                            input << EasyExif::EXIFInfoPtr(new EasyExif::EXIFInfo(ps.exif));
+                    }
+                    grabber.setInput(input);
+
+                    QProgressDialog progress(tr("Grabbing images"), tr("Cancel"), 0, input.count(), this);
+                    progress.setAutoClose(true);
+                    progress.setMinimumDuration(0);
+
+                    connect(&grabber, &BatchProcess::RawImageGrabber::progress, [&progress](int done, int maxCount)
+                    {
+                        Q_UNUSED(maxCount);
+                        progress.setValue(done);
+                    });
+                    grabber.process();
+
                 });
-                grabber.process();
+            }
 
-            });
 
             m.exec(mapToGlobal(pos));
         }

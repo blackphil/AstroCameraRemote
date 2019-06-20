@@ -66,6 +66,9 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
             sequencer = normalShootSequencer;
         }
 
+        AB_DBG("protocol to sequencer: " << currentProtocol->getSubject());
+
+
         connect(sequencer, SIGNAL(started()), currentProtocol, SLOT(start()));
         connect(sequencer, SIGNAL(havePostViewUrl(QString, int, int)), currentProtocol, SLOT(havePostViewUrl(QString, int, int)));
         connect(sequencer, SIGNAL(stopped()), currentProtocol, SLOT(stop()));
@@ -83,8 +86,6 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
 
         currentProtocol->setReferenceMarkers(referenceMarkers);
         currentProtocol->save();
-
-        ui->subjectLineEdit->setText(currentProtocol->getSubject());
 
     }
 }
@@ -272,6 +273,8 @@ void ControlWidget::uiToProtocol(Protocol* protocol) const
     if(!protocol)
         return;
 
+    AB_DBG("UI to protocol: " << protocol->getSubject());
+
 
     Properties properties;
     properties.shutterSpeed = ui->shutterSpeed->currentText();
@@ -314,6 +317,9 @@ void ControlWidget::protocolToUi(Protocol *protocol)
         AB_WRN("Protocol missing");
         return;
     }
+
+    AB_DBG("protocol to UI: " << protocol->getSubject());
+
 
     ui->subjectLineEdit->setText(protocol->getSubject());
 
@@ -437,6 +443,8 @@ void ControlWidget::startSequence()
     }
 
     uiToProtocol(currentProtocol);
+    protocolToUi(currentProtocol);
+    setCurrentProtocol(currentProtocol);
 
 
     infoMessage("-------------------------------------------------------------");
@@ -538,8 +546,10 @@ void ControlWidget::on_newSequenceBtn_clicked()
         newProtocol->setSubject(dlg.getSubject());
         newProtocol->setType(dlg.getType());
         newProtocol->setColorChannel(dlg.getColorChannel());
-        setCurrentProtocol(newProtocol);
         uiToProtocol(newProtocol);
+        setCurrentProtocol(newProtocol);
+
+        ui->subjectLineEdit->setText(newProtocol->getSubject());
 
 
         QMessageBox::information(this, tr("New sequence"), tr("New sequence \"%0\" created.").arg(currentProtocol->getSubject()));

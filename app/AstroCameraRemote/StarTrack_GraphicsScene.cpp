@@ -79,7 +79,7 @@ GraphicsScene::~GraphicsScene()
 
 void GraphicsScene::updateBackground(const QPixmap &pixmap)
 {
-    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
+//    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
     if(!enabled)
         return;
 
@@ -262,7 +262,7 @@ void debugSaveImage(const QImage& img, const QString& prefix)
 
 void GraphicsScene::newMark()
 {
-    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
+//    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
     if(!enabled)
         return;
 
@@ -275,7 +275,7 @@ void GraphicsScene::newMark()
 
     if(selectedMarker == nullptr)
     {
-        AB_DBG("No selected marker");
+//        AB_DBG("No selected marker");
         return;
     }
 

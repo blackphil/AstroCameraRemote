@@ -31,8 +31,8 @@ public:
     explicit RawImageGrabber(QObject *parent = nullptr);
 
     void setInput(const EasyExif::EXIFInfoList& input);
-    void setSourceDir(const QString& path);
-    void setTargetDir(const QString& path);
+    void setSourceDir(const QDir& dir);
+    void setTargetDir(const QDir &dir);
     void setRawFileSuffix(const QString& suffix);
 
     void process();

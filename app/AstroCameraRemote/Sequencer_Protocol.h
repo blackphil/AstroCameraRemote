@@ -113,6 +113,8 @@ public:
     ColorChannel getColorChannel() const;
     void setColorChannel(const ColorChannel &value);
 
+    int compareTo(const Protocol* rhs) const;
+
 public Q_SLOTS :
     void start();
     void havePostViewUrl(QString url, int index, int numShots);

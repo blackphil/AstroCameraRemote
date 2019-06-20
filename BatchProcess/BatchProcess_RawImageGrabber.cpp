@@ -19,7 +19,6 @@ void RawImageGrabber::cancel()
 
 RawImageGrabber::RawImageGrabber(QObject *parent)
     : QObject(parent)
-    , sourceDir("E:/DCIM/100MSDCF")
     , wasCanceled(false)
 {
 
@@ -83,9 +82,14 @@ void RawImageGrabber::setInput(const EasyExif::EXIFInfoList &input)
     this->input = input;
 }
 
-void RawImageGrabber::setTargetDir(const QString &path)
+void RawImageGrabber::setSourceDir(const QDir &dir)
 {
-    targetDir = path;
+    sourceDir = dir;
+}
+
+void RawImageGrabber::setTargetDir(const QDir &dir)
+{
+    targetDir = dir;
 }
 
 void RawImageGrabber::setRawFileSuffix(const QString &suffix)

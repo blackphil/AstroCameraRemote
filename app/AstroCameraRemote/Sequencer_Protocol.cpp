@@ -95,6 +95,29 @@ void Protocol::setColorChannel(const ColorChannel &value)
     colorChannel = value;
 }
 
+int Protocol::compareTo(const Protocol *rhs) const
+{
+    if(subject > rhs->subject)
+        return 1;
+
+    if(subject != rhs->subject)
+        return -1;
+
+    if(type > rhs->type)
+        return 1;
+
+    if(type != rhs->type)
+        return -1;
+
+    if(colorChannel > rhs->colorChannel)
+        return 1;
+
+    if(colorChannel != rhs->colorChannel)
+        return -1;
+
+    return 0;
+}
+
 const QList<Protocol::PhotoShot> &Protocol::getPhotoShots() const
 {
     return photoShots;

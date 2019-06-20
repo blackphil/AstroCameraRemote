@@ -115,7 +115,7 @@ void ProtocolModel::addProtocol(Protocol *protocol)
 {
     for(int i=0; i<protocols.count(); i++)
     {
-        if(protocols[i]->getSubject() == protocol->getSubject())
+        if(protocols[i]->compareTo(protocol) == 0)
         {
             protocols.removeAt(i);
             protocols.insert(i, protocol);
