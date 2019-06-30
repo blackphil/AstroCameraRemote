@@ -6,11 +6,11 @@
 #include "AstroBase.h"
 
 ImageView::ImageView(QWidget* parent)
-    : QGraphicsView(parent)
+    : QGraphicsView { parent }
+    , zoomFactorBbase { 1.0015 }
 {
     viewport()->installEventFilter(this);
     setMouseTracking(true);
-    zoomFactorBbase = 1.0015;
 }
 
 void ImageView::gentleZoom(double factor)
@@ -20,10 +20,18 @@ void ImageView::gentleZoom(double factor)
     AB_DBG("   frame size:" << frameSize().width() << "," << frameSize().height());
     scale(factor, factor);
     centerOn(targetScenePos);
-    QPointF delta_viewport_pos =
-            targetViewportPos - QPointF(viewport()->width() / 2.0,
-                                        viewport()->height() / 2.0);
-    QPointF viewport_center = mapFromScene(targetScenePos) - delta_viewport_pos;
+
+    QPointF delta_viewport_pos
+    {
+        targetViewportPos - QPointF(viewport()->width() / 2.0,
+                                    viewport()->height() / 2.0)
+    };
+
+    QPointF viewport_center
+    {
+        mapFromScene(targetScenePos) - delta_viewport_pos
+    };
+
     centerOn(mapToScene(viewport_center.toPoint()));
     Q_EMIT zoomed(true);
 }
@@ -36,8 +44,7 @@ void ImageView::setZoomFactorBase(double value)
 
 void ImageView::zoom1to1()
 {
-    QTransform t = transform();
-    gentleZoom(1./t.m11());
+    gentleZoom(1./transform().m11());
 }
 
 void ImageView::zoomIn()
@@ -54,9 +61,9 @@ bool ImageView::eventFilter(QObject *object, QEvent *event)
 {
     if (event->type() == QEvent::MouseMove)
     {
-        QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
-        QPointF delta = targetViewportPos - mouse_event->pos();
-        if (qAbs(delta.x()) > 5 || qAbs(delta.y()) > 5)
+        QMouseEvent* mouse_event { static_cast<QMouseEvent*>(event) };
+
+        if(QPointF delta { targetViewportPos - mouse_event->pos() }; qAbs(delta.x()) > 5 || qAbs(delta.y()) > 5)
         {
             targetViewportPos = mouse_event->pos();
             targetScenePos = mapToScene(mouse_event->pos());
@@ -64,16 +71,13 @@ bool ImageView::eventFilter(QObject *object, QEvent *event)
     }
     else if (event->type() == QEvent::Wheel)
     {
-        QWheelEvent* wheel_event = static_cast<QWheelEvent*>(event);
-        if (wheel_event->modifiers().testFlag(Qt::ControlModifier))
+        if(QWheelEvent* wheel_event { static_cast<QWheelEvent*>(event) }
+                ; wheel_event->modifiers().testFlag(Qt::ControlModifier) && wheel_event->orientation() == Qt::Vertical)
         {
-            if (wheel_event->orientation() == Qt::Vertical)
-            {
-                double angle = wheel_event->angleDelta().y();
-                double factor = qPow(zoomFactorBbase, angle);
-                gentleZoom(factor);
-                return true;
-            }
+            double angle = wheel_event->angleDelta().y();
+            double factor = qPow(zoomFactorBbase, angle);
+            gentleZoom(factor);
+            return true;
         }
     }
 

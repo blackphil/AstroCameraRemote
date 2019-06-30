@@ -109,7 +109,7 @@ void Sender::loadPostViewImage(QString urlStr)
 
 void Sender::send(Json::Command* cmd)
 {
-    QNetworkReply* reply = privateSend(cmd->getJson().toJson());
+    QNetworkReply* reply = privateSend(cmd->getJson());
     if(reply)
         cmd->setReply(reply);
     else

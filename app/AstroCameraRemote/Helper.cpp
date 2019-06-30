@@ -7,24 +7,32 @@
 
 
 
-FILE* Helper::Log::logfile(0);
+FILE* Helper::Log::logfile { nullptr };
 
 Helper::Log::Log(Level level, const QString& file, const QString& func, int line)
 {
+
     if(!logfile)
     {
-        logfile = fopen("log.txt", "w");
+        if(auto err = fopen_s(&logfile, "log.txt", "w"); err != 0)
+        {
+            return;
+        }
     }
 
-    static const QString levelStr[] = { "INF", "WRN", "ERR" };
-    QString message = QString("%0 [%1 %2(%3):%4]\t")
+    constexpr const char* levelStr[] = { "INF", "WRN", "ERR" };
+    QString message
+    {
+        QString("%0 [%1 %2(%3):%4]\t")
             .arg(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz"))
-            .arg(levelStr[qBound((int)Info, (int)level, (int)Error)])
+            .arg(levelStr[qBound(static_cast<int>(Level::Info), static_cast<int>(level), static_cast<int>(Level::Error))])
             .arg(file)
             .arg(func)
-            .arg(line);
+            .arg(line)
+    };
+
     fprintf_s(logfile, message.toStdString().c_str());
-    if (level < Warning)
+    if (level < Level::Warning)
         message.clear();
 }
 
@@ -41,7 +49,7 @@ void Helper::Log::apply(const QString& text)
 
 void Helper::Log::apply(const char* text)
 {
-    fprintf(logfile, text);
+    fprintf_s(logfile, text);
     if (!message.isEmpty())
         message.append(text);
 }
@@ -52,7 +60,7 @@ void Helper::Log::close()
     if(logfile)
     {
         fclose(logfile);
-        logfile = 0;
+        logfile = nullptr;
     }
 }
 
@@ -94,33 +102,4 @@ Helper::Log& Helper::Log::operator<<(const quint64& val)
 
 
 
-#if 0
-
-
-Helper::Log& operator<<(Helper::Log& log, const char* text)
-{
-    return log.operator<<(text);
-}
-
-Helper::Log& operator<<(Helper::Log& log, const QString& text)
-{
-    return log.operator<<(text);
-}
-
-Helper::Log& operator<<(Helper::Log& log, int val)
-{
-    return log.operator<<(val);
-}
-
-Helper::Log& operator<<(Helper::Log& log, const double& val)
-{
-    return log.operator<<(val);
-}
-
-Helper::Log& operator<<(Helper::Log& log, const qint64& val)
-{
-    return log.operator <<(val);
-}
-
-#endif
 

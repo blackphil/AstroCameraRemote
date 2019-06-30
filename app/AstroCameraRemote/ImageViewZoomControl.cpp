@@ -4,9 +4,9 @@
 #include "ImageView.h"
 
 ImageViewZoomControl::ImageViewZoomControl(QWidget *parent)
-    : QWidget(parent)
-    , iv(nullptr)
-    , ui(new Ui::ImageViewZoomControl)
+    : QWidget{parent}
+    , iv{nullptr}
+    , ui{new Ui::ImageViewZoomControl}
 {
     ui->setupUi(this);
 }
