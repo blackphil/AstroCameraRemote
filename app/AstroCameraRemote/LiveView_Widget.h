@@ -64,7 +64,7 @@ public Q_SLOTS :
 
 
 private Q_SLOTS :
-    void startReaderThread(QString url);
+    void startReaderThread(const QString &url);
     void startReaderThread();
     void stopReaderThread();
 

@@ -12,12 +12,13 @@ QJsonArray GetEvent::getStatus() const
 
 void GetEvent::setCallbackImmedialetyEnabled(bool yes)
 {
-    callbackImmedialetyEnabled = yes;
+
+    json.insert("params", QJsonArray { !yes });
 }
 
 bool GetEvent::isCallbackImmedialetyEnabled() const
 {
-    return callbackImmedialetyEnabled;
+    return !json.value("params").toBool();
 }
 
 GetEvent::GetEvent(QObject* parent)
@@ -25,28 +26,15 @@ GetEvent::GetEvent(QObject* parent)
     , callbackImmedialetyEnabled(true)
 {
     setObjectName("GetEvent");
-}
 
-QJsonDocument GetEvent::getJson() const
-{
-    QJsonDocument json(getBase());
-//    AB_INF(QString(json.toJson()));
-    return json;
-
-}
-
-QJsonObject GetEvent::getBase() const
-{
-    return QJsonObject
+    json =
     {
         { "method", "getEvent" },
         { "id", 1 },
-        { "version", "1.2" },
-        { "params", QJsonArray { !callbackImmedialetyEnabled } }
+        { "version", "1.2" }
     };
-
-
 }
+
 
 void GetEvent::handleReply(const QJsonDocument &replyJson)
 {

@@ -8,8 +8,9 @@ namespace LiveView {
 
 int Settings::getFps()
 {
-    bool ok = false;
-    QVariant value = QSettings().value("LiveView/Fps", 10);
+    QVariant value { QSettings{}.value("LiveView/Fps", 10) };
+
+    bool ok { false };
     int result = value.toInt(&ok);
     if(!ok)
         result = static_cast<int>(value.toFloat());
@@ -19,7 +20,7 @@ int Settings::getFps()
 
 void Settings::setFps(int value)
 {
-    QSettings().setValue("LiveView/Fps", value);
+    QSettings{}.setValue("LiveView/Fps", value);
 }
 
 } // namespace LiveView

@@ -4,3 +4,5 @@ DEFINES += ASTRO_INSTALL_PLUGINS=$${INSTALL_DEST_DIR}
 
 
 setup.target = ""
+
+CONFIG += c++17

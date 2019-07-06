@@ -17,17 +17,17 @@ namespace LiveView {
 
 
 Widget::Widget(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::Widget)
-    , startLiveView(new StartLiveView(this))
-    , stopLiveView(new StopLiveView(this))
-    , imageQueue(new ImageQueue(this))
-    , pollImageTimer(new QTimer(this))
-    , readerThread(nullptr)
-    , lastTimeStamp(QTime::currentTime())
-    , starTrackScene(new StarTrack::GraphicsScene(this))
-    , frameCount(0)
-    , debugModeEnabled(false)
+    : QWidget { parent }
+    , ui { new Ui::Widget }
+    , startLiveView { new StartLiveView { this }  }
+    , stopLiveView { new StopLiveView { this }  }
+    , imageQueue { new ImageQueue { this }  }
+    , pollImageTimer { new QTimer { this }  }
+    , readerThread { nullptr }
+    , lastTimeStamp { QTime::currentTime() }
+    , starTrackScene { new StarTrack::GraphicsScene { this }  }
+    , frameCount { 0 }
+    , debugModeEnabled { false }
 {
     AB_INF("ctor");
     ui->setupUi(this);
@@ -71,12 +71,11 @@ StarTrack::GraphicsScene *Widget::getStarTrackScene() const
 int Widget::calcFps()
 {
 
-    float fps = 0;
-    QTime now = QTime::currentTime();
-    fps = 1000.0f / lastTimeStamp.msecsTo(now);
-    lastTimeStamp = QTime::currentTime();
+    QTime now { QTime::currentTime() };
+    int fps { qRound(1000.0f / lastTimeStamp.msecsTo(now)) };
+    lastTimeStamp = now;
 
-    return qRound(fps);
+    return fps;
 }
 
 void Widget::resizeEvent(QResizeEvent *re)
@@ -93,22 +92,22 @@ void Widget::resizeEvent(QResizeEvent *re)
 void Widget::updateLiveViewImage()
 {
 
-    PayloadPtr data = imageQueue->pop();
-    if(!data)
-        return;
+    if(PayloadPtr data { imageQueue->pop() }; data != nullptr)
+    {
 
 
-    Info metaInfo;
-    metaInfo.setFps(calcFps());
-    metaInfo.setFrameCount(frameCount++);
-    ui->metaInfo->setText(metaInfo.toHtml());
+        Info metaInfo;
+        metaInfo.setFps(calcFps());
+        metaInfo.setFrameCount(frameCount++);
+        ui->metaInfo->setText(metaInfo.toHtml());
 
-    QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data->payload, "JPG"));
-    Q_ASSERT(!pixmap.isNull());
-    starTrackScene->updateBackground(pixmap);
+        QPixmap pixmap { QPixmap::fromImage(QImage::fromData(data->payload, "JPG")) };
+        Q_ASSERT(!pixmap.isNull());
+        starTrackScene->updateBackground(pixmap);
+    }
 }
 
-void Widget::startReaderThread(QString url)
+void Widget::startReaderThread(const QString& url)
 {
     this->url = url;
     if(!debugModeEnabled)

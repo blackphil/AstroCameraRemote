@@ -355,7 +355,7 @@ void MainWindow::updateBatteryStatus()
     ui->batteryStatus->setValue(info.getLevelNumber());
     double load = static_cast<double>(info.getLevelNumber()) / info.getLevelDenom();
 
-    if(0.001 > load || info.getAdditionalStatus() == BatteryInfo::AdditionalStatus_batteryNearEnd)
+    if(0.001 > load || info.getAdditionalStatus() == BatteryInfo::AdditionalStatus::BatteryNearEnd)
         ui->batteryStatus->setStyleSheet(BatteryInfo::getStyleCritical());
     else if(0.3 > load)
         ui->batteryStatus->setStyleSheet(BatteryInfo::getStyleLow());

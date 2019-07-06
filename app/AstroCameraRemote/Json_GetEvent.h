@@ -14,12 +14,10 @@ class GetEvent : public Command
 
     Q_OBJECT
 
-    QJsonObject getBase() const;
-    void handleReply(const QJsonDocument &replyJson);
+    void handleReply(const QJsonDocument &replyJson) override;
 
 public :
     GetEvent(QObject* parent = nullptr);
-    QJsonDocument getJson() const;
     QJsonArray getStatus() const;
 
     void setCallbackImmedialetyEnabled(bool yes);

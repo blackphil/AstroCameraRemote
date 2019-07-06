@@ -15,7 +15,7 @@ void Info::setFrameCount(long value)
 }
 
 Info::Info()
-    : fps(0)
+    : fps { 0 }
 {
 
     QFile htmlPatternFile(":/sequencer/LiveView_Info.html");

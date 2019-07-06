@@ -7,19 +7,13 @@ namespace LiveView {
 
 
 StartLiveView::StartLiveView(QObject* parent)
-    : Json::Command(parent)
+    : Json::Command { parent }
 {
     setObjectName("StartLiveView");
+    json.insert("method", "startLiveview");
+    json.insert("params", QJsonArray{});
 }
 
-QJsonDocument StartLiveView::getJson() const
-{
-    QJsonObject command = getBase();
-    command["method"] = "startLiveview";
-    command["params"] = QJsonArray();
-
-    return QJsonDocument(command);
-}
 
 void StartLiveView::handleReply(const QJsonDocument& replyJson)
 {
@@ -49,15 +43,8 @@ StopLiveView::StopLiveView(QObject* parent)
     : Command(parent)
 {
     setObjectName("StopLiveView");
-}
-
-QJsonDocument StopLiveView::getJson() const
-{
-    QJsonObject command = getBase();
-    command["method"] = "stopLiveview";
-    command["params"] = QJsonArray();
-
-    return QJsonDocument(command);
+    json.insert("method", "stopLiveview");
+    json.insert("params", QJsonArray {});
 }
 
 void StopLiveView::handleReply(const QJsonDocument &replyJson)

@@ -9,16 +9,16 @@
 namespace LiveView {
 
 ReaderThreadBase::ReaderThreadBase(QObject* parent)
-    : QThread(parent)
+    : QThread { parent }
 {}
 
 ReaderThreadBase::~ReaderThreadBase()
 {}
 
 ReaderThread::ReaderThread(const QString &url, QObject *parent)
-    : ReaderThreadBase(parent)
-    , reader(nullptr)
-    , url(url)
+    : ReaderThreadBase { parent }
+    , reader { nullptr }
+    , url { url }
 {
     setObjectName("ReaderThread");
 }
@@ -56,8 +56,8 @@ void ReaderThread::run()
 }
 
 DummyReaderThread::DummyReaderThread(QObject* parent)
-    : ReaderThreadBase (parent)
-    , cursor(0)
+    : ReaderThreadBase { parent }
+    , cursor { 0 }
 {
 }
 
@@ -74,19 +74,18 @@ void DummyReaderThread::emitPayload()
 void DummyReaderThread::run()
 {
 
-    QTimer* trigger = new QTimer();
+    QTimer* trigger { new QTimer() };
     connect(trigger, SIGNAL(timeout()), this, SLOT(emitPayload()));
 
 
-    QDir dir = QDir(":/hfd/sequence");
-    QStringList entries = dir.entryList(QDir::Files, QDir::Time);
+    QDir dir { ":/hfd/sequence" };
+    QStringList entries { dir.entryList(QDir::Files, QDir::Time) };
     for(int i=0; i<entries.count(); i++)
     {
-        QString fp = QFileInfo(dir, entries[i]).absoluteFilePath();
-        QFile f(fp);
+        QFile f { QFileInfo(dir, entries[i]).absoluteFilePath() };
         f.open(QIODevice::ReadOnly);
-        QByteArray data = f.readAll();
-        QByteArray paddingData; //not used
+        QByteArray data { f.readAll() };
+        static const QByteArray paddingData; //not used
         payloadItems << LiveView::PayloadPtr(new LiveView::Payload(data, paddingData));
     }
 

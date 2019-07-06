@@ -10,13 +10,13 @@ class StartLiveView : public Json::Command
 {
     Q_OBJECT
 
-    void handleReply(const QJsonDocument& replyJson);
+    void handleReply(const QJsonDocument& replyJson) override;
 Q_SIGNALS:
     void newLiveViewUrl(QString);
 
 public :
     StartLiveView(QObject* parent = nullptr);
-    QJsonDocument getJson() const;
+
 };
 
 
@@ -26,14 +26,14 @@ class StopLiveView : public Json::Command
 {
     Q_OBJECT
 
-    void handleReply(const QJsonDocument& replyJson);
+    void handleReply(const QJsonDocument& replyJson) override;
 
 Q_SIGNALS:
     void liveViewStopped();
 
 public :
     StopLiveView(QObject* parent = nullptr);
-    QJsonDocument getJson() const;
+
 };
 
 

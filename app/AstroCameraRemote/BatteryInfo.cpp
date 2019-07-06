@@ -2,9 +2,9 @@
 
 
 
-QString BatteryInfo::styleNormal   = "QProgressBar::chunk {background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 255, 0, 255), stop:1 rgba(0, 127, 0, 255))};";
-QString BatteryInfo::styleLow      = "QProgressBar::chunk {background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 255, 0, 255), stop:1 rgba(127, 127, 0, 255))};";
-QString BatteryInfo::styleCritical = "QProgressBar {border-bottom-left-radius: 7px;background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(127, 0, 0, 255))};";
+QString BatteryInfo::styleNormal   { "QProgressBar::chunk {background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 255, 0, 255), stop:1 rgba(0, 127, 0, 255))};"                         };
+QString BatteryInfo::styleLow      { "QProgressBar::chunk {background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 255, 0, 255), stop:1 rgba(127, 127, 0, 255))};"                     };
+QString BatteryInfo::styleCritical { "QProgressBar {border-bottom-left-radius: 7px;background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(127, 0, 0, 255))};" };
 
 QString BatteryInfo::getId() const
 {
@@ -37,8 +37,8 @@ QString BatteryInfo::getDescription() const
 }
 
 BatteryInfo::BatteryInfo()
-    : status(Status_unknown)
-    , additionalStatus(AdditionalStatus_Nothing)
+    : status(Unknown)
+    , additionalStatus(AdditionalStatus::Nothing)
     , levelNumber(0)
     , levelDenom(0)
 {
@@ -47,27 +47,27 @@ BatteryInfo::BatteryInfo()
 
 BatteryInfo::BatteryInfo(QJsonObject obj)
     : id(obj["batteryID"].toString())
-    , status(Status_unknown)
-    , additionalStatus(AdditionalStatus_Nothing)
-    , levelNumber(obj["levelNumer"].toInt())
-    , levelDenom(obj["levelDenom"].toInt())
-    , description(obj["description"].toString())
+    , status { Status::Unknown }
+    , additionalStatus { AdditionalStatus::Nothing }
+    , levelNumber{obj["levelNumer"].toInt()}
+    , levelDenom{obj["levelDenom"].toInt()}
+    , description{obj["description"].toString()}
 {
-    QString statusStr = obj["status"].toString();
+    QString statusStr { obj["status"].toString() };
     if(statusStr == "active")
-        status = Status_active;
+        status = Status::Active;
     else if(statusStr ==  "inactive")
-        status = Status_inactive;
+        status = Status::Inactive;
     else
-        status = Status_unknown;
+        status = Status::Unknown;
 
-    QString additionalStatusStr = obj["additionalStatus"].toString();
+    QString additionalStatusStr { obj["additionalStatus"].toString() };
     if(additionalStatusStr == "batteryNearEnd")
-        additionalStatus = AdditionalStatus_batteryNearEnd;
+        additionalStatus = AdditionalStatus::BatteryNearEnd;
     else if(additionalStatusStr == "charging")
-        additionalStatus = AdditionalStatus_charging;
+        additionalStatus = AdditionalStatus::Charging;
     else
-        additionalStatus = AdditionalStatus_Nothing;
+        additionalStatus = AdditionalStatus::Nothing;
 
 
 }

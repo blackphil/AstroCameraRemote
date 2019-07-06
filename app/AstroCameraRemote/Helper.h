@@ -20,7 +20,7 @@ public:
         static FILE *logfile;
         QString message;
     public :
-        enum Level
+        enum class Level
         {
             Info = 0
             , Warning

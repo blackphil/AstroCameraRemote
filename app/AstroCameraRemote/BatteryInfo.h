@@ -10,15 +10,15 @@ class BatteryInfo
 public:
     enum Status
     {
-        Status_active
-        , Status_inactive
-        , Status_unknown
+        Active
+        , Inactive
+        , Unknown
     };
-    enum AdditionalStatus
+    enum class AdditionalStatus
     {
-        AdditionalStatus_batteryNearEnd
-        , AdditionalStatus_charging
-        , AdditionalStatus_Nothing
+        BatteryNearEnd
+        , Charging
+        , Nothing
     };
 
 private :
