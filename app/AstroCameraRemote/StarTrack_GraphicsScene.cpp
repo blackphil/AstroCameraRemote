@@ -67,8 +67,11 @@ GraphicsScene::GraphicsScene(QObject* parent)
     defaultImage.open(QIODevice::ReadOnly);
     QByteArray imageData = defaultImage.readAll();
 
-    imageLayer = addPixmap(QPixmap::fromImage(QImage::fromData(imageData, "JPG").scaled(defaultRect.size())));
-    imageLayer->setZValue(0);
+    if(QImage img { QImage::fromData(imageData, "JPG") }; !img.isNull())
+    {
+        imageLayer = addPixmap(QPixmap::fromImage(img.scaled(defaultRect.size())));
+        imageLayer->setZValue(0);
+    }
 
 }
 
@@ -80,7 +83,7 @@ GraphicsScene::~GraphicsScene()
 void GraphicsScene::updateBackground(const QPixmap &pixmap)
 {
 //    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
-    if(!enabled)
+    if(!enabled || pixmap.isNull())
         return;
 
     imageLayer->setPixmap(pixmap.scaledToHeight(sceneRect().toRect().height()));

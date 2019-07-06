@@ -1,5 +1,6 @@
 #include "CamSim_HttpServer.h"
 
+#include "AstroBase.h"
 #include <QTcpSocket>
 
 namespace CamSim {
@@ -11,7 +12,16 @@ HttpConnection::HttpConnection(QTcpSocket *socket, QObject* parent)
     , workerThread(new QThread(this))
 {
     socket->moveToThread(workerThread);
-    workerThread->start();
+    connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
+}
+
+void HttpConnection::readData()
+{
+    while(socket->canReadLine())
+    {
+        QString line { QString::fromLocal8Bit(socket->readLine()) };
+        AB_DBG(line);
+    }
 }
 
 HttpServer::HttpServer(QHostAddress addr, quint16 port, QObject *parent)
@@ -19,7 +29,7 @@ HttpServer::HttpServer(QHostAddress addr, quint16 port, QObject *parent)
 {
     connect(this, SIGNAL(newConnection()), this, SLOT(handleNewConnection()));
     listen(addr, port);
-
+    AB_DBG("serve is listening on " << addr.toString() << ":" << port);
 }
 
 void HttpServer::handleNewConnection()

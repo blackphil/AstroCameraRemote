@@ -121,7 +121,8 @@ bool Reader::readCommonHeader()
         return false;
     }
 
-    if (static_cast<char>(0xff) != commonHeader[0])
+//    if (static_cast<char>(0xff) != commonHeader[0])
+    if(constexpr unsigned char ff { 0xff }; ff != static_cast<unsigned char>(commonHeader[0]))
     {
         AB_ERR("Unexpected data format. (Start byte)");
         return false;

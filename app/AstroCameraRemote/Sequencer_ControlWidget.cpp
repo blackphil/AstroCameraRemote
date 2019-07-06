@@ -93,6 +93,7 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
 ControlWidget::ControlWidget(QWidget *parent) :
     QWidget(parent)
   ,  ui(new Ui::ControlWidget)
+  , msgPoster(new MessagePoster(this))
   , setShutterSpeed(new Json::SetShutterSpeed(this))
   , setIsoSpeedRate(new Json::SetIsoSpeedRate(this))
   , actTakePicture(new Json::ActTakePicture(this))
@@ -118,21 +119,21 @@ ControlWidget::ControlWidget(QWidget *parent) :
     ui->stashedShootings->setModel(protocolModel);
 
 
-    connect(setShutterSpeed, SIGNAL(error(QString)), this, SLOT(error(QString)));
-    connect(setIsoSpeedRate, SIGNAL(error(QString)), this, SLOT(error(QString)));
+    connect(setShutterSpeed, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));
+    connect(setIsoSpeedRate, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));
 
     connect(actTakePicture, SIGNAL(havePostViewUrl(QString)), this, SLOT(onPostView(QString)));
-    connect(actTakePicture, SIGNAL(error(QString)), this, SLOT(error(QString)));
+    connect(actTakePicture, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));
 
-    connect(startBulbShooting, SIGNAL(error(QString)), this, SLOT(error(QString)));
-    connect(stopBulbShooting, SIGNAL(error(QString)), this, SLOT(error(QString)));
+    connect(startBulbShooting, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));
+    connect(stopBulbShooting, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));
 
-    connect(bulbShootSequencer, SIGNAL(statusMessage(QString)), this, SLOT(appendOutputMessage(QString)));
+    connect(bulbShootSequencer, SIGNAL(statusMessage(QString)), msgPoster, SIGNAL(info(QString)));
     connect(bulbShootSequencer, SIGNAL(havePostViewUrl(QString, int, int)), this, SLOT(onPostView(QString, int, int)));
     connect(bulbShootSequencer, SIGNAL(started()), this, SLOT(shootSequencerStarted()));
     connect(bulbShootSequencer, SIGNAL(stopped()), this, SLOT(shootSequencerStopped()));
 
-    connect(normalShootSequencer, SIGNAL(statusMessage(QString)), this, SLOT(appendOutputMessage(QString)));
+    connect(normalShootSequencer, SIGNAL(statusMessage(QString)), msgPoster, SIGNAL(info(QString)));
     connect(normalShootSequencer, SIGNAL(havePostViewUrl(QString,int,int)), this, SLOT(onPostView(QString,int,int)));
     connect(normalShootSequencer, SIGNAL(started()), this, SLOT(shootSequencerStarted()));
     connect(normalShootSequencer, SIGNAL(stopped()), this, SLOT(shootSequencerStopped()));
@@ -164,12 +165,6 @@ ControlWidget::~ControlWidget()
     delete ui;
 }
 
-void ControlWidget::setMsgHandler(MessageHandler *msgHandler)
-{
-    ui->stashedShootings->setMsgHandler(msgHandler);
-    MessagePoster::setMsgHandler(msgHandler);
-}
-
 
 void ControlWidget::on_isoSpeedRate_activated(const QString &isoSpeedRate)
 {
@@ -192,7 +187,7 @@ void ControlWidget::onPostView(const QString &url)
 
     Q_EMIT newPostViewInfo(newInfo);
 
-    infoMessage(tr("have new image: %0").arg(url));
+    Q_EMIT msgPoster->info(tr("have new image: %0").arg(url));
     //    ui->imageSubTitle->setText(ts.toString("yyyy-MM-ddTHH:mm:ss:zzz"));
     Sender::get()->loadPostViewImage(url);
 }
@@ -215,7 +210,7 @@ void ControlWidget::onPostView(const QString& url, int i, int numShots)
     Q_EMIT newPostViewInfo(newInfo);
 
 
-    infoMessage(tr("have new image: %0 (%1/%2)").arg(url).arg(i).arg(numShots));
+    Q_EMIT msgPoster->info(tr("have new image: %0 (%1/%2)").arg(url).arg(i).arg(numShots));
     //    ui->imageSubTitle->setText(tr("image %0/%1").arg(i).arg(numShots));
     Sender::get()->loadPostViewImage(url);
 }
@@ -313,7 +308,7 @@ void ControlWidget::protocolToUi(Protocol *protocol)
     Q_ASSERT(protocol);
     if(!protocol)
     {
-        errorMessage(tr("Cannot apply settings: no data available"));
+        Q_EMIT msgPoster->error(tr("Cannot apply settings: no data available"));
         AB_WRN("Protocol missing");
         return;
     }
@@ -356,7 +351,7 @@ void ControlWidget::shootSequencerStopped()
     Q_ASSERT(currentProtocol);
     if(!currentProtocol)
     {
-        errorMessage(tr("Cannot handle \"sequencer stopped\" event: missing protocol data."));
+        Q_EMIT msgPoster->error(tr("Cannot handle \"sequencer stopped\" event: missing protocol data."));
         AB_WRN("Failed to handle sequencer stop event: no currentProtocol available");
         return;
     }
@@ -373,7 +368,7 @@ void ControlWidget::shootSequencerStopped()
         sequencer = normalShootSequencer;
     }
 
-    infoMessage(tr("shoot sequence stopped."));
+    Q_EMIT msgPoster->info(tr("shoot sequence stopped."));
     ui->startBulbSequence->setText(tr("Start sequence"));
 }
 
@@ -437,7 +432,7 @@ void ControlWidget::startSequence()
     //    Q_ASSERT(currentProtocol);
     if(!currentProtocol)
     {
-        errorMessage("No active protocol ... cannot start any sequence");
+        Q_EMIT msgPoster->error("No active protocol ... cannot start any sequence");
         AB_WRN("No active protocol ... cannot start any sequence");
         return;
     }
@@ -447,28 +442,28 @@ void ControlWidget::startSequence()
     setCurrentProtocol(currentProtocol);
 
 
-    infoMessage("-------------------------------------------------------------");
-    infoMessage(tr("start sequence at %0").arg(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz")));
+    Q_EMIT msgPoster->info("-------------------------------------------------------------");
+    Q_EMIT msgPoster->info(tr("start sequence at %0").arg(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz")));
 
     int duration = 0;
 
 
     QTime dt = QTime(0,0,0,0).addMSecs(duration);
-    infoMessage(
+    Q_EMIT msgPoster->info(
                 tr("estimated duration: %0h %1min %2sec %3msec")
                 .arg(dt.hour()).arg(dt.minute()).arg(dt.second()).arg(dt.msec()));
 
-    infoMessage(
+    Q_EMIT msgPoster->info(
                 tr("estimated finish time: %0")
                 .arg(QDateTime::currentDateTime()
                      .addMSecs(duration).toString("yyyy-MM-ddTHH:mm:ss:zzz")));
-    infoMessage("-------------------------------------------------------------");
+    Q_EMIT msgPoster->info("-------------------------------------------------------------");
 
     Base* sequencer = getActiveSequencer();
     Q_ASSERT(sequencer);
     if(!sequencer)
     {
-        errorMessage(tr("No sequencer available"));
+        Q_EMIT msgPoster->error(tr("No sequencer available"));
         AB_WRN("no sequencer");
         return;
     }
@@ -531,7 +526,7 @@ void ControlWidget::on_newSequenceBtn_clicked()
     {
         if(currentProtocol->isRecording())
         {
-            errorMessage(tr("Cannot create sequence: another seuqence is running"));
+            Q_EMIT msgPoster->error(tr("Cannot create sequence: another seuqence is running"));
             AB_WRN("already have a running sequence");
             return;
         }

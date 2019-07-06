@@ -17,8 +17,9 @@
 
 namespace Sequencer {
 
-ProtocolView::ProtocolView(QWidget *parent) :
-    QTableView (parent)
+ProtocolView::ProtocolView(QWidget *parent)
+    : QTableView (parent)
+    , msgPoster(new MessagePoster(this))
 {
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenu(QPoint)));
 }
@@ -127,7 +128,7 @@ void ProtocolView::contextMenu(const QPoint &pos)
     }
     catch(AstroBase::Exception& e)
     {
-        errorMessage(tr("Grabbing imaged failed: %0").arg(e.what()));
+        Q_EMIT msgPoster->error(tr("Grabbing imaged failed: %0").arg(e.what()));
     }
 }
 

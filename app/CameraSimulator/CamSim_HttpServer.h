@@ -17,6 +17,9 @@ class HttpConnection : public QObject
 
 public :
     HttpConnection(QTcpSocket* socket, QObject* parent = nullptr);
+
+private Q_SLOTS :
+    void readData();
 };
 
 class HttpServer : public QTcpServer
@@ -31,8 +34,6 @@ public:
 private Q_SLOTS :
     void handleNewConnection();
 
-protected:
-    void run();
 };
 
 } // namespace CamSim

@@ -31,17 +31,17 @@ public :
 
     }
 
-    void infoMessage(QString msg)
+    void info(const QString& msg) override
     {
         target->append(msg);
     }
 
-    void warningMessage(QString msg)
+    void warning(const QString& msg) override
     {
         target->append(msg);
     }
 
-    void errorMessage(QString msg)
+    void error(const QString& msg) override
     {
         target->append(msg);
     }
@@ -101,7 +101,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     messageHandler = new TextEditMessageHandler(ui->output);
 
-    ui->sequencerControl->setMsgHandler(messageHandler);
 
 
     connect(currentTimeDisplayTimer, SIGNAL(timeout()), this, SLOT(updateCurrentTimeDisplay()));
@@ -281,9 +280,9 @@ void MainWindow::setupStarTrackView(StarTrack::StarTrackView *v)
     connect(v, SIGNAL(updateMarker()), ui->postViewWidget->getStarTrackScene(), SLOT(updateMarker()));
     connect(v, SIGNAL(toggleFullScreen(bool)), this, SLOT(toggleStarTrackViewFullScreen(bool)));
     connect(v, SIGNAL(selectNextStar()), ui->postViewWidget->getStarTrackScene(), SLOT(selectNextStar()));
-    connect(v, SIGNAL(selectPreviousStar()), ui->postViewWidget->getStarTrackScene(), SLOT(selectPrevoiusStar()));
+    connect(v, SIGNAL(selectPreviousStar()), ui->postViewWidget->getStarTrackScene(), SLOT(selectPreviousStar()));
     connect(v, SIGNAL(selectNextStar()), ui->liveViewWidget->getStarTrackScene(), SLOT(selectNextStar()));
-    connect(v, SIGNAL(selectPreviousStar()), ui->liveViewWidget->getStarTrackScene(), SLOT(selectPrevoiusStar()));
+    connect(v, SIGNAL(selectPreviousStar()), ui->liveViewWidget->getStarTrackScene(), SLOT(selectPreviousStar()));
 }
 
 

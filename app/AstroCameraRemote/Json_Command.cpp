@@ -162,8 +162,9 @@ QString SetContShootingMode::mode2String(Mode mode)
     case Mode::SpdPriorityCont : return "Spd Priority Cont.";
     case Mode::Burst           : return "Burst";
     case Mode::MotionShot      : return "MotionShot";
-    case Mode::InvalidMode     : return "Invalid mode";
+    case Mode::InvalidMode     : break;
     }
+    return "Invalid mode";
 }
 
 SetContShootingMode::Mode SetContShootingMode::string2Mode(const QString &mode)

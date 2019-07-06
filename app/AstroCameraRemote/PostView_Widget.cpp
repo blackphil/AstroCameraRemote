@@ -153,13 +153,12 @@ void Widget::updatePostView()
     if(0 <= cursor && imageStack.count() > cursor)
     {
         starTrackScene->setEnabled(enabled);
-        const Info& info = imageStack[cursor];
-        const QPixmap& image = info.getImage();
+
+        const Info& info { imageStack[cursor] };
         ui->postViewMetaInfo->setText(info.toHtml());
-        if(!image.isNull())
-        {
+
+        if(const QPixmap& image { info.getImage() }; !image.isNull())
             starTrackScene->updateBackground(image);
-        }
 
         ui->refImg->setEnabled(true);
         ui->setAsRefImg->setEnabled(true);

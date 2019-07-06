@@ -24,13 +24,15 @@ namespace Ui {
 class ControlWidget;
 }
 
-class ControlWidget : public QWidget, public MessagePoster
+class ControlWidget : public QWidget
 {
     Q_OBJECT
 
 private:
     Ui::ControlWidget *ui;
 //    SettingsManager* sequencerSettingsManager;
+
+    MessagePoster* msgPoster;
 
     Json::SetShutterSpeed* setShutterSpeed;
     Json::SetIsoSpeedRate* setIsoSpeedRate;
@@ -58,8 +60,6 @@ private:
 public:
     explicit ControlWidget(QWidget *parent = nullptr);
     ~ControlWidget();
-
-    void setMsgHandler(MessageHandler* msgHandler);
 
 Q_SIGNALS :
 

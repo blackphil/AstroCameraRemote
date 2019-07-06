@@ -10,9 +10,11 @@ namespace Sequencer {
 class Protocol;
 class ProtocolModel;
 
-class ProtocolView : public QTableView, public MessagePoster
+class ProtocolView : public QTableView
 {
     Q_OBJECT
+
+    MessagePoster* msgPoster;
 
 public:
     explicit ProtocolView(QWidget *parent = nullptr);
