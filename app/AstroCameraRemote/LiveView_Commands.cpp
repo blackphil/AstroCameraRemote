@@ -10,8 +10,8 @@ StartLiveView::StartLiveView(QObject* parent)
     : Json::Command { parent }
 {
     setObjectName("StartLiveView");
-    json.insert("method", "startLiveview");
-    json.insert("params", QJsonArray{});
+    json["method"] = "startLiveview";
+    json["params"] = QJsonArray{};
 }
 
 
@@ -43,8 +43,8 @@ StopLiveView::StopLiveView(QObject* parent)
     : Command(parent)
 {
     setObjectName("StopLiveView");
-    json.insert("method", "stopLiveview");
-    json.insert("params", QJsonArray {});
+    json["method"] = "stopLiveview";
+    json["params"] = QJsonArray {};
 }
 
 void StopLiveView::handleReply(const QJsonDocument &replyJson)

@@ -74,8 +74,7 @@ void Sender::finished(QNetworkReply *reply)
 
 QNetworkReply* Sender::privateSend(const QByteArray &buffer)
 {
-//    QNetworkRequest request(QUrl("http://192.168.122.1:8080/sony/camera"));
-    QNetworkRequest request(QUrl("http://127.0.0.1:47101/sony/camera"));
+    QNetworkRequest request(QUrl("http://192.168.122.1:8080/sony/camera"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json-rpc"));
     int length = buffer.size();
     request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(length));

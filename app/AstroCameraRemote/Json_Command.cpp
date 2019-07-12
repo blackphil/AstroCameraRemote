@@ -71,30 +71,29 @@ QByteArray Command::getJson() const
 
 void SetShutterSpeed::setShutterSpeed(const QString &value)
 {
-    json.insert("params", value);
+    json["params"] = QJsonArray { value };
 }
 
 QString SetShutterSpeed::getShutterSpeed() const
 {
-    return json.value("params").toString();
+    return json["params"].toString();
 }
 
 SetShutterSpeed::SetShutterSpeed(QObject* parent)
     : Command{parent}
 {
     setObjectName("SetShutterSpeed");
-
-    json.insert("method", "setShutterSpeed");
+    json["method"] ="setShutterSpeed";
 }
 
 void SetIsoSpeedRate::setIsoSpeedRate(const QString &value)
 {
-    json.insert("params", value);
+    json["params"] = QJsonArray { value };
 }
 
 QString SetIsoSpeedRate::getIsoSpeedRate() const
 {
-    return json.value("params").toString();
+    return json["params"].toString();
 }
 
 SetIsoSpeedRate::SetIsoSpeedRate(QObject* parent)
@@ -102,7 +101,7 @@ SetIsoSpeedRate::SetIsoSpeedRate(QObject* parent)
 {
     setObjectName("SetIsoSpeedRate");
 
-    json.insert("method", "setIsoSpeedRate");
+    json["method"] = "setIsoSpeedRate";
 }
 
 GetShutterSpeed::GetShutterSpeed(QObject* parent)
@@ -110,16 +109,16 @@ GetShutterSpeed::GetShutterSpeed(QObject* parent)
 {
     setObjectName("GetShutterSpeed");
 
-    json.insert("method", "getShutterSpeed");
-    json.insert("params", QJsonArray {});
+    json["method"] = "getShutterSpeed";
+    json["params"] = QJsonArray {};
 }
 
 StartRecMode::StartRecMode(QObject* parent)
     : Command { parent }
 {
     setObjectName("StartRecMode");
-    json.insert("method", "startRecMode");
-    json.insert("params", QJsonArray {});
+    json["method"] = "startRecMode";
+    json["params"] = QJsonArray {};
 
 }
 
@@ -128,8 +127,8 @@ StopRecMode::StopRecMode(QObject* parent)
     : Command { parent }
 {
     setObjectName("StopRecMode");
-    json.insert("method", "stopRecMode");
-    json.insert("params", QJsonArray {});
+    json["method"] = "stopRecMode";
+    json["params"] = QJsonArray {};
 }
 
 
@@ -137,25 +136,25 @@ ActTakePicture::ActTakePicture(QObject *parent)
     : PostViewProviderCommand { parent }
 {
     setObjectName("ActTakePicture");
-    json.insert("method", "actTakePicture");
-    json.insert("params", QJsonArray {});
+    json["method"] = "actTakePicture";
+    json["params"] = QJsonArray {};
 }
 
 SetContShootingMode::SetContShootingMode(QObject *parent)
     : Command { parent }
 {
     setObjectName("SetContShootingMode");
-    json.insert("method", "setContShootingMode");
+    json["method"] = "setContShootingMode";
 }
 
 SetContShootingMode::Mode SetContShootingMode::getMode() const
 {
-    return string2Mode(json.value("params").toObject().value("contShootingMode").toString());
+    return string2Mode(json["params"].toObject()["contShootingMode"].toString());
 }
 
 void SetContShootingMode::setMode(const Mode &value)
 {
-    json.insert("params", QJsonObject { { "contShootingMode", mode2String(value) } });
+    json["params"] = QJsonObject { { "contShootingMode", mode2String(value) } };
 }
 
 QString SetContShootingMode::mode2String(Mode mode)
@@ -202,8 +201,8 @@ GetAvailableContShootingModes::GetAvailableContShootingModes(QObject *parent)
     : Command(parent)
 {
     setObjectName("GetAvailableContShootingModes");
-    json.insert("method", "getAvailableContShootingMode");
-    json.insert("params", QJsonArray {});
+    json["method"] = "getAvailableContShootingMode";
+    json["params"] = QJsonArray {};
 }
 
 void GetAvailableContShootingModes::handleReply(const QJsonDocument &replyJson)
@@ -249,8 +248,8 @@ StartBulbShooting::StartBulbShooting(QObject* parent)
     : Command(parent)
 {
     setObjectName("StartBulbShooting");
-    json.insert("method", "startBulbShooting");
-    json.insert("params", QJsonArray {});
+    json["method"] = "startBulbShooting";
+    json["params"] = QJsonArray {};
 }
 
 
@@ -258,8 +257,8 @@ StopBulbShooting::StopBulbShooting(QObject* parent)
     : Command(parent)
 {
     setObjectName("StopBulbShooting");
-    json.insert("method", "stopBulbShooting");
-    json.insert("params", QJsonArray {});
+    json["method"] = "stopBulbShooting";
+    json["params"] = QJsonArray {};
 }
 
 
@@ -267,8 +266,8 @@ AwaitTakePicture::AwaitTakePicture(QObject* parent)
     : PostViewProviderCommand(parent)
 {
     setObjectName("AwaitTakePicture");
-    json.insert("method", "awaitTakePicture");
-    json.insert("params", QJsonArray {});
+    json["method"] = "awaitTakePicture";
+    json["params"] = QJsonArray {};
 }
 
 void PostViewProviderCommand::handleReply(const QJsonDocument &replyJson)
