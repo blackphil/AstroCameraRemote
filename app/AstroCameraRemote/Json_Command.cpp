@@ -45,7 +45,7 @@ void Command::handleReply()
     if(reply->error() != QNetworkReply::NoError)
     {
         AB_ERR("(" << objectName() << ") reply error: " << reply->error());
-        return;
+//        return;
     }
     QByteArray replyData { reply->readAll() };
 
