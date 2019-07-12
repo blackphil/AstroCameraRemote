@@ -42,6 +42,11 @@ void Command::handleReply()
         AB_ERR("(" << objectName() << ") reply is NULL");
         return;
     }
+    if(reply->error() != QNetworkReply::NoError)
+    {
+        AB_ERR("(" << objectName() << ") reply error: " << reply->error());
+        return;
+    }
     QByteArray replyData { reply->readAll() };
 
     reply->deleteLater();
