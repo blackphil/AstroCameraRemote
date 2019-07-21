@@ -8,7 +8,7 @@
 #include <QXmlStreamWriter>
 
 #include "Sequencer_Properties.h"
-#include "EasyExif_Exif.h"
+#include "Sequencer_PhotoShot.h"
 
 namespace Sequencer {
 
@@ -17,47 +17,10 @@ class Protocol : public QObject
     Q_OBJECT
 
 public :
-    enum Type
-    {
-        Type_Focusing
-        , Type_Light
-        , Type_Dark
-        , Type_Flat
-        , NumTypes
-    };
 
-    enum ColorChannel
-    {
-        Color_RGB
-        , Color_Luminance
-        , Color_Red
-        , Color_Green
-        , Color_Blue
-        , NumColorChannels
-    };
 
-    static QString typeToString(Type t);
-    static Type typeFromString(const QString& t);
 
-    static QString colorChannelToString(ColorChannel c);
-    static ColorChannel colorChannelFromString(const QString& c);
-
-    struct PhotoShot
-    {
-        PhotoShot();
-        PhotoShot(int index, QString fileName);
-        int index;
-        QDateTime timeStamp;
-        QString fileName;
-
-        EasyExif::EXIFInfo exif;
-
-        void serializeXml(QXmlStreamWriter& writer) const;
-        void deSerializeXml(QXmlStreamReader& reader);
-
-        void serializeExif(QXmlStreamWriter& writer) const;
-        void deSerializeExif(QXmlStreamReader& reader);
-    };
+    typedef QMultiMap<PhotoShot::Type, PhotoShot> PhotoShotMap;
 
 private :
 
@@ -70,16 +33,13 @@ private :
 
     Status status;
 
-
-
-    Type type;
-    ColorChannel colorChannel;
     Properties properties;
-    QList<PhotoShot> photoShots;
+    PhotoShotMap photoShots;
     QList<QRectF> markers;
     QDateTime startTime;
-    QString subject;
+    QString objectName;
 
+    PhotoShot::Type currentPhotoShotType;
 
 public:
     explicit Protocol(QObject *parent = nullptr);
@@ -98,22 +58,19 @@ public:
 
     static QString getProtocolPath(bool createIfNotExists = false);
 
-    QString getSubject() const;
-    void setSubject(const QString &value);
+    QString getObjectName() const;
+    void setObjectName(const QString &value);
 
     QString getFilePath() const;
 
     QList<QRectF> getReferenceMarkers() const;
 
-    Type getType() const;
-    void setType(const Type &value);
-
-    const QList<PhotoShot>& getPhotoShots() const;
-
-    ColorChannel getColorChannel() const;
-    void setColorChannel(const ColorChannel &value);
+    const PhotoShotMap& getPhotoShots() const;
 
     int compareTo(const Protocol* rhs) const;
+
+    PhotoShot::Type getCurrentPhotoShotType() const;
+    void setCurrentPhotoShotType(const PhotoShot::Type &value);
 
 public Q_SLOTS :
     void start();

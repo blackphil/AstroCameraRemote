@@ -24,6 +24,26 @@ Sender* Sender::get()
     return instance;
 }
 
+QString Sender::getHost() const
+{
+    return host;
+}
+
+void Sender::setHost(const QString &value)
+{
+    host = value;
+}
+
+int Sender::getPort() const
+{
+    return port;
+}
+
+void Sender::setPort(int value)
+{
+    port = value;
+}
+
 QJsonDocument Sender::handleReply(QNetworkReply *reply) const
 {
     Q_ASSERT(reply);
@@ -53,6 +73,11 @@ Sender::Sender(QObject* parent)
 
 }
 
+QUrl Sender::createUrl(const QString &subPath) const
+{
+    return QString("http://%0:%1%2").arg(host).arg(port).arg(subPath);
+}
+
 Sender::~Sender()
 {
     instance = nullptr;
@@ -74,7 +99,7 @@ void Sender::finished(QNetworkReply *reply)
 
 QNetworkReply* Sender::privateSend(const QByteArray &buffer)
 {
-    QNetworkRequest request(QUrl("http://192.168.122.1:8080/sony/camera"));
+    QNetworkRequest request(createUrl("/sony/camera"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json-rpc"));
     int length = buffer.size();
     request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(length));

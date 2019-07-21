@@ -11,37 +11,27 @@ CreateNewDialog::CreateNewDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    for(int i=0; i<Protocol::NumTypes; i++)
+
+    for(auto t : PhotoShot::AllTypes)
     {
-        ui->type->addItem(Protocol::typeToString(static_cast<Protocol::Type>(i)));
+        ui->type->addItem(PhotoShot::typeToString(t));
     }
     ui->type->setCurrentIndex(0);
-
-    for(int i=0; i<Protocol::NumColorChannels; i++)
-    {
-        ui->colorChannel->addItem(Protocol::colorChannelToString(static_cast<Protocol::ColorChannel>(i)));
-    }
-    ui->colorChannel->setCurrentIndex(0);
 }
 
 QString CreateNewDialog::getSubject() const
 {
-    return ui->subject->text();
+    return ui->objectName->text();
 }
 
-Protocol::Type CreateNewDialog::getType() const
+PhotoShot::Type CreateNewDialog::getType() const
 {
-    return static_cast<Protocol::Type>(ui->type->currentIndex());
-}
-
-Protocol::ColorChannel CreateNewDialog::getColorChannel() const
-{
-    return static_cast<Protocol::ColorChannel>(ui->colorChannel->currentIndex());
+    return static_cast<PhotoShot::Type>(ui->type->currentIndex());
 }
 
 void CreateNewDialog::accept()
 {
-    if(ui->subject->text().isEmpty())
+    if(ui->objectName->text().isEmpty())
     {
         QMessageBox::warning(this, tr("Create new sequence"), tr("Subject must not be empty!"));
         return;

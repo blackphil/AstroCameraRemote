@@ -13,6 +13,9 @@ class Sender : public QObject
 
     static Sender* instance;
 
+    QString host;
+    int port;
+
     QNetworkAccessManager* manager;
     QJsonObject noReplyError;
     int replyDelay;
@@ -22,12 +25,20 @@ class Sender : public QObject
     QJsonDocument handleReply(QNetworkReply* reply) const;
 
     explicit Sender(QObject* parent = nullptr);
+
+    QUrl createUrl(const QString& subPath) const;
 public:
 
     ~Sender();
 
     static Sender* create(QObject* parent);
     static Sender* get();
+
+    QString getHost() const;
+    void setHost(const QString &value);
+
+    int getPort() const;
+    void setPort(int value);
 
 Q_SIGNALS :
     void replyReceived(QJsonDocument reply);

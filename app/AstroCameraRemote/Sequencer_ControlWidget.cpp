@@ -66,7 +66,7 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
             sequencer = normalShootSequencer;
         }
 
-        AB_DBG("protocol to sequencer: " << currentProtocol->getSubject());
+        AB_DBG("protocol to sequencer: " << currentProtocol->getObjectName());
 
 
         connect(sequencer, SIGNAL(started()), currentProtocol, SLOT(start()));
@@ -81,8 +81,7 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
         sequencer->setStartDelay(currentProtocol->getProperties().startDelay);
         //        duration = sequencer->calculateSequenceDuration();
 
-        if(currentProtocol->getType() != Protocol::Type_Focusing)
-            protocolModel->addProtocol(currentProtocol);
+        protocolModel->addProtocol(currentProtocol);
 
         currentProtocol->setReferenceMarkers(referenceMarkers);
         currentProtocol->save();
@@ -268,7 +267,7 @@ void ControlWidget::uiToProtocol(Protocol* protocol) const
     if(!protocol)
         return;
 
-    AB_DBG("UI to protocol: " << protocol->getSubject());
+    AB_DBG("UI to protocol: " << protocol->getObjectName());
 
 
     Properties properties;
@@ -313,10 +312,10 @@ void ControlWidget::protocolToUi(Protocol *protocol)
         return;
     }
 
-    AB_DBG("protocol to UI: " << protocol->getSubject());
+    AB_DBG("protocol to UI: " << protocol->getObjectName());
 
 
-    ui->subjectLineEdit->setText(protocol->getSubject());
+    ui->subjectLineEdit->setText(protocol->getObjectName());
 
     const Properties& p = protocol->getProperties();
     ui->shutterSpeed->setCurrentText(p.shutterSpeed);
@@ -538,16 +537,14 @@ void ControlWidget::on_newSequenceBtn_clicked()
     if(dlg.exec() == QDialog::Accepted)
     {
         Protocol* newProtocol = new Protocol(this);
-        newProtocol->setSubject(dlg.getSubject());
-        newProtocol->setType(dlg.getType());
-        newProtocol->setColorChannel(dlg.getColorChannel());
+        newProtocol->setObjectName(dlg.getSubject());
         uiToProtocol(newProtocol);
         setCurrentProtocol(newProtocol);
 
-        ui->subjectLineEdit->setText(newProtocol->getSubject());
+        ui->subjectLineEdit->setText(newProtocol->getObjectName());
 
 
-        QMessageBox::information(this, tr("New sequence"), tr("New sequence \"%0\" created.").arg(currentProtocol->getSubject()));
+        QMessageBox::information(this, tr("New sequence"), tr("New sequence \"%0\" created.").arg(currentProtocol->getObjectName()));
     }
 }
 

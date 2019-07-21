@@ -54,15 +54,13 @@ QVariant ProtocolModel::data(const QModelIndex &index, int role) const
 
         switch(index.column())
         {
-        case 0 : return item->getSubject();
-        case 1 : return Protocol::typeToString(item->getType());
-        case 2 : return Protocol::colorChannelToString(item->getColorChannel());
-        case 3 : return item->getStartTime().toString("dd. MM. yyyy hh:mm:ss");
-        case 4 : return QString("%0/%1").arg(item->getNumShotsFinished()).arg(item->getProperties().numShots);
-        case 5 : return item->getProperties().shutterSpeed;
-        case 6 : return item->getProperties().iso;
-        case 7 : return item->getProperties().startDelay;
-        case 8 : return item->getProperties().pause;
+        case 0 : return item->getObjectName();
+        case 1 : return item->getStartTime().toString("dd. MM. yyyy hh:mm:ss");
+        case 2 : return QString("%0/%1").arg(item->getNumShotsFinished()).arg(item->getProperties().numShots);
+        case 3 : return item->getProperties().shutterSpeed;
+        case 4 : return item->getProperties().iso;
+        case 5 : return item->getProperties().startDelay;
+        case 6 : return item->getProperties().pause;
         }
         break;
     }
