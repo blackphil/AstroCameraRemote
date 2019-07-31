@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QDateTime>
 #include <QList>
-#include <QXmlStreamReader>
+#include <QDomDocument>
 #include <QXmlStreamWriter>
 
 #include "Sequencer_Properties.h"
@@ -33,6 +33,7 @@ private :
 
     Status status;
 
+
     Properties properties;
     PhotoShotMap photoShots;
     QList<QRectF> markers;
@@ -42,13 +43,13 @@ private :
     PhotoShot::Type currentPhotoShotType;
 
 public:
-    explicit Protocol(QObject *parent = nullptr);
+    explicit Protocol(const QString& name, QObject *parent = nullptr);
     ~Protocol();
 
     bool isRecording() const;
 
     void serializeXml(QXmlStreamWriter& writer) const;
-    void deSerializeXml(QXmlStreamReader& reader);
+    void deSerializeXml(const QByteArray& data);
 
     const Properties &getProperties() const;
     void setProperties(const Properties &value);

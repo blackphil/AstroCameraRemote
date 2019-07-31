@@ -15,7 +15,7 @@ ProtocolModel::ProtocolModel(QObject *parent)
 int ProtocolModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return 9;
+    return 7;
 }
 
 QVariant ProtocolModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -24,15 +24,13 @@ QVariant ProtocolModel::headerData(int section, Qt::Orientation orientation, int
     {
         switch(section)
         {
-        case 0 : return tr("Subject");
-        case 1 : return tr("Type");
-        case 2 : return tr("Color channel");
-        case 3 : return tr("Start time");
-        case 4 : return tr("# shots/total");
-        case 5 : return tr("Shutter speed");
-        case 6 : return tr("ISO");
-        case 7 : return tr("Start delay");
-        case 8 : return tr("Pause");
+        case 0 : return tr("Object");
+        case 1 : return tr("Start time");
+        case 2 : return tr("# shots/total");
+        case 3 : return tr("Shutter speed");
+        case 4 : return tr("ISO");
+        case 5 : return tr("Start delay");
+        case 6 : return tr("Pause");
         default : break;
         }
     }

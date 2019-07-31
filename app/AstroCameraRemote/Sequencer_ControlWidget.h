@@ -105,10 +105,10 @@ private Q_SLOTS :
 
     void on_takeShotBtn_clicked();
 
-    void on_newSequenceBtn_clicked();
 
     void handleCameraStatus(const QString&status);
     void on_loadBtn_clicked();
+    void on_newBtn_clicked();
 };
 
 

@@ -6,7 +6,7 @@
 include($${top_srcdir}/common_pre.pri)
 
 
-QT       += core gui network widgets
+QT       += core gui network widgets xml
 
 TARGET = AstroCameraRemote
 TEMPLATE = app

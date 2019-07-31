@@ -4,8 +4,8 @@
 #include "EasyExif_Exif.h"
 
 #include <QDateTime>
+#include <QDomElement>
 #include <QXmlStreamWriter>
-#include <QXmlStreamReader>
 
 namespace Sequencer {
 
@@ -27,7 +27,7 @@ struct PhotoShot
     static QString typeToString(Type t);
     static Type typeFromString(const QString& t);
 
-    PhotoShot();
+    PhotoShot(Type t);
     PhotoShot(int index, QString fileName, Type t);
     int index;
     QDateTime timeStamp;
@@ -36,10 +36,10 @@ struct PhotoShot
     EasyExif::EXIFInfo exif;
 
     void serializeXml(QXmlStreamWriter& writer) const;
-    void deSerializeXml(QXmlStreamReader& reader);
+    void deSerializeXml(QDomElement el);
 
     void serializeExif(QXmlStreamWriter& writer) const;
-    void deSerializeExif(QXmlStreamReader& reader);
+    void deSerializeExif(QDomElement el);
 };
 
 

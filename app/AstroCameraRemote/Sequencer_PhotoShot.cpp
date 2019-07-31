@@ -4,22 +4,16 @@ namespace Sequencer {
 
 namespace helper
 {
-    static const QMap<PhotoShot::Type, QString> typeStringMap
-    {
-          { PhotoShot::Type::Undefined, "Undefined" }
-        , { PhotoShot::Type::Focusing , "Focusing"  }
-        , { PhotoShot::Type::Light    , "Light"     }
-        , { PhotoShot::Type::Dark     , "Dark"      }
-        , { PhotoShot::Type::Flat     , "Flat"      }
-        , { PhotoShot::Type::DarkFlat , "DarkFlat"  }
-    };
-
-}
-
-PhotoShot::PhotoShot()
-    : type(Type::Undefined)
-    , index(-1)
+static const QMap<PhotoShot::Type, QString> typeStringMap
 {
+    { PhotoShot::Type::Undefined, "Undefined" }
+    , { PhotoShot::Type::Focusing , "Focusing"  }
+    , { PhotoShot::Type::Light    , "Light"     }
+    , { PhotoShot::Type::Dark     , "Dark"      }
+    , { PhotoShot::Type::Flat     , "Flat"      }
+    , { PhotoShot::Type::DarkFlat , "DarkFlat"  }
+};
+
 }
 
 PhotoShot::PhotoShot(int index, QString fileName, Type t)
@@ -27,7 +21,6 @@ PhotoShot::PhotoShot(int index, QString fileName, Type t)
     , index(index)
     , fileName(fileName)
 {
-
 }
 
 void PhotoShot::serializeXml(QXmlStreamWriter &writer) const
@@ -42,34 +35,16 @@ void PhotoShot::serializeXml(QXmlStreamWriter &writer) const
     writer.writeEndElement();
 }
 
-void PhotoShot::deSerializeXml(QXmlStreamReader &reader)
+void PhotoShot::deSerializeXml(QDomElement el)
 {
-    if(!reader.isStartElement() || reader.name() != "PhotoShot")
-        return;
+    type = typeFromString(el.attribute("type"));
+    index = el.attribute("index").toInt();
+    fileName = el.attribute("fileName");
+    timeStamp = QDateTime::fromString(el.attribute("timeStamp"), "yyyy-MM-ddThh:mm:ss.zzz");
 
-    while(!reader.atEnd())
+    if(QDomNodeList exifNodes { el.elementsByTagName("Exif") }; !exifNodes.isEmpty())
     {
-        if(reader.isStartElement())
-        {
-            if(reader.name() == "PhotoShot")
-            {
-                type = typeFromString(reader.attributes().value("type").toString());
-                index = reader.attributes().value("index").toInt();
-                fileName = reader.attributes().value("fileName").toString();
-                timeStamp = QDateTime::fromString(reader.attributes().value("timeStamp").toString(), "yyyy-MM-ddThh:mm:ss.zzz");
-            }
-            else if(reader.name() == "Exif")
-            {
-                deSerializeExif(reader);
-            }
-        }
-        else if(reader.isEndElement())
-        {
-            if(reader.name() == "PhotoShot")
-                return;
-        }
-
-        reader.readNext();
+        deSerializeExif(exifNodes.at(0).toElement());
     }
 }
 
@@ -90,6 +65,13 @@ PhotoShot::Type PhotoShot::typeFromString(const QString& t)
     return Type::Undefined;
 }
 
+PhotoShot::PhotoShot(Type t)
+    : type(t)
+    , index(0)
+{
+
+}
+
 void PhotoShot::serializeExif(QXmlStreamWriter &writer) const
 {
     if(!exif.isValid())
@@ -108,36 +90,20 @@ void PhotoShot::serializeExif(QXmlStreamWriter &writer) const
     writer.writeEndElement();
 }
 
-void PhotoShot::deSerializeExif(QXmlStreamReader &reader)
+void PhotoShot::deSerializeExif(QDomElement el)
 {
-    if(!reader.isStartElement() || reader.name() != "Exif")
-        return;
 
-    while(!reader.atEnd())
+    exif.valid = true;
+    exif.ExposureTime = el.attribute("exposureTime").toDouble();
+    exif.ISOSpeedRatings = el.attribute("isoSpeedRatings").toUShort();
+
+    if(QDomNodeList dtNodes { el.elementsByTagName("DateTime") }; !dtNodes.isEmpty())
     {
-        if(reader.isStartElement())
-        {
-            if(reader.name() == "Exif")
-            {
-                exif.valid = true;
-                exif.ExposureTime = reader.attributes().value("exposureTime").toDouble();
-                exif.ISOSpeedRatings = reader.attributes().value("isoSpeedRatings").toUShort();
-            }
-            else if(reader.name() == ("DateTime"))
-            {
-                exif.DateTime = reader.attributes().value("changed").toString().toStdString();
-                exif.DateTimeOriginal = reader.attributes().value("original").toString().toStdString();
-                exif.DateTimeDigitized = reader.attributes().value("digitized").toString().toStdString();
-                exif.SubSecTimeOriginal = reader.attributes().value("subSecOriginal").toString().toStdString();
-            }
-        }
-        else if(reader.isEndElement())
-        {
-            if(reader.name() == "Exif")
-                return;
-        }
-
-        reader.readNext();
+        QDomElement dtEl = dtNodes.at(0).toElement();
+        exif.DateTime           = dtEl.attribute("changed").toStdString();
+        exif.DateTimeOriginal   = dtEl.attribute("original").toStdString();
+        exif.DateTimeDigitized  = dtEl.attribute("digitized").toStdString();
+        exif.SubSecTimeOriginal = dtEl.attribute("subSecOriginal").toStdString();
     }
 
 }

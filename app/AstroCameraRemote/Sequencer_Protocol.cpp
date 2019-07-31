@@ -10,10 +10,11 @@
 #include <QProcess>
 #include <QStringList>
 #include <QMap>
-
 #include <Windows.h>
 
 #include <algorithm>
+
+#include "AstroBase_Exception.h"
 
 namespace Sequencer {
 
@@ -118,12 +119,17 @@ void Protocol::setCurrentPhotoShotType(const PhotoShot::Type &value)
     currentPhotoShotType = value;
 }
 
-Protocol::Protocol(QObject *parent)
+Protocol::Protocol(const QString& name, QObject *parent)
     : QObject(parent)
     , status(Status_Stopped)
+    , objectName(name)
+    , currentPhotoShotType(PhotoShot::Type::Focusing)
 {
     objCount++;
     AB_DBG("CTOR(" << objCount << ")");
+
+
+
 }
 
 Protocol::~Protocol()
@@ -208,14 +214,15 @@ void Protocol::stop()
 
 void Protocol::save()
 {
-        QFile f(getFilePath());
-        f.open(QIODevice::WriteOnly | QIODevice::Text);
-        QXmlStreamWriter writer(&f);
-        writer.setAutoFormatting(true);
+    QFile f(getFilePath());
+    f.open(QIODevice::WriteOnly | QIODevice::Text);
 
-        serializeXml(writer);
+    QXmlStreamWriter writer(&f);
+    writer.setAutoFormatting(true);
 
-        f.close();
+    serializeXml(writer);
+
+    f.close();
 }
 
 bool Protocol::deleteFile()
@@ -239,8 +246,9 @@ bool Protocol::deleteFile()
 void Protocol::serializeXml(QXmlStreamWriter &writer) const
 {
     writer.writeStartElement("Protocol");
-    writer.writeAttribute("subject", objectName);
+    writer.writeAttribute("object", objectName);
     writer.writeAttribute("startTime", startTime.toString("yyyy-MM-ddThh:mm:ss.zzz"));
+    writer.writeAttribute("currentType", PhotoShot::typeToString(currentPhotoShotType));
 
     if(!markers.isEmpty())
     {
@@ -267,43 +275,55 @@ void Protocol::serializeXml(QXmlStreamWriter &writer) const
     writer.writeEndElement();
 }
 
-void Protocol::deSerializeXml(QXmlStreamReader &reader)
+void Protocol::deSerializeXml(const QByteArray &data)
 {
-    while(!reader.atEnd())
-    {
-        switch(reader.readNext())
-        {
-        case QXmlStreamReader::StartElement :
-            if(reader.name() == "Protocol")
-            {
-                startTime = QDateTime::fromString(reader.attributes().value("startTime").toString(), "yyyy-MM-ddThh:mm:ss.zzz");
-                objectName = reader.attributes().value("subject").toString();
-            }
-            else if(reader.name() == "Properties")
-            {
-                properties.deSerializeXml(reader);
-            }
-            else if(reader.name() == "PhotoShot")
-            {
-                PhotoShot ps;
-                ps.deSerializeXml(reader);
-                photoShots.insertMulti(ps.type, ps);
-            }
-            else if(reader.name() == "Marker")
-            {
-                QStringList values = reader.attributes().value("rect").toString().split(";");
-                Q_ASSERT(values.count() == 4);
-                if(values.count() == 4)
-                {
-                    QRectF m(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
-                    if(!m.isNull())
-                        markers << m;
-                }
+    QString errMsg;
+    int errLine, errCol;
 
+    QDomDocument doc;
+    if(!doc.setContent(data, &errMsg, &errLine, &errCol))
+    {
+        throw AstroBase::Exception(tr("Error reading protocol at line %0, column %1: %2")
+                                   .arg(errLine).arg(errCol).arg(errMsg));
+    }
+
+    QDomElement rootEl = doc.childNodes().at(0).toElement();
+    startTime = QDateTime::fromString(rootEl.attribute("startTime"), "yyyy-MM-ddThh:mm:ss.zzz");
+    objectName = rootEl.attribute("object");
+    currentPhotoShotType = PhotoShot::typeFromString(rootEl.attribute("currentType"));
+
+    QDomNodeList markerNodes { doc.elementsByTagName("Marker") };
+    for(int i=0; i<markerNodes.count(); i++)
+    {
+        QDomElement markerEl { markerNodes.at(i).toElement() };
+        if(QStringList values { markerEl.attribute("rect").split(";") }; values.count() == 4)
+        {
+            if(QRectF f { values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble() }; !f.isNull())
+            {
+                markers << std::move(f);
+                continue;
             }
-            break;
-        default :
-            break;
+        }
+        throw AstroBase::Exception(tr("Invalid marker data at line %0, column %1").arg(markerEl.lineNumber()).arg(markerEl.columnNumber()));
+    }
+
+    if(QDomNodeList propertyNodes { doc.elementsByTagName("Properties") }; propertyNodes.count() > 0)
+    {
+        properties.deSerializeXml(propertyNodes.at(0).toElement());
+    }
+
+    for(PhotoShot::Type t : PhotoShot::AllTypes)
+    {
+        QDomNodeList nodes = doc.elementsByTagName(PhotoShot::typeToString(t));
+        for(int i=0; i<nodes.count(); i++)
+        {
+            QDomNodeList photoShotNodes = nodes.at(i).toElement().elementsByTagName("PhotoShot");
+            for(int ii=0; ii<photoShotNodes.count(); ii++)
+            {
+                PhotoShot ps(t);
+                ps.deSerializeXml(photoShotNodes.at(ii).toElement());
+                photoShots.insertMulti(t, std::move(ps));
+            }
         }
     }
 }

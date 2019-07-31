@@ -2,7 +2,6 @@
 #define SEQUENCER_SEQUENCER_CREATENEWDIALOG_H
 
 #include <QDialog>
-#include "Sequencer_Protocol.h"
 
 namespace Sequencer {
 
@@ -18,8 +17,7 @@ public:
     explicit CreateNewDialog(QWidget *parent = nullptr);
     ~CreateNewDialog();
 
-    QString getSubject() const;
-    PhotoShot::Type getType() const;
+    QString getObject() const;
 
 private:
     Ui::CreateNewDialog *ui;
