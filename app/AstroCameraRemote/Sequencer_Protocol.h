@@ -19,8 +19,8 @@ class Protocol : public QObject
 public :
 
 
-
-    typedef QMultiMap<PhotoShot::Type, PhotoShot> PhotoShotMap;
+    typedef QList<PhotoShot> PhotoShotList;
+    typedef QMap<PhotoShot::Type, PhotoShotList> PhotoShotMap;
 
 private :
 

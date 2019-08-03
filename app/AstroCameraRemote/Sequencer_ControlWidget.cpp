@@ -48,7 +48,6 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
         disconnect(normalShootSequencer, nullptr, currentProtocol, nullptr);
         disconnect(Sender::get(), nullptr, currentProtocol, nullptr);
 
-        ui->objectLineEdit->setText("");
     }
 
     currentProtocol = p;
@@ -87,6 +86,8 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
         currentProtocol->save();
 
     }
+    else
+        ui->objectLineEdit->setText("");
 }
 
 ControlWidget::ControlWidget(QWidget *parent) :

@@ -56,7 +56,7 @@ QDateTime Protocol::getStartTime() const
 
 int Protocol::getNumShotsFinished() const
 {
-    return photoShots.count();
+    return photoShots[currentPhotoShotType].count();
 }
 
 QString Protocol::getProtocolPath(bool createIfNotExists)
@@ -160,21 +160,21 @@ void Protocol::havePostViewUrl(QString url, int index, int numShots)
 
     PhotoShot s { index, url, currentPhotoShotType };
     s.timeStamp = QDateTime::currentDateTime();
-    photoShots.insertMulti(s.type, s);
+    photoShots[s.type] << s;
 
 }
 
 void Protocol::havePostViewImage(const QByteArray &data)
 {
-    Q_ASSERT(!photoShots.isEmpty());
-    if(photoShots.isEmpty())
+    Q_ASSERT(!photoShots[currentPhotoShotType].isEmpty());
+    if(photoShots[currentPhotoShotType].isEmpty())
         return;
 
     if(Status_Stopped == status)
         return;
 
 
-    PhotoShot& current = photoShots.last();
+    PhotoShot& current = photoShots[currentPhotoShotType].last();
     Q_ASSERT(!current.exif.isValid());
     if(current.exif.isValid())
     {
@@ -268,9 +268,14 @@ void Protocol::serializeXml(QXmlStreamWriter &writer) const
 
     properties.serializeXml(writer);
 
-    for(auto s : photoShots)
+    for(auto shots : photoShots)
     {
-        s.serializeXml(writer);
+        for(auto s : shots)
+        {
+            writer.writeStartElement(PhotoShot::typeToString(s.type));
+            s.serializeXml(writer);
+            writer.writeEndElement();
+        }
     }
     writer.writeEndElement();
 }
@@ -322,7 +327,7 @@ void Protocol::deSerializeXml(const QByteArray &data)
             {
                 PhotoShot ps(t);
                 ps.deSerializeXml(photoShotNodes.at(ii).toElement());
-                photoShots.insertMulti(t, std::move(ps));
+                photoShots[ps.type] << std::move(ps);
             }
         }
     }
