@@ -50,8 +50,7 @@ void ProtocolView::contextMenu(const QPoint &pos)
 
     try
     {
-        QModelIndex index = indexAt(pos);
-        if(index.isValid())
+        if(QModelIndex index { indexAt(pos) }; index.isValid())
         {
             QMenu m(this);
             QAction* grabImagesAction = m.addAction(tr("Grab images"));
@@ -70,56 +69,61 @@ void ProtocolView::contextMenu(const QPoint &pos)
             if(!protocolPath.exists())
                 throw AstroBase::DirNotFoundException(protocolPath.absolutePath());
 
-            QString subPath = QString("%0/%1/%2")
-                    .arg(protocol->getSubject())
-                    .arg(Protocol::typeToString(protocol->getType()))
-                    .arg(Protocol::colorChannelToString(protocol->getColorChannel()));
 
-            protocolPath.mkpath(subPath);
-            QDir targetDir = protocolPath;
-            targetDir.cd(subPath);
 
             if(!sourceDir.exists())
             {
                 grabImagesAction->setToolTip(tr("Source dir not found: %0").arg(sourceDir.absolutePath()));
             }
-            else if(!targetDir.exists())
+
+            grabImagesAction->setEnabled(true);
+            connect(grabImagesAction, &QAction::triggered, [this, sourceDir, protocolPath, protocol]()
             {
-                grabImagesAction->setToolTip(tr("Target dir not found: %0").arg(targetDir.absolutePath()));
-            }
-            else
-            {
-                grabImagesAction->setEnabled(true);
-                connect(grabImagesAction, &QAction::triggered, [this, sourceDir, targetDir, protocol]()
+                const Protocol::PhotoShotMap& map = protocol->getPhotoShots();
+                QProgressDialog progress(tr("Grabbing images"), tr("Cancel"), 0, map.count(), this);
+                progress.setAutoClose(true);
+                progress.setMinimumDuration(0);
+
+                for(Protocol::PhotoShotMap::const_iterator it=map.begin(); it!=map.end(); ++it)
                 {
+                    PhotoShot::Type type = it.key();
+
 
                     BatchProcess::RawImageGrabber grabber;
 
                     grabber.setSourceDir(sourceDir);
+
+                    QString subPath = QString("%0/%1")
+                            .arg(protocol->getObjectName())
+                            .arg(PhotoShot::typeToString(type));
+
+                    protocolPath.mkpath(subPath);
+                    QDir targetDir = protocolPath;
+                    targetDir.cd(subPath);
+
                     grabber.setTargetDir(targetDir);
                     grabber.setRawFileSuffix("arw");
 
                     EasyExif::EXIFInfoList input;
-                    for(auto ps : protocol->getPhotoShots())
+
+                    for(auto ps : it.value())
                     {
                         if(ps.exif.isValid())
                             input << EasyExif::EXIFInfoPtr(new EasyExif::EXIFInfo(ps.exif));
+
                     }
+
                     grabber.setInput(input);
-
-                    QProgressDialog progress(tr("Grabbing images"), tr("Cancel"), 0, input.count(), this);
-                    progress.setAutoClose(true);
-                    progress.setMinimumDuration(0);
-
                     connect(&grabber, &BatchProcess::RawImageGrabber::progress, [&progress](int done, int maxCount)
                     {
                         Q_UNUSED(maxCount);
                         progress.setValue(done);
                     });
                     grabber.process();
+                }
 
-                });
-            }
+            });
+
 
 
             m.exec(mapToGlobal(pos));
@@ -150,7 +154,7 @@ void ProtocolView::keyPressEvent(QKeyEvent *ke)
         Q_ASSERT(p);
         if(!p)
             return;
-        questionMsg = tr("Remove protocol \"%0\"?").arg(p->getSubject());
+        questionMsg = tr("Remove protocol \"%0\"?").arg(p->getObjectName());
     }
     else
     {

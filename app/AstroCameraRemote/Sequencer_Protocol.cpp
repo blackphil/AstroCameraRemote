@@ -10,170 +10,32 @@
 #include <QProcess>
 #include <QStringList>
 #include <QMap>
-
 #include <Windows.h>
+
+#include <algorithm>
+
+#include "AstroBase_Exception.h"
 
 namespace Sequencer {
 
 
-namespace helper
-{
-const QMap<Protocol::Type, QString>& typeStringMap()
-{
-    static QMap<Protocol::Type, QString> map;
-    if(map.isEmpty())
-    {
-        map[Protocol::Type_Focusing] = "Focusing (no protocol)";
-        map[Protocol::Type_Light   ] = "Light";
-        map[Protocol::Type_Dark    ] = "Dark";
-        map[Protocol::Type_Flat    ] = "Flat";
-    }
-    return map;
-}
-
-const QMap<Protocol::ColorChannel, QString>& colorChannelStringMap()
-{
-    static QMap<Protocol::ColorChannel, QString> map;
-    if(map.isEmpty())
-    {
-        map[Protocol::Color_RGB      ] = "RGB"      ;
-        map[Protocol::Color_Luminance] = "Luminance";
-        map[Protocol::Color_Red      ] = "Red"      ;
-        map[Protocol::Color_Green    ] = "Green"    ;
-        map[Protocol::Color_Blue     ] = "Blue"     ;
-
-    }
-
-    return map;
-}
-}
-
-QString Protocol::typeToString(Type t)
-{
-    if(helper::typeStringMap().contains(t))
-        return helper::typeStringMap()[t];
-    return "Undefined";
-}
-
-Protocol::Type typeFromString(const QString& t)
-{
-    for(QMap<Protocol::Type, QString>::ConstIterator it=helper::typeStringMap().begin(); it!=helper::typeStringMap().end(); ++it)
-    {
-        if(it.value() == t)
-            return it.key();
-    }
-
-    return Protocol::NumTypes;
-}
-
-
-QString Protocol::colorChannelToString(ColorChannel c)
-{
-    if(helper::colorChannelStringMap().contains(c))
-        return helper::colorChannelStringMap()[c];
-    return "undefined";
-}
-
-Protocol::ColorChannel Protocol::colorChannelFromString(const QString& c)
-{
-    for(QMap<Protocol::ColorChannel, QString>::ConstIterator it=helper::colorChannelStringMap().begin(); it!=helper::colorChannelStringMap().end(); ++it)
-    {
-        if(it.value() == c)
-            return it.key();
-    }
-
-    return Protocol::NumColorChannels;
-}
-
-Protocol::ColorChannel Protocol::getColorChannel() const
-{
-    return colorChannel;
-}
-
-void Protocol::setColorChannel(const ColorChannel &value)
-{
-    colorChannel = value;
-}
 
 int Protocol::compareTo(const Protocol *rhs) const
 {
-    if(subject > rhs->subject)
+    if(objectName > rhs->objectName)
         return 1;
 
-    if(subject != rhs->subject)
-        return -1;
-
-    if(type > rhs->type)
-        return 1;
-
-    if(type != rhs->type)
-        return -1;
-
-    if(colorChannel > rhs->colorChannel)
-        return 1;
-
-    if(colorChannel != rhs->colorChannel)
+    if(objectName != rhs->objectName)
         return -1;
 
     return 0;
 }
 
-const QList<Protocol::PhotoShot> &Protocol::getPhotoShots() const
+const Protocol::PhotoShotMap &Protocol::getPhotoShots() const
 {
     return photoShots;
 }
 
-void Protocol::PhotoShot::serializeExif(QXmlStreamWriter &writer) const
-{
-    if(!exif.isValid())
-        return;
-
-    writer.writeStartElement("Exif");
-    writer.writeAttribute("exposureTime", QString::number(exif.ExposureTime));
-    writer.writeAttribute("isoSpeedRatings", QString::number(exif.ISOSpeedRatings));
-
-    writer.writeStartElement("DateTime");
-    writer.writeAttribute("changed", QString::fromStdString(exif.DateTime));
-    writer.writeAttribute("original", QString::fromStdString(exif.DateTimeOriginal));
-    writer.writeAttribute("digitized", QString::fromStdString(exif.DateTimeDigitized));
-    writer.writeAttribute("subSecOriginal", QString::fromStdString(exif.SubSecTimeOriginal));
-    writer.writeEndElement();
-    writer.writeEndElement();
-}
-
-void Protocol::PhotoShot::deSerializeExif(QXmlStreamReader &reader)
-{
-    if(!reader.isStartElement() || reader.name() != "Exif")
-        return;
-
-    while(!reader.atEnd())
-    {
-        if(reader.isStartElement())
-        {
-            if(reader.name() == "Exif")
-            {
-                exif.valid = true;
-                exif.ExposureTime = reader.attributes().value("exposureTime").toDouble();
-                exif.ISOSpeedRatings = reader.attributes().value("isoSpeedRatings").toUShort();
-            }
-            else if(reader.name() == ("DateTime"))
-            {
-                exif.DateTime = reader.attributes().value("changed").toString().toStdString();
-                exif.DateTimeOriginal = reader.attributes().value("original").toString().toStdString();
-                exif.DateTimeDigitized = reader.attributes().value("digitized").toString().toStdString();
-                exif.SubSecTimeOriginal = reader.attributes().value("subSecOriginal").toString().toStdString();
-            }
-        }
-        else if(reader.isEndElement())
-        {
-            if(reader.name() == "Exif")
-                return;
-        }
-
-        reader.readNext();
-    }
-
-}
 
 
 const Properties& Protocol::getProperties() const
@@ -194,7 +56,7 @@ QDateTime Protocol::getStartTime() const
 
 int Protocol::getNumShotsFinished() const
 {
-    return photoShots.count();
+    return photoShots[currentPhotoShotType].count();
 }
 
 QString Protocol::getProtocolPath(bool createIfNotExists)
@@ -215,14 +77,14 @@ QString Protocol::getProtocolPath(bool createIfNotExists)
     return dataPath;
 }
 
-QString Protocol::getSubject() const
+QString Protocol::getObjectName() const
 {
-    return subject;
+    return objectName;
 }
 
-void Protocol::setSubject(const QString &value)
+void Protocol::setObjectName(const QString &value)
 {
-    subject = value;
+    objectName = value;
 }
 
 QString Protocol::getFilePath() const
@@ -232,7 +94,7 @@ QString Protocol::getFilePath() const
     Q_ASSERT(dataDir.exists());
 
 
-    QString fileName = QString("%0.xml").arg(subject.trimmed());
+    QString fileName = QString("%0.xml").arg(objectName.trimmed());
     fileName.replace(QRegularExpression("[/\\\\:\\*\\?<>\\\"]"), "_");
     QFileInfo protocolFileInfo(QDir(dataPath), fileName);
 
@@ -247,22 +109,27 @@ QList<QRectF> Protocol::getReferenceMarkers() const
     return markers;
 }
 
-Protocol::Type Protocol::getType() const
+PhotoShot::Type Protocol::getCurrentPhotoShotType() const
 {
-    return type;
+    return currentPhotoShotType;
 }
 
-void Protocol::setType(const Type &value)
+void Protocol::setCurrentPhotoShotType(const PhotoShot::Type &value)
 {
-    type = value;
+    currentPhotoShotType = value;
 }
 
-Protocol::Protocol(QObject *parent)
+Protocol::Protocol(const QString& name, QObject *parent)
     : QObject(parent)
     , status(Status_Stopped)
+    , objectName(name)
+    , currentPhotoShotType(PhotoShot::Type::Focusing)
 {
     objCount++;
     AB_DBG("CTOR(" << objCount << ")");
+
+
+
 }
 
 Protocol::~Protocol()
@@ -291,24 +158,23 @@ void Protocol::havePostViewUrl(QString url, int index, int numShots)
     if(Status_Stopped == status)
         return;
 
-    PhotoShot fs(index, url);
-    fs.timeStamp = QDateTime::currentDateTime();
-
-    photoShots << fs;
+    PhotoShot s { index, url, currentPhotoShotType };
+    s.timeStamp = QDateTime::currentDateTime();
+    photoShots[s.type] << s;
 
 }
 
 void Protocol::havePostViewImage(const QByteArray &data)
 {
-    Q_ASSERT(!photoShots.isEmpty());
-    if(photoShots.isEmpty())
+    Q_ASSERT(!photoShots[currentPhotoShotType].isEmpty());
+    if(photoShots[currentPhotoShotType].isEmpty())
         return;
 
     if(Status_Stopped == status)
         return;
 
 
-    PhotoShot& current = photoShots.last();
+    PhotoShot& current = photoShots[currentPhotoShotType].last();
     Q_ASSERT(!current.exif.isValid());
     if(current.exif.isValid())
     {
@@ -348,18 +214,15 @@ void Protocol::stop()
 
 void Protocol::save()
 {
-    if(Type_Focusing != type)
-    {
-        QFile f(getFilePath());
-        f.open(QIODevice::WriteOnly | QIODevice::Text);
-        QXmlStreamWriter writer(&f);
-        writer.setAutoFormatting(true);
+    QFile f(getFilePath());
+    f.open(QIODevice::WriteOnly | QIODevice::Text);
 
-        serializeXml(writer);
+    QXmlStreamWriter writer(&f);
+    writer.setAutoFormatting(true);
 
-        f.close();
-    }
+    serializeXml(writer);
 
+    f.close();
 }
 
 bool Protocol::deleteFile()
@@ -383,10 +246,9 @@ bool Protocol::deleteFile()
 void Protocol::serializeXml(QXmlStreamWriter &writer) const
 {
     writer.writeStartElement("Protocol");
-    writer.writeAttribute("subject", subject);
-    writer.writeAttribute("type", QString::number(type));
-    writer.writeAttribute("colorChannel", QString::number(colorChannel));
+    writer.writeAttribute("object", objectName);
     writer.writeAttribute("startTime", startTime.toString("yyyy-MM-ddThh:mm:ss.zzz"));
+    writer.writeAttribute("currentType", PhotoShot::typeToString(currentPhotoShotType));
 
     if(!markers.isEmpty())
     {
@@ -406,108 +268,71 @@ void Protocol::serializeXml(QXmlStreamWriter &writer) const
 
     properties.serializeXml(writer);
 
-    Q_FOREACH(const PhotoShot& fs, photoShots)
+    for(auto shots : photoShots)
     {
-        fs.serializeXml(writer);
+        for(auto s : shots)
+        {
+            writer.writeStartElement(PhotoShot::typeToString(s.type));
+            s.serializeXml(writer);
+            writer.writeEndElement();
+        }
     }
     writer.writeEndElement();
 }
 
-void Protocol::deSerializeXml(QXmlStreamReader &reader)
+void Protocol::deSerializeXml(const QByteArray &data)
 {
-    while(!reader.atEnd())
-    {
-        switch(reader.readNext())
-        {
-        case QXmlStreamReader::StartElement :
-            if(reader.name() == "Protocol")
-            {
-                startTime = QDateTime::fromString(reader.attributes().value("startTime").toString(), "yyyy-MM-ddThh:mm:ss.zzz");
-                subject = reader.attributes().value("subject").toString();
-                type = static_cast<Type>(reader.attributes().value("type").toInt());
-                colorChannel = static_cast<ColorChannel>(reader.attributes().value("colorChannel").toInt());
-            }
-            else if(reader.name() == "Properties")
-            {
-                properties.deSerializeXml(reader);
-            }
-            else if(reader.name() == "PhotoShot")
-            {
-                PhotoShot ps;
-                ps.deSerializeXml(reader);
-                photoShots << ps;
-            }
-            else if(reader.name() == "Marker")
-            {
-                QStringList values = reader.attributes().value("rect").toString().split(";");
-                Q_ASSERT(values.count() == 4);
-                if(values.count() == 4)
-                {
-                    QRectF m(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
-                    if(!m.isNull())
-                        markers << m;
-                }
+    QString errMsg;
+    int errLine, errCol;
 
+    QDomDocument doc;
+    if(!doc.setContent(data, &errMsg, &errLine, &errCol))
+    {
+        throw AstroBase::Exception(tr("Error reading protocol at line %0, column %1: %2")
+                                   .arg(errLine).arg(errCol).arg(errMsg));
+    }
+
+    QDomElement rootEl = doc.childNodes().at(0).toElement();
+    startTime = QDateTime::fromString(rootEl.attribute("startTime"), "yyyy-MM-ddThh:mm:ss.zzz");
+    objectName = rootEl.attribute("object");
+    currentPhotoShotType = PhotoShot::typeFromString(rootEl.attribute("currentType"));
+
+    QDomNodeList markerNodes { doc.elementsByTagName("Marker") };
+    for(int i=0; i<markerNodes.count(); i++)
+    {
+        QDomElement markerEl { markerNodes.at(i).toElement() };
+        if(QStringList values { markerEl.attribute("rect").split(";") }; values.count() == 4)
+        {
+            if(QRectF f { values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble() }; !f.isNull())
+            {
+                markers << std::move(f);
+                continue;
             }
-            break;
-        default :
-            break;
+        }
+        throw AstroBase::Exception(tr("Invalid marker data at line %0, column %1").arg(markerEl.lineNumber()).arg(markerEl.columnNumber()));
+    }
+
+    if(QDomNodeList propertyNodes { doc.elementsByTagName("Properties") }; propertyNodes.count() > 0)
+    {
+        properties.deSerializeXml(propertyNodes.at(0).toElement());
+    }
+
+    for(PhotoShot::Type t : PhotoShot::AllTypes)
+    {
+        QDomNodeList nodes = doc.elementsByTagName(PhotoShot::typeToString(t));
+        for(int i=0; i<nodes.count(); i++)
+        {
+            QDomNodeList photoShotNodes = nodes.at(i).toElement().elementsByTagName("PhotoShot");
+            for(int ii=0; ii<photoShotNodes.count(); ii++)
+            {
+                PhotoShot ps(t);
+                ps.deSerializeXml(photoShotNodes.at(ii).toElement());
+                photoShots[ps.type] << std::move(ps);
+            }
         }
     }
 }
 
-Protocol::PhotoShot::PhotoShot()
-    : index(-1)
-{
-}
-
-Protocol::PhotoShot::PhotoShot(int index, QString fileName)
-    : index(index)
-    , fileName(fileName)
-{
-
-}
-
-void Protocol::PhotoShot::serializeXml(QXmlStreamWriter &writer) const
-{
-    writer.writeStartElement("PhotoShot");
-    writer.writeAttribute("index", QString::number(index));
-    writer.writeAttribute("fileName", fileName);
-    writer.writeAttribute("timeStamp", timeStamp.toString("yyyy-MM-ddThh:mm:ss.zzz"));
-
-    serializeExif(writer);
-    writer.writeEndElement();
-}
-
-void Protocol::PhotoShot::deSerializeXml(QXmlStreamReader &reader)
-{
-    if(!reader.isStartElement() || reader.name() != "PhotoShot")
-        return;
-
-    while(!reader.atEnd())
-    {
-        if(reader.isStartElement())
-        {
-            if(reader.name() == "PhotoShot")
-            {
-                index = reader.attributes().value("index").toInt();
-                fileName = reader.attributes().value("fileName").toString();
-                timeStamp = QDateTime::fromString(reader.attributes().value("timeStamp").toString(), "yyyy-MM-ddThh:mm:ss.zzz");
-            }
-            else if(reader.name() == "Exif")
-            {
-                deSerializeExif(reader);
-            }
-        }
-        else if(reader.isEndElement())
-        {
-            if(reader.name() == "PhotoShot")
-                return;
-        }
-
-        reader.readNext();
-    }
-}
 
 
 } // namespace Sequencer

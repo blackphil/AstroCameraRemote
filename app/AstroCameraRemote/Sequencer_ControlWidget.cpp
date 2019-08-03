@@ -48,7 +48,6 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
         disconnect(normalShootSequencer, nullptr, currentProtocol, nullptr);
         disconnect(Sender::get(), nullptr, currentProtocol, nullptr);
 
-        ui->subjectLineEdit->setText("");
     }
 
     currentProtocol = p;
@@ -66,7 +65,7 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
             sequencer = normalShootSequencer;
         }
 
-        AB_DBG("protocol to sequencer: " << currentProtocol->getSubject());
+        AB_DBG("protocol to sequencer: " << currentProtocol->getObjectName());
 
 
         connect(sequencer, SIGNAL(started()), currentProtocol, SLOT(start()));
@@ -81,13 +80,14 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
         sequencer->setStartDelay(currentProtocol->getProperties().startDelay);
         //        duration = sequencer->calculateSequenceDuration();
 
-        if(currentProtocol->getType() != Protocol::Type_Focusing)
-            protocolModel->addProtocol(currentProtocol);
+        protocolModel->addProtocol(currentProtocol);
 
         currentProtocol->setReferenceMarkers(referenceMarkers);
         currentProtocol->save();
 
     }
+    else
+        ui->objectLineEdit->setText("");
 }
 
 ControlWidget::ControlWidget(QWidget *parent) :
@@ -105,6 +105,11 @@ ControlWidget::ControlWidget(QWidget *parent) :
   , protocolModel(new ProtocolModel(this))
 {
     ui->setupUi(this);
+
+    for(PhotoShot::Type t : PhotoShot::AllTypes)
+    {
+        ui->type->addItem(PhotoShot::typeToString(t));
+    }
 
     ui->tabWidget->setCurrentWidget(ui->mainTab);
 
@@ -177,7 +182,7 @@ void ControlWidget::onPostView(const QString &url)
     bool ok = false;
 
     PostView::Info newInfo;
-    newInfo.setSubject(ui->subjectLineEdit->text());
+    newInfo.setSubject(ui->objectLineEdit->text());
     newInfo.setShutterSpeed(ui->shutterSpeed->currentText());
     newInfo.setShutterSpeedBulbMs(ui->shutterSpeedTuBtn->getValueInMilliseconds());
     newInfo.setIso(ui->isoSpeedRate->currentText().toInt(&ok));
@@ -197,7 +202,7 @@ void ControlWidget::onPostView(const QString& url, int i, int numShots)
     bool ok = false;
 
     PostView::Info newInfo;
-    newInfo.setSubject(ui->subjectLineEdit->text());
+    newInfo.setSubject(ui->objectLineEdit->text());
     newInfo.setShutterSpeed(ui->shutterSpeed->currentText());
     newInfo.setShutterSpeedBulbMs(ui->shutterSpeedTuBtn->getValueInMilliseconds());
     newInfo.setIso(ui->isoSpeedRate->currentText().toInt(&ok));
@@ -246,19 +251,17 @@ void ControlWidget::shutterSpeedsChanged(const QStringList &candidates, const QS
 
 void ControlWidget::loadProtocols()
 {
-    QDir dir(Protocol::getProtocolPath());
-    if(!dir.exists())
-        return;
-
-    QFileInfoList protocolFilePaths = dir.entryInfoList(QStringList() << "*.xml", QDir::Files, QDir::Name);
-    for(const QFileInfo& fi : protocolFilePaths)
+    if(QDir dir(Protocol::getProtocolPath()); dir.exists())
     {
-        Protocol* p = new Protocol(this);
-        QFile f(fi.absoluteFilePath());
-        f.open(QIODevice::ReadOnly | QIODevice::Text);
-        QXmlStreamReader reader(&f);
-        p->deSerializeXml(reader);
-        protocolModel->addProtocol(p);
+        QFileInfoList protocolFilePaths { dir.entryInfoList(QStringList() << "*.xml", QDir::Files, QDir::Name) };
+        for(const QFileInfo& fi : protocolFilePaths)
+        {
+            Protocol* p { new Protocol(fi.absoluteFilePath(), this) };
+            QFile f(fi.absoluteFilePath());
+            f.open(QIODevice::ReadOnly | QIODevice::Text);
+            p->deSerializeXml(f.readAll());
+            protocolModel->addProtocol(p);
+        }
     }
 }
 
@@ -268,8 +271,9 @@ void ControlWidget::uiToProtocol(Protocol* protocol) const
     if(!protocol)
         return;
 
-    AB_DBG("UI to protocol: " << protocol->getSubject());
+    AB_DBG("UI to protocol: " << protocol->getObjectName());
 
+    protocol->setCurrentPhotoShotType(PhotoShot::typeFromString(ui->type->currentText()));
 
     Properties properties;
     properties.shutterSpeed = ui->shutterSpeed->currentText();
@@ -313,10 +317,12 @@ void ControlWidget::protocolToUi(Protocol *protocol)
         return;
     }
 
-    AB_DBG("protocol to UI: " << protocol->getSubject());
+    AB_DBG("protocol to UI: " << protocol->getObjectName());
 
 
-    ui->subjectLineEdit->setText(protocol->getSubject());
+    ui->objectLineEdit->setText(protocol->getObjectName());
+
+    ui->type->setCurrentText(PhotoShot::typeToString(protocol->getCurrentPhotoShotType()));
 
     const Properties& p = protocol->getProperties();
     ui->shutterSpeed->setCurrentText(p.shutterSpeed);
@@ -344,6 +350,7 @@ void ControlWidget::protocolToUi(Protocol *protocol)
 void ControlWidget::shootSequencerStarted()
 {
     ui->startBulbSequence->setText(tr("Stop sequence"));
+    ui->type->setEnabled(false);
 }
 
 void ControlWidget::shootSequencerStopped()
@@ -370,6 +377,7 @@ void ControlWidget::shootSequencerStopped()
 
     Q_EMIT msgPoster->info(tr("shoot sequence stopped."));
     ui->startBulbSequence->setText(tr("Start sequence"));
+    ui->type->setEnabled(true);
 }
 
 void ControlWidget::recalcSequenceDuration()
@@ -519,8 +527,22 @@ void ControlWidget::on_loadBtn_clicked()
 
 }
 
-void ControlWidget::on_newSequenceBtn_clicked()
+
+void ControlWidget::handleCameraStatus(const QString & status)
 {
+    if(status == "IDLE")
+    {
+        ui->settingsGroup->setEnabled(true);
+    }
+    else
+    {
+        ui->settingsGroup->setEnabled(false);
+    }
+}
+
+void ControlWidget::on_newBtn_clicked()
+{
+
     Q_ASSERT(currentProtocol == nullptr || !currentProtocol->isRecording());
     if(currentProtocol != nullptr)
     {
@@ -537,33 +559,20 @@ void ControlWidget::on_newSequenceBtn_clicked()
     CreateNewDialog dlg(this);
     if(dlg.exec() == QDialog::Accepted)
     {
-        Protocol* newProtocol = new Protocol(this);
-        newProtocol->setSubject(dlg.getSubject());
-        newProtocol->setType(dlg.getType());
-        newProtocol->setColorChannel(dlg.getColorChannel());
+        Protocol* newProtocol = new Protocol(dlg.getObject(), this);
         uiToProtocol(newProtocol);
         setCurrentProtocol(newProtocol);
 
-        ui->subjectLineEdit->setText(newProtocol->getSubject());
+        ui->objectLineEdit->setText(newProtocol->getObjectName());
 
 
-        QMessageBox::information(this, tr("New sequence"), tr("New sequence \"%0\" created.").arg(currentProtocol->getSubject()));
-    }
-}
-
-void ControlWidget::handleCameraStatus(const QString & status)
-{
-    if(status == "IDLE")
-    {
-        ui->settingsGroup->setEnabled(true);
-    }
-    else
-    {
-        ui->settingsGroup->setEnabled(false);
+        QMessageBox::information(this, tr("New sequence"), tr("New sequence \"%0\" created.").arg(currentProtocol->getObjectName()));
     }
 }
 
 } // namespace Sequencer
+
+
 
 
 

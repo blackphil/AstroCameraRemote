@@ -34,19 +34,18 @@ void Properties::serializeXml(QXmlStreamWriter &writer) const
     writer.writeEndElement();
 }
 
-void Properties::deSerializeXml(QXmlStreamReader &reader)
+void Properties::deSerializeXml(QDomElement xml)
 {
-    if(reader.isStartElement() && reader.name() == "Properties")
-    {
-        shutterSpeed = reader.attributes().value("shutterSpeed").toString();
-        iso = reader.attributes().value("iso").toString();
-        shutterSpeedBulbUnit = reader.attributes().value("shutterSpeedBulbUnit").toInt();
-        startDelay = reader.attributes().value("startDelay").toInt();
-        startDelayUnit = reader.attributes().value("startDelayUnit").toInt();
-        pause = reader.attributes().value("pause").toInt();
-        pauseUnit = reader.attributes().value("pauseUnit").toInt();
-        numShots = reader.attributes().value("numShots").toInt();
-    }
+
+    shutterSpeed         = xml.attribute("shutterSpeed");
+    iso                  = xml.attribute("iso");
+    shutterSpeedBulbUnit = xml.attribute("shutterSpeedBulbUnit").toInt();
+    startDelay           = xml.attribute("startDelay").toInt();
+    startDelayUnit       = xml.attribute("startDelayUnit").toInt();
+    pause                = xml.attribute("pause").toInt();
+    pauseUnit            = xml.attribute("pauseUnit").toInt();
+    numShots             = xml.attribute("numShots").toInt();
+
 }
 
 int Properties::getShutterSpeedInMilliseconds() const

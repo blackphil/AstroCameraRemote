@@ -6,7 +6,7 @@
 include($${top_srcdir}/common_pre.pri)
 
 
-QT       += core gui network widgets
+QT       += core gui network widgets xml
 
 TARGET = AstroCameraRemote
 TEMPLATE = app
@@ -72,7 +72,8 @@ SOURCES += main.cpp\
     Sequencer_Properties.cpp \
     Sequencer_ProtocolView.cpp \
     ImageViewZoomControl.cpp \
-    Sequencer_CreateNewDialog.cpp
+    Sequencer_CreateNewDialog.cpp \
+    Sequencer_PhotoShot.cpp
 
 HEADERS  += MainWindow.h \
     SsdpClient.h \
@@ -125,7 +126,8 @@ HEADERS  += MainWindow.h \
     Sequencer_Properties.h \
     Sequencer_ProtocolView.h \
     ImageViewZoomControl.h \
-    Sequencer_CreateNewDialog.h
+    Sequencer_CreateNewDialog.h \
+    Sequencer_PhotoShot.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

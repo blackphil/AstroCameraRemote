@@ -46,7 +46,12 @@ void LenseGraphcisScene::updateStar(const QImage &image)
         return;
     }
     AB_INF("bounding(" << width() << ", " << height() << ")");
-    star->setPixmap(QPixmap::fromImage(image.scaled(width(), height(), Qt::KeepAspectRatio)));
+    star->setPixmap(
+                QPixmap::fromImage(
+                    image.scaled(
+                        static_cast<int>(std::round(width()))
+                        , static_cast<int>(std::round(height()))
+                        , Qt::KeepAspectRatio)));
 }
 
 void LenseGraphcisScene::updateHfd(StarInfoPtr starInfo)

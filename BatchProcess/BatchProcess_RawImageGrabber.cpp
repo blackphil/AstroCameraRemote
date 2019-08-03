@@ -132,8 +132,15 @@ void RawImageGrabber::process()
                     return;
 
                 QDateTime inputDt = QDateTime::fromString(QString::fromStdString(inputExif->DateTimeOriginal), "yyyy:MM:dd hh:mm:ss");
-                QDateTime inputFrom = inputDt.addSecs(-1);
-                QDateTime inputTo = inputDt.addSecs(1);
+                QDateTime inputFrom = inputDt.addSecs(-2);
+                QDateTime inputTo = inputDt.addSecs(2);
+
+//                QString dbgDt = dt.toString("yyyy:MM:dd hh:mm:ss");
+//                QString dbgInDt = inputDt.toString("yyyy:MM:dd hh:mm:ss");
+//                QString dbgInFrom = inputFrom.toString("yyyy:MM:dd hh:mm:ss");
+//                QString dbgInTo = inputTo.toString("yyyy:MM:dd hh:mm:ss");
+
+
                 if(dt >= inputFrom && dt <= inputTo)
                 {
                     AB_DBG("Found raw file:" << info.fileName() << ", creation:" << dt.toString("yyyy:MM:dd hh:mm:ss"));
@@ -144,6 +151,8 @@ void RawImageGrabber::process()
 
                     count++;
                     Q_EMIT progress(count, input.count());
+
+                    break;
 
                 }
             }

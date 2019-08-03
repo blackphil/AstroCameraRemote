@@ -2,7 +2,7 @@
 #define SEQUENCER_PROPERTIES_H
 
 #include <QString>
-#include <QXmlStreamReader>
+#include <QDomElement>
 #include <QXmlStreamWriter>
 
 namespace Sequencer {
@@ -10,6 +10,7 @@ namespace Sequencer {
 struct Properties
 {
     Properties();
+
     QString shutterSpeed;
     QString iso;
     int shutterSpeedBulb;
@@ -21,7 +22,7 @@ struct Properties
     int numShots;
 
     void serializeXml(QXmlStreamWriter& writer) const;
-    void deSerializeXml(QXmlStreamReader& reader);
+    void deSerializeXml(QDomElement xml);
 
     int getShutterSpeedInMilliseconds() const;
     bool isBulb() const;
