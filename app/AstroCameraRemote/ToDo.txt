@@ -5,7 +5,8 @@
 - FITS Laden der Pixeldaten nach Fits::File verlagern. Plugin Klasse soll nur noch anhand min/max +optionen(?) auf 256er skalieren
 - PostView Laden vieler Dateien parallelisieren
 - PostView soll bei FITS Dateien Einstellmöglichkeiten für Farbskalierung und Gamma bekommen
-- BUG: Protokolle des selben projekts (subject) mit verschiedenen Typen (light, dark etc.) können nicht gemeinsam existieren
+- ProgressBar beim image grabber reparieren
+- Image grabber tunen
 
 - DONE neu organisieren ("SonyAlphaRemote" is zu lang und eigentlich überflüssig)
 - WORKSFORME: bugfix: je nach länge/breite des mainwindows wird das preview-image nicht vollständig angezeit.
@@ -33,6 +34,7 @@
 - DONE FITS über Qt-Plugin Mechanismus einlesen
 - DONE FITS Image Dimensionen ermitteln, bevor QImage erzeugt wird
 - DONE metadata download
+- DONE BUG: Protokolle des selben projekts (subject) mit verschiedenen Typen (light, dark etc.) können nicht gemeinsam existieren
 
 
 - DROPPED Bahtinov Stern verfolgen
