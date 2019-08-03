@@ -7,6 +7,7 @@
 - PostView soll bei FITS Dateien Einstellmöglichkeiten für Farbskalierung und Gamma bekommen
 - ProgressBar beim image grabber reparieren
 - Image grabber tunen
+- BUG: saving/loading of the shutter speed from/to protocol is crazy: wrong values; values seem to jump from one protocol to another.
 
 - DONE neu organisieren ("SonyAlphaRemote" is zu lang und eigentlich überflüssig)
 - WORKSFORME: bugfix: je nach länge/breite des mainwindows wird das preview-image nicht vollständig angezeit.

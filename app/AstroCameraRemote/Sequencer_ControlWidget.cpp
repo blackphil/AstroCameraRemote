@@ -137,12 +137,13 @@ ControlWidget::ControlWidget(QWidget *parent) :
     connect(bulbShootSequencer, SIGNAL(havePostViewUrl(QString, int, int)), this, SLOT(onPostView(QString, int, int)));
     connect(bulbShootSequencer, SIGNAL(started()), this, SLOT(shootSequencerStarted()));
     connect(bulbShootSequencer, SIGNAL(stopped()), this, SLOT(shootSequencerStopped()));
+    connect(bulbShootSequencer, SIGNAL(updateStatus(QString)), ui->status, SLOT(setText(QString)));
 
     connect(normalShootSequencer, SIGNAL(statusMessage(QString)), msgPoster, SIGNAL(info(QString)));
     connect(normalShootSequencer, SIGNAL(havePostViewUrl(QString,int,int)), this, SLOT(onPostView(QString,int,int)));
     connect(normalShootSequencer, SIGNAL(started()), this, SLOT(shootSequencerStarted()));
     connect(normalShootSequencer, SIGNAL(stopped()), this, SLOT(shootSequencerStopped()));
-
+    connect(normalShootSequencer, SIGNAL(updateStatus(QString)), ui->status, SLOT(setText(QString)));
 
 
 
