@@ -73,7 +73,8 @@ SOURCES += main.cpp\
     Sequencer_ProtocolView.cpp \
     ImageViewZoomControl.cpp \
     Sequencer_CreateNewDialog.cpp \
-    Sequencer_PhotoShot.cpp
+    Sequencer_PhotoShot.cpp \
+    TimeUnit.cpp
 
 HEADERS  += MainWindow.h \
     SsdpClient.h \
@@ -127,7 +128,8 @@ HEADERS  += MainWindow.h \
     Sequencer_ProtocolView.h \
     ImageViewZoomControl.h \
     Sequencer_CreateNewDialog.h \
-    Sequencer_PhotoShot.h
+    Sequencer_PhotoShot.h \
+    TimeUnit.h
 
 FORMS    += MainWindow.ui \
     SettingsDialog.ui \

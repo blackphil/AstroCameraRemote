@@ -3,6 +3,7 @@
 #include <QPointer>
 
 #include "AstroBase.h"
+#include "TimeUnit.h"
 
 namespace Sequencer {
 
@@ -55,7 +56,13 @@ QVariant ProtocolModel::data(const QModelIndex &index, int role) const
         case 0 : return item->getObjectName();
         case 1 : return item->getStartTime().toString("dd. MM. yyyy hh:mm:ss");
         case 2 : return QString("%0/%1").arg(item->getNumShotsFinished()).arg(item->getProperties().numShots);
-        case 3 : return item->getProperties().shutterSpeed;
+
+        case 3 :
+            if(const Properties& p = item->getProperties(); p.shutterSpeed == "BULB")
+                return QString("(BULB) %0 %1").arg(p.shutterSpeedBulb).arg(TimeUnits[static_cast<int>(p.shutterSpeedBulbUnit)].name);
+            else
+                return item->getProperties().shutterSpeed;
+
         case 4 : return item->getProperties().iso;
         case 5 : return item->getProperties().startDelay;
         case 6 : return item->getProperties().pause;

@@ -11,11 +11,11 @@ Properties::Properties()
     : shutterSpeed("BULB")
     , iso("800")
     , shutterSpeedBulb(1000)
-    , shutterSpeedBulbUnit(2)
+    , shutterSpeedBulbUnit(TimeUnit::Unit::Seconds)
     , startDelay(0)
-    , startDelayUnit(2)
+    , startDelayUnit(TimeUnit::Unit::Seconds)
     , pause(1000)
-    , pauseUnit(2)
+    , pauseUnit(TimeUnit::Unit::Seconds)
     , numShots(1)
 {}
 
@@ -25,11 +25,11 @@ void Properties::serializeXml(QXmlStreamWriter &writer) const
     writer.writeAttribute("shutterSpeed", shutterSpeed);
     writer.writeAttribute("iso", iso);
     writer.writeAttribute("shutterSpeedBulb", QString::number(shutterSpeedBulb));
-    writer.writeAttribute("shutterSpeedBulbUnit", QString::number(shutterSpeedBulbUnit));
+    writer.writeAttribute("shutterSpeedBulbUnit", QString::number(static_cast<int>(shutterSpeedBulbUnit)));
     writer.writeAttribute("startDelay", QString::number(startDelay));
-    writer.writeAttribute("startDelayUnit", QString::number(startDelayUnit));
+    writer.writeAttribute("startDelayUnit", QString::number(static_cast<int>(startDelayUnit)));
     writer.writeAttribute("pause", QString::number(pause));
-    writer.writeAttribute("pauseUnit", QString::number(pauseUnit));
+    writer.writeAttribute("pauseUnit", QString::number(static_cast<int>(pauseUnit)));
     writer.writeAttribute("numShots", QString::number(numShots));
     writer.writeEndElement();
 }
@@ -39,11 +39,11 @@ void Properties::deSerializeXml(QDomElement xml)
 
     shutterSpeed         = xml.attribute("shutterSpeed");
     iso                  = xml.attribute("iso");
-    shutterSpeedBulbUnit = xml.attribute("shutterSpeedBulbUnit").toInt();
+    shutterSpeedBulbUnit = static_cast<TimeUnit::Unit>(xml.attribute("shutterSpeedBulbUnit").toInt());
     startDelay           = xml.attribute("startDelay").toInt();
-    startDelayUnit       = xml.attribute("startDelayUnit").toInt();
+    startDelayUnit       = static_cast<TimeUnit::Unit>(xml.attribute("startDelayUnit").toInt());
     pause                = xml.attribute("pause").toInt();
-    pauseUnit            = xml.attribute("pauseUnit").toInt();
+    pauseUnit            = static_cast<TimeUnit::Unit>(xml.attribute("pauseUnit").toInt());
     numShots             = xml.attribute("numShots").toInt();
 
 }
@@ -73,6 +73,7 @@ bool Properties::isBulb() const
 {
     return shutterSpeed == "BULB" ? true : false;
 }
+
 
 
 } //namespace Sequencer

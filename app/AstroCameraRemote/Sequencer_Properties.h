@@ -5,6 +5,8 @@
 #include <QDomElement>
 #include <QXmlStreamWriter>
 
+#include "TimeUnit.h"
+
 namespace Sequencer {
 
 struct Properties
@@ -14,11 +16,11 @@ struct Properties
     QString shutterSpeed;
     QString iso;
     int shutterSpeedBulb;
-    int shutterSpeedBulbUnit;
+    TimeUnit::Unit shutterSpeedBulbUnit;
     int startDelay;
-    int startDelayUnit;
+    TimeUnit::Unit startDelayUnit;
     int pause;
-    int pauseUnit;
+    TimeUnit::Unit pauseUnit;
     int numShots;
 
     void serializeXml(QXmlStreamWriter& writer) const;
@@ -26,6 +28,7 @@ struct Properties
 
     int getShutterSpeedInMilliseconds() const;
     bool isBulb() const;
+
 
 };
 

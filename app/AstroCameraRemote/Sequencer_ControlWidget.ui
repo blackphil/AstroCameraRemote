@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>381</width>
-    <height>451</height>
+    <height>452</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -111,7 +111,7 @@
        <item row="2" column="0" colspan="3">
         <widget class="QGroupBox" name="settingsGroup">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">

@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QDoubleSpinBox>
 
+#include "TimeUnit.h"
 
 
 
@@ -11,44 +12,21 @@ class TimeUnitButton : public QPushButton
 {
     Q_OBJECT
 
-public :
-    enum Unit
-    {
-        Unit_Minutes
-        , Unit_Seconds
-        , Unit_Milliseconds
-        , NumUnits
-    };
-
-
-
-private :
-    struct UnitSettings
-    {
-        QString name;
-        int decimals;
-        double conversionFactor;
-        double convertToMSec;
-        double maxValue;
-    };
-    UnitSettings unitSettings[NumUnits];
-
-
     QDoubleSpinBox* connectedSpinBox;
 
-    int unit;
+    TimeUnit::Unit unit;
     void internalUpdate(bool updateSpinBoxValue);
 
 Q_SIGNALS :
-    void unitChanged(int);
+    void unitChanged(TimeUnit::Unit);
     void valueChanged(int);
 
 
 public:
     TimeUnitButton(QWidget *parent);
 
-    int currentUnit() const;
-    void setCurrentUnit(int unit);
+    TimeUnit::Unit currentUnit() const;
+    void setCurrentUnit(TimeUnit::Unit unit);
 
     int getValueInMilliseconds() const;
     void setValueInMilliseconds(int v);

@@ -115,9 +115,9 @@ ControlWidget::ControlWidget(QWidget *parent) :
 
     ui->stashedShootings->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-    ui->shutterSpeedTuBtn->setCurrentUnit(TimeUnitButton::Unit_Seconds);
-    ui->startDelayTuBtn->setCurrentUnit(TimeUnitButton::Unit_Seconds);
-    ui->pauseTuBtn->setCurrentUnit(TimeUnitButton::Unit_Seconds);
+    ui->shutterSpeedTuBtn->setCurrentUnit(TimeUnit::Unit::Seconds);
+    ui->startDelayTuBtn->setCurrentUnit(TimeUnit::Unit::Seconds);
+    ui->pauseTuBtn->setCurrentUnit(TimeUnit::Unit::Seconds);
 
     connect(StatusPoller::get(), SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
 
@@ -352,7 +352,7 @@ void ControlWidget::protocolToUi(Protocol *protocol)
 void ControlWidget::shootSequencerStarted()
 {
     ui->startBulbSequence->setText(tr("Stop sequence"));
-    ui->type->setEnabled(false);
+//    ui->type->setEnabled(false);
 }
 
 void ControlWidget::shootSequencerStopped()
@@ -490,8 +490,8 @@ void ControlWidget::shutterSpeedChanged(const QString &value)
     }
     else
     {
-        ui->shutterSpeedBulb->setEnabled(false);
-        ui->shutterSpeedTuBtn->setEnabled(false);
+       // ui->shutterSpeedBulb->setEnabled(false);
+      //  ui->shutterSpeedTuBtn->setEnabled(false);
     }
 
 }
@@ -538,7 +538,7 @@ void ControlWidget::handleCameraStatus(const QString & status)
     }
     else
     {
-        ui->settingsGroup->setEnabled(false);
+     //   ui->settingsGroup->setEnabled(false);
     }
 }
 
