@@ -1,13 +1,13 @@
-- Icons werden auf nicht-entwickler-systemen nicht dargestellt (SVG Plugin ggf. nicht gefunden?)
-- gui verriegelungen
-- ssdp abfrage für kamera suche
+kanban - Icons werden auf nicht-entwickler-systemen nicht dargestellt (SVG Plugin ggf. nicht gefunden?)
+kanban - gui verriegelungen
+kanban - ssdp abfrage für kamera suche
 - command source code aufräumen
 - FITS Laden der Pixeldaten nach Fits::File verlagern. Plugin Klasse soll nur noch anhand min/max +optionen(?) auf 256er skalieren
 - PostView Laden vieler Dateien parallelisieren
 - PostView soll bei FITS Dateien Einstellmöglichkeiten für Farbskalierung und Gamma bekommen
-- ProgressBar beim image grabber reparieren
-- Image grabber tunen
-- BUG: saving/loading of the shutter speed from/to protocol is crazy: wrong values; values seem to jump from one protocol to another.
+kanban - ProgressBar beim image grabber reparieren
+kanban - Image grabber tunen
+kanban - BUG: saving/loading of the shutter speed from/to protocol is crazy: wrong values; values seem to jump from one protocol to another.
 
 - DONE neu organisieren ("SonyAlphaRemote" is zu lang und eigentlich überflüssig)
 - WORKSFORME: bugfix: je nach länge/breite des mainwindows wird das preview-image nicht vollständig angezeit.

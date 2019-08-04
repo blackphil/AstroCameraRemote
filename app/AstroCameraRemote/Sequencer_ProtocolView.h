@@ -25,6 +25,9 @@ public:
 private Q_SLOTS :
     void contextMenu(const QPoint& pos);
 
+Q_SIGNALS :
+    void activateSelectedProtocol();
+
 protected:
     void keyPressEvent(QKeyEvent* ke);
 

@@ -122,6 +122,7 @@ ControlWidget::ControlWidget(QWidget *parent) :
     connect(StatusPoller::get(), SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
 
     ui->stashedShootings->setModel(protocolModel);
+    connect(ui->stashedShootings, SIGNAL(activateSelectedProtocol()), this, SLOT(on_loadBtn_clicked()));
 
 
     connect(setShutterSpeed, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));

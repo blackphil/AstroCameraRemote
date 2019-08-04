@@ -22,6 +22,7 @@ ProtocolView::ProtocolView(QWidget *parent)
     , msgPoster(new MessagePoster(this))
 {
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenu(QPoint)));
+    connect(this, SIGNAL(doubleClicked(QModelIndex)), this, SIGNAL(activateSelectedProtocol()));
 }
 
 ProtocolView::~ProtocolView()
@@ -53,10 +54,6 @@ void ProtocolView::contextMenu(const QPoint &pos)
         if(QModelIndex index { indexAt(pos) }; index.isValid())
         {
             QMenu m(this);
-            QAction* grabImagesAction = m.addAction(tr("Grab images"));
-            grabImagesAction->setEnabled(false);
-
-            QDir sourceDir("F:/DCIM/100MSDCF");
 
             ProtocolModel* model = this->getProtocolModel();
             if(!model)
@@ -64,6 +61,18 @@ void ProtocolView::contextMenu(const QPoint &pos)
             Protocol* protocol = model->getProtocol(index);
             if(!protocol)
                 return;
+
+            QAction* activateProtocol = m.addAction(tr("Activate"));
+            connect(activateProtocol, &QAction::triggered, [this]()
+            {
+                Q_EMIT activateSelectedProtocol();
+            });
+
+            QAction* grabImagesAction = m.addAction(tr("Grab images"));
+            grabImagesAction->setEnabled(false);
+
+            QDir sourceDir("F:/DCIM/100MSDCF");
+
 
             QDir protocolPath = protocol->getProtocolPath(false);
             if(!protocolPath.exists())
