@@ -1,14 +1,13 @@
 #ifndef BATCHPROCESS_NUMERICSIGNAL_H
 #define BATCHPROCESS_NUMERICSIGNAL_H
 
-#include "batchprocess_global.h"
 #include "BatchProcess_Signal.h"
 
 #include <QSharedPointer>
 
 namespace BatchProcess {
 
-class BATCHPROCESSSHARED_EXPORT NumericSignal : public Signal
+class NumericSignal : public Signal
 {
     Q_OBJECT
 

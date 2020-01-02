@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include <QProgressDialog>
-#include "batchprocess_global.h"
 #include "BatchProcess_TaskInterface.h"
 
 namespace BatchProcess {
@@ -12,7 +11,7 @@ namespace Ui {
 class SelectFilesDialog;
 }
 
-class BATCHPROCESSSHARED_EXPORT SelectFilesDialog : public QDialog
+class SelectFilesDialog : public QDialog
 {
     Q_OBJECT
 

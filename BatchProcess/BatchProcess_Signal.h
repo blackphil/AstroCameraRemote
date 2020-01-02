@@ -1,7 +1,6 @@
 #ifndef BATCHPROCESS_SIGNAL_H
 #define BATCHPROCESS_SIGNAL_H
 
-#include "batchprocess_global.h"
 #include <QObject>
 #include <QString>
 #include <QSharedPointer>
@@ -10,7 +9,7 @@ class QWidget;
 
 namespace BatchProcess {
 
-class BATCHPROCESSSHARED_EXPORT Signal : public QObject
+class Signal : public QObject
 {
     Q_OBJECT
 

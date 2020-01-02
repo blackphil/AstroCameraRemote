@@ -1,5 +1,0 @@
-setup.target = setup
-setup.commands = $(COPY_DIR) %{sourceDir}/installer ${buildDir}
-#setup.commands = $$(QTIFW_BIN)/binarycreator.exe 
-
-QMAKE_EXTRA_TARGETS += setup

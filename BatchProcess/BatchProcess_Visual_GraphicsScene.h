@@ -1,8 +1,6 @@
 #ifndef BATCHPROCESS_VISUAL_GRAPHICSSCENE_H
 #define BATCHPROCESS_VISUAL_GRAPHICSSCENE_H
 
-#include "batchprocess_global.h"
-
 #include "BatchProcess_Visual_TaskBox.h"
 #include "BatchProcess_Visual_Pin.h"
 #include "BatchProcess_Visual_Connection.h"
@@ -16,7 +14,7 @@ namespace BatchProcess {
 namespace Visual {
 
 
-class BATCHPROCESSSHARED_EXPORT GraphicsScene : public QGraphicsScene
+class GraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
 

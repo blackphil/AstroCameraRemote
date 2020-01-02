@@ -1,7 +1,6 @@
 #ifndef BATCHPROCESS_MANAGER_H
 #define BATCHPROCESS_MANAGER_H
 
-#include "batchprocess_global.h"
 
 #include "BatchProcess_Task.h"
 #include <QObject>
@@ -14,7 +13,7 @@ class QWidget;
 
 namespace BatchProcess {
 
-class BATCHPROCESSSHARED_EXPORT Manager : public QObject
+class Manager : public QObject
 {
     Q_OBJECT
 

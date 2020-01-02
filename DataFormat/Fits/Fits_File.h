@@ -1,7 +1,6 @@
 #ifndef FITS_FILE_H
 #define FITS_FILE_H
 
-#include "fits_global.h"
 
 #include <QSharedPointer>
 #include <QList>
@@ -22,7 +21,7 @@ static const int HeaderLineCount = 36;
 class File;
 typedef QSharedPointer<File> FilePtr;
 
-class FITSSHARED_EXPORT File
+class File
 {
     Q_DECLARE_TR_FUNCTIONS(Fits::File)
 public:

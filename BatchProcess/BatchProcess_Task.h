@@ -1,8 +1,6 @@
 #ifndef BATCHPROCESS_TASK_H
 #define BATCHPROCESS_TASK_H
 
-#include "batchprocess_global.h"
-
 #include <QObject>
 
 #include "BatchProcess_Signal.h"
@@ -11,7 +9,7 @@ class QThreadPool;
 
 namespace BatchProcess {
 
-class BATCHPROCESSSHARED_EXPORT Task : public QObject
+class Task : public QObject
 {
     Q_OBJECT
 

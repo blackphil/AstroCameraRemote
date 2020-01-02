@@ -1,7 +1,6 @@
 #ifndef BATCHPROCESS_IMAGESIGNAL_H
 #define BATCHPROCESS_IMAGESIGNAL_H
 
-#include "batchprocess_global.h"
 
 #include "BatchProcess_Signal.h"
 
@@ -16,7 +15,7 @@ namespace BatchProcess {
 class ImageSignal;
 typedef QPointer<ImageSignal> ImageSignalPtr;
 
-class BATCHPROCESSSHARED_EXPORT ImageSignal : public Signal
+class ImageSignal : public Signal
 {
     Q_OBJECT
 

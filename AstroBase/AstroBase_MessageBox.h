@@ -1,12 +1,11 @@
 #ifndef ASTROBASE_MESSAGEBOX_H
 #define ASTROBASE_MESSAGEBOX_H
 
-#include "astrobase_global.h"
 #include <QMessageBox>
 
 namespace AstroBase {
 
-class ASTROBASESHARED_EXPORT MessageBox : public QMessageBox
+class  MessageBox : public QMessageBox
 {
     Q_OBJECT
 

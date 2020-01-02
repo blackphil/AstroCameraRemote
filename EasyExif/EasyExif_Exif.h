@@ -34,18 +34,17 @@
 #ifndef EASYEXIF_EXIF_H
 #define EASYEXIF_EXIF_H
 
-#include "easyexif_global.h"
 
 #include <string>
-#include <QSharedPointer>
-#include <QList>
+#include <memory>
+#include <list>
 
 namespace EasyExif {
 
 //
 // Class responsible for storing and parsing EXIF information from a JPEG blob
 //
-class EASYEXIFSHARED_EXPORT EXIFInfo {
+class EXIFInfo {
  public:
   // Parsing function for an entire JPEG image buffer.
   //
@@ -160,8 +159,8 @@ class EASYEXIFSHARED_EXPORT EXIFInfo {
   bool isValid() const;
 };
 
-typedef QSharedPointer<EXIFInfo> EXIFInfoPtr;
-typedef QList<EXIFInfoPtr> EXIFInfoList;
+typedef std::shared_ptr<EXIFInfo> EXIFInfoPtr;
+typedef std::list<EXIFInfoPtr> EXIFInfoList;
 
 }
 

@@ -5,11 +5,9 @@
 #include <QDir>
 #include <QCoreApplication>
 
-#include "astrobase_global.h"
-
 namespace AstroBase {
 
-class ASTROBASESHARED_EXPORT PersistentDirInfo
+class PersistentDirInfo
 {
     Q_DECLARE_TR_FUNCTIONS(AstroBase::PersistentDirInfo)
 

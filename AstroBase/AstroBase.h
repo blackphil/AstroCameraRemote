@@ -1,7 +1,6 @@
 #ifndef ASTROBASE_H
 #define ASTROBASE_H
 
-#include "astrobase_global.h"
 #include <QFile>
 #include <QTextStream>
 #include <QSharedPointer>
@@ -25,7 +24,7 @@
 namespace AstroBase
 {
 
-class ASTROBASESHARED_EXPORT Logging
+class Logging
 {
     static QSharedPointer<Logging> instance;
     QFile logFile;

@@ -1,8 +1,6 @@
 #ifndef BATCHPROCESS_VISUAL_PIN_H
 #define BATCHPROCESS_VISUAL_PIN_H
 
-#include "batchprocess_global.h"
-
 #include "BatchProcess_Signal.h"
 
 #include <QGraphicsObject>
@@ -14,7 +12,7 @@ namespace Visual {
 class TaskBox;
 typedef QPointer<TaskBox> TaskBoxPtr;
 
-class BATCHPROCESSSHARED_EXPORT Pin : public QGraphicsObject
+class Pin : public QGraphicsObject
 {
     Q_OBJECT
 

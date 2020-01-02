@@ -1,15 +1,13 @@
 #ifndef BATCHPROCESS_SAVEIMAGESTASK_H
 #define BATCHPROCESS_SAVEIMAGESTASK_H
 
-
-#include "batchprocess_global.h"
 #include "BatchProcess_Task.h"
 
 #include "BatchProcess_ImageSignal.h"
 
 namespace BatchProcess {
 
-class BATCHPROCESSSHARED_EXPORT SaveImagesTask : public Task
+class SaveImagesTask : public Task
 {
 
     Q_OBJECT

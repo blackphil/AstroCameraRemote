@@ -1,7 +1,6 @@
 #ifndef BATCHPROCESS_H
 #define BATCHPROCESS_H
 
-#include "batchprocess_global.h"
 
 #define PIN_LENGTH 40.
 #define PIN_POINT_SIZE 16.

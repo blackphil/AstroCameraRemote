@@ -9,7 +9,7 @@
 
 namespace BatchProcess {
 
-class BATCHPROCESSSHARED_EXPORT RawImageGrabber : public QObject
+class RawImageGrabber : public QObject
 {
     Q_OBJECT
 

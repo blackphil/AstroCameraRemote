@@ -1,7 +1,6 @@
 #ifndef BATCHPROCESS_CONNECTION_H
 #define BATCHPROCESS_CONNECTION_H
 
-#include "batchprocess_global.h"
 #include "BatchProcess_Visual_Pin.h"
 
 #include <QGraphicsObject>
@@ -11,7 +10,7 @@ namespace BatchProcess {
 namespace Visual {
 
 
-class BATCHPROCESSSHARED_EXPORT Connection : public QGraphicsObject
+class Connection : public QGraphicsObject
 {
     Q_OBJECT
 

@@ -1,8 +1,6 @@
 #ifndef BATCHPROCESS_PIXELMATHTASK_H
 #define BATCHPROCESS_PIXELMATHTASK_H
 
-#include "batchprocess_global.h"
-
 #include "BatchProcess_Task.h"
 #include "BatchProcess_ImageSignal.h"
 #include "BatchProcess_NumericSignal.h"
@@ -11,7 +9,7 @@
 
 namespace BatchProcess {
 
-class BATCHPROCESSSHARED_EXPORT PixelMathTask : public Task
+class PixelMathTask : public Task
 {
     Q_OBJECT
 

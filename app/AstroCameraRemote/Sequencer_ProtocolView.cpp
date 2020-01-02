@@ -118,7 +118,7 @@ void ProtocolView::contextMenu(const QPoint &pos)
                     for(auto ps : it.value())
                     {
                         if(ps.exif.isValid())
-                            input << EasyExif::EXIFInfoPtr(new EasyExif::EXIFInfo(ps.exif));
+                            input.push_back(std::make_shared<EasyExif::EXIFInfo>(ps.exif));
 
                     }
 

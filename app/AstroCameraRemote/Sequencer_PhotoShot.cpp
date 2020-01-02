@@ -1,5 +1,7 @@
 #include "Sequencer_PhotoShot.h"
 
+#include <QMap>
+
 namespace Sequencer {
 
 namespace helper

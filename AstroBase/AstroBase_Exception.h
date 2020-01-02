@@ -1,7 +1,6 @@
 #ifndef ASTROBASE_EXCEPTION_H
 #define ASTROBASE_EXCEPTION_H
 
-#include "astrobase_global.h"
 #include <stdexcept>
 
 #include <QCoreApplication>
@@ -9,7 +8,7 @@
 
 namespace AstroBase {
 
-class ASTROBASESHARED_EXPORT Exception : public std::runtime_error
+class Exception : public std::runtime_error
 {
 public:
     Exception(const QString& msg) noexcept;
@@ -18,21 +17,21 @@ public:
     virtual ~Exception() noexcept {}
 };
 
-class ASTROBASESHARED_EXPORT FileNotFoundException : public Exception
+class FileNotFoundException : public Exception
 {
     Q_DECLARE_TR_FUNCTIONS(FileNotFoundException)
 public :
     FileNotFoundException(const QString& filePath) : Exception(tr("File not found: %0").arg(filePath)) {}
 };
 
-class ASTROBASESHARED_EXPORT DirNotFoundException : public Exception
+class DirNotFoundException : public Exception
 {
     Q_DECLARE_TR_FUNCTIONS(DirNotFoundException)
 public :
     DirNotFoundException(const QString& path) : Exception(tr("Directory now found: %0").arg(path)) {}
 };
 
-class ASTROBASESHARED_EXPORT IndexOutOfBoundsException : public Exception
+class IndexOutOfBoundsException : public Exception
 {
     Q_DECLARE_TR_FUNCTIONS(IndexOutOfBoundsException)
 public :

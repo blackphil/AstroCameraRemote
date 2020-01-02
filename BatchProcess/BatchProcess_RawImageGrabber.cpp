@@ -106,7 +106,7 @@ void RawImageGrabber::process()
         throw AstroBase::DirNotFoundException(targetDir.absolutePath());
 
     int count = 0;
-    Q_EMIT progress(count, input.count());
+    Q_EMIT progress(count, input.size());
 
     helper::TimeWindowSelection selection(input);
     QFileInfoList jpegFiles = sourceDir.entryInfoList(QStringList() << "*.jpeg" << "*.jpg", QDir::Files, QDir::Name);
@@ -150,7 +150,7 @@ void RawImageGrabber::process()
                     QFile::copy(sourceFileInfo.absoluteFilePath(), targetFileInfo.absoluteFilePath());
 
                     count++;
-                    Q_EMIT progress(count, input.count());
+                    Q_EMIT progress(count, input.size());
 
                     break;
 

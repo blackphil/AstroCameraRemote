@@ -3,7 +3,6 @@
 
 #include <QObject>
 
-#include "batchprocess_global.h"
 #include "BatchProcess_Task.h"
 #include "BatchProcess_ImageSignal.h"
 
@@ -11,7 +10,7 @@ namespace BatchProcess {
 
 #if 0
 
-class BATCHPROCESSSHARED_EXPORT StackImagesTask : public Task
+class StackImagesTask : public Task
 {
     Q_OBJECT
 
