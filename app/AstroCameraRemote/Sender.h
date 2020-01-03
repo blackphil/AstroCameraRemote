@@ -5,7 +5,7 @@
 #include <QJsonDocument>
 #include <QNetworkAccessManager>
 
-#include "Json_Command.h"
+#include "Json/Command.h"
 
 class Sender : public QObject
 {

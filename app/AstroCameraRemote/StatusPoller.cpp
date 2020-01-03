@@ -1,7 +1,7 @@
 #include "StatusPoller.h"
 
 #include <math.h>
-#include "Json_Command.h"
+#include "Json/Command.h"
 #include "AstroBase.h"
 #include <QUrl>
 

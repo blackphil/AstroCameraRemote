@@ -386,25 +386,25 @@
   <customwidget>
    <class>PostView::Widget</class>
    <extends>QWidget</extends>
-   <header>PostView_Widget.h</header>
+   <header>PostView/Widget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>LiveView::Widget</class>
    <extends>QWidget</extends>
-   <header>LiveView_Widget.h</header>
+   <header>LiveView/Widget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>StarTrack::StarTrackView</class>
    <extends>QWidget</extends>
-   <header>StarTrack_StarTrackView.h</header>
+   <header>StarTrack/StarTrackView.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Sequencer::ControlWidget</class>
    <extends>QWidget</extends>
-   <header>Sequencer_ControlWidget.h</header>
+   <header>Sequencer/ControlWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

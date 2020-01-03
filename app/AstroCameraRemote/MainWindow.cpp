@@ -6,12 +6,12 @@
 #include "Helper.h"
 #include "Sender.h"
 #include "SettingsDialog.h"
-#include "LiveView_Widget.h"
+#include "LiveView/Widget.h"
 #include "hfd/Hfd_Calculator.h"
-#include "StarTrack_LenseGraphcisScene.h"
+#include "StarTrack/LenseGraphcisScene.h"
 #include "BatchProcess_FitsRepair.h"
 #include "BatchProcess_SelectFilesDialog.h"
-#include "StarTrack_StarInfo.h"
+#include "StarTrack/StarInfo.h"
 #include "MessagePoster.h"
 
 #include <QMessageBox>

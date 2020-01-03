@@ -10,122 +10,97 @@ find_package(Qt5 COMPONENTS Network REQUIRED)
 find_package(Qt5 COMPONENTS Xml REQUIRED)
 
 
-add_executable(AstroCameraRemote
+set(HEADERS_
+	BatchProcess_FitsRepair.h
+	BatteryInfo.h
+	Helper.h
+	ImageView.h
+	ImageViewZoomControl.h
+	MainWindow.h
+	MessagePoster.h
+	Sender.h
+	Settings.h
+	Settings_General.h
+	SettingsDialog.h
+	SsdpClient.h
+	StatusPoller.h
+	TimeUnit.h
+	TimeUnitButton.h
+	ToolBar.h
+)
+set(SOURCES_
+	BatchProcess_FitsRepair.cpp
+	BatteryInfo.cpp
+	Helper.cpp
+	ImageView.cpp
+	ImageViewZoomControl.cpp
+	main.cpp
+	MainWindow.cpp
+	MessagePoster.cpp
+	Sender.cpp
+	Settings.cpp
+	Settings_General.cpp
+	SettingsDialog.cpp
+	SsdpClient.cpp
+	StatusPoller.cpp
+	TimeUnit.cpp
+	TimeUnitButton.cpp
+	ToolBar.cpp
+)
+
+set(RESOURCES_
 	resources.qrc
 	testdata_1.qrc
 	testdata_2.qrc
 	testdata_3.qrc
 	testdata_4.qrc
 	testdata_5.qrc
-	hfd/Hfd_Calculator.cpp
-	hfd/Hfd_Calculator.h
-	BatchProcess_FitsRepair.cpp
-	BatchProcess_FitsRepair.h
-	BatteryInfo.cpp
-	BatteryInfo.h
-	Helper.cpp
-	Helper.h
-	ImageView.cpp
-	ImageView.h
-	ImageViewZoomControl.cpp
-	ImageViewZoomControl.h
-	Json_Command.cpp
-	Json_Command.h
-	Json_GetEvent.cpp
-	Json_GetEvent.h
-	LiveView_Commands.cpp
-	LiveView_Commands.h
-	LiveView_ImageQueue.cpp
-	LiveView_ImageQueue.h
-	LiveView_Info.cpp
-	LiveView_Info.h
-	LiveView_Reader.cpp
-	LiveView_Reader.h
-	LiveView_ReaderThread.cpp
-	LiveView_ReaderThread.h
-	LiveView_Settings.cpp
-	LiveView_Settings.h
-	LiveView_Widget.cpp
-	LiveView_Widget.h
-	main.cpp
-	MainWindow.cpp
-	MainWindow.h
-	MessagePoster.cpp
-	MessagePoster.h
-	PostView_ImageLoader.cpp
-	PostView_ImageLoader.h
-	PostView_Info.cpp
-	PostView_Info.h
-	PostView_Widget.cpp
-	PostView_Widget.h
-	Sender.cpp
-	Sender.h
-	Sequencer_Base.cpp
-	Sequencer_Base.h
-	Sequencer_BulbShootSequencer.cpp
-	Sequencer_BulbShootSequencer.h
-	Sequencer_ControlWidget.cpp
-	Sequencer_ControlWidget.h
-	Sequencer_CreateNewDialog.cpp
-	Sequencer_CreateNewDialog.h
-	Sequencer_NormalShootSequencer.cpp
-	Sequencer_NormalShootSequencer.h
-	Sequencer_PhotoShot.cpp
-	Sequencer_PhotoShot.h
-	Sequencer_Properties.cpp
-	Sequencer_Properties.h
-	Sequencer_Protocol.cpp
-	Sequencer_Protocol.h
-	Sequencer_ProtocolModel.cpp
-	Sequencer_ProtocolModel.h
-	Sequencer_ProtocolView.cpp
-	Sequencer_ProtocolView.h
-	Sequencer_StateBase.cpp
-	Sequencer_StateBase.h
-	Sequencer_StateBulbShooting.cpp
-	Sequencer_StateBulbShooting.h
-	Sequencer_StateFinish.cpp
-	Sequencer_StateFinish.h
-	Sequencer_StateNormalShooting.cpp
-	Sequencer_StateNormalShooting.h
-	Sequencer_StatePause.cpp
-	Sequencer_StatePause.h
-	Sequencer_StateWaitForCamReady.cpp
-	Sequencer_StateWaitForCamReady.h
-	Sequencer_StateWaitForStart.cpp
-	Sequencer_StateWaitForStart.h
-	Settings.cpp
-	Settings.h
-	Settings_General.cpp
-	Settings_General.h
-	SettingsDialog.cpp
-	SettingsDialog.h
-	SsdpClient.cpp
-	SsdpClient.h
-	StarTrack_GraphicsScene.cpp
-	StarTrack_GraphicsScene.h
-	StarTrack_GraphicsView.cpp
-	StarTrack_GraphicsView.h
-	StarTrack_LenseGraphcisScene.cpp
-	StarTrack_LenseGraphcisScene.h
-	StarTrack_Marker.cpp
-	StarTrack_Marker.h
-	StarTrack_Settings.cpp
-	StarTrack_Settings.h
-	StarTrack_StarInfo.cpp
-	StarTrack_StarInfo.h
-	StarTrack_StarTrackView.cpp
-	StarTrack_StarTrackView.h
-	StarTrack_Tracker.cpp
-	StarTrack_Tracker.h
-	StatusPoller.cpp
-	StatusPoller.h
-	TimeUnit.cpp
-	TimeUnit.h
-	TimeUnitButton.cpp
-	TimeUnitButton.h
-	ToolBar.cpp
-	ToolBar.h
+)
+
+set(UIS_
+	ImageViewZoomControl.ui
+	MainWindow.ui
+	SettingsDialog.ui
+)	
+
+include(hfd/.cmake)
+include(Json/.cmake)
+include(Sequencer/.cmake)
+include(StarTrack/.cmake)
+include(LiveView/.cmake)
+include(PostView/.cmake)
+
+
+add_executable(AstroCameraRemote
+
+	${HEADERS_}
+	${RESOURCES_}
+	${SOURCES_}
+	${UIS_}
+	
+	${HEADERS_HFD}
+	${SOURCES_HFD}
+	${UIS_HFD}
+	
+	${HEADERS_JSON}
+	${SOURCES_JSON}
+	${UIS_JSON}
+	
+	${HEADERS_LIVEVIEW}
+	${SOURCES_LIVEVIEW}
+	${UIS_LIVEVIEW}
+	
+	${HEADERS_POSTVIEW}
+	${SOURCES_POSTVIEW}
+	${UIS_POSTVIEW}
+	
+	${HEADERS_SEQUENCER}
+	${SOURCES_SEQUENCER}
+	${UIS_SEQUENCER}
+	
+	${HEADERS_STARTRACK}
+	${SOURCES_STARTRACK}
+	${UIS_STARTRACK}
 	)
 	
 	

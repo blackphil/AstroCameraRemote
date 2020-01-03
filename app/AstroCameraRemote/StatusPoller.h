@@ -5,8 +5,8 @@
 #include <QTimer>
 
 #include "Sender.h"
-#include "Json_Command.h"
-#include "Json_GetEvent.h"
+#include "Json/Command.h"
+#include "Json/GetEvent.h"
 #include "BatteryInfo.h"
 
 

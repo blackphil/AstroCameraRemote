@@ -10,10 +10,10 @@
 #include "StatusPoller.h"
 #include "BatteryInfo.h"
 #include "Settings.h"
-#include "PostView_Info.h"
+#include "PostView/Info.h"
 #include "Settings_General.h"
-#include "LiveView_Settings.h"
-#include "StarTrack_Settings.h"
+#include "LiveView/Settings.h"
+#include "StarTrack/Settings.h"
 
 namespace StarTrack
 {

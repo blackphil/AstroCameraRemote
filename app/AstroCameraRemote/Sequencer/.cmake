@@ -1,0 +1,43 @@
+set(SOURCES_SEQUENCER
+	Sequencer/Base.cpp
+	Sequencer/BulbShootSequencer.cpp
+	Sequencer/ControlWidget.cpp
+	Sequencer/CreateNewDialog.cpp
+	Sequencer/NormalShootSequencer.cpp
+	Sequencer/PhotoShot.cpp
+	Sequencer/Properties.cpp
+	Sequencer/Protocol.cpp
+	Sequencer/ProtocolModel.cpp
+	Sequencer/ProtocolView.cpp
+	Sequencer/StateBase.cpp
+	Sequencer/StateBulbShooting.cpp
+	Sequencer/StateFinish.cpp
+	Sequencer/StateNormalShooting.cpp
+	Sequencer/StatePause.cpp
+	Sequencer/StateWaitForCamReady.cpp
+	Sequencer/StateWaitForStart.cpp
+)
+set(HEADERS_SEQUENCER
+	Sequencer/Base.h
+	Sequencer/BulbShootSequencer.h
+	Sequencer/ControlWidget.h
+	Sequencer/CreateNewDialog.h
+	Sequencer/NormalShootSequencer.h
+	Sequencer/PhotoShot.h
+	Sequencer/Properties.h
+	Sequencer/Protocol.h
+	Sequencer/ProtocolModel.h
+	Sequencer/ProtocolView.h
+	Sequencer/StateBase.h
+	Sequencer/StateBulbShooting.h
+	Sequencer/StateFinish.h
+	Sequencer/StateNormalShooting.h
+	Sequencer/StatePause.h
+	Sequencer/StateWaitForCamReady.h
+	Sequencer/StateWaitForStart.h
+)
+set(UIS_SEQUENCER
+	Sequencer/Sequencer_ControlWidget.ui
+	Sequencer/Sequencer_CreateNewDialog.ui
+)
+source_group("Sequencer" FILES ${SOURCES_SEQUENCER} ${HEADERS_SEQUENCER} ${UIS_SEQUENCER})

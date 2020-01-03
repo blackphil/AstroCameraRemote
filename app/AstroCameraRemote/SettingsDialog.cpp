@@ -5,7 +5,7 @@
 
 #include "Settings.h"
 #include "Settings_General.h"
-#include "StarTrack_Settings.h"
+#include "StarTrack/Settings.h"
 
 
 SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent)

@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/sequencer">
-        <file alias="Countdown_Msg.html">Sequencer_Countdown_Msg.html</file>
-        <file alias="Normal_Msg.html">Sequencer_Normal_Msg.html</file>
-        <file>PostView_Info.html</file>
-        <file>LiveView_Info.html</file>
+        <file alias="Countdown_Msg.html">Sequencer/Countdown_Msg.html</file>
+        <file alias="Normal_Msg.html">Sequencer/Normal_Msg.html</file>
+        <file>PostView/Info.html</file>
+        <file>LiveView/Info.html</file>
     </qresource>
     <qresource prefix="/stylesheets">
         <file>Night.css</file>
@@ -20,7 +20,7 @@
         <file>Bug.svg</file>
         <file>Record.svg</file>
         <file>Record_off.svg</file>
-        <file>LiveView_NoImage.jpg</file>
+        <file>LiveView/NoImage.jpg</file>
         <file>ExitFullScreen.svg</file>
         <file>FullScreen.svg</file>
     </qresource>
