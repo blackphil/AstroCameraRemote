@@ -184,7 +184,16 @@ void Protocol::havePostViewImage(const QByteArray &data)
 
     const unsigned char* rawData = reinterpret_cast<const unsigned char*>(data.data());
     unsigned int rawLength = static_cast<unsigned int>(data.length());
-    current.exif.parseFrom(rawData, rawLength);
+    auto parseResult = current.exif.parseFrom(rawData, rawLength);
+
+    switch(parseResult)
+    {
+    case PARSE_EXIF_SUCCESS                    : AB_DBG("PARSE_EXIF_SUCCESS                "); break;
+    case PARSE_EXIF_ERROR_NO_JPEG              : AB_WRN("PARSE_EXIF_ERROR_NO_JPEG          "); break;
+    case PARSE_EXIF_ERROR_NO_EXIF              : AB_WRN("PARSE_EXIF_ERROR_NO_EXIF          "); break;
+    case PARSE_EXIF_ERROR_UNKNOWN_BYTEALIGN    : AB_WRN("PARSE_EXIF_ERROR_UNKNOWN_BYTEALIGN"); break;
+    case PARSE_EXIF_ERROR_CORRUPT              : AB_WRN("PARSE_EXIF_ERROR_CORRUPT          "); break;
+    }
 
     save();
 

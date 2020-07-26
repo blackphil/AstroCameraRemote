@@ -5,6 +5,8 @@
 
 #include "MessagePoster.h"
 
+
+
 namespace Sequencer {
 
 class Protocol;
@@ -15,6 +17,8 @@ class ProtocolView : public QTableView
     Q_OBJECT
 
     MessagePoster* msgPoster;
+
+    QString getSourceDir();
 
 public:
     explicit ProtocolView(QWidget *parent = nullptr);

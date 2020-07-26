@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QProgressDialog>
 #include <QSettings>
+#include <QFileDialog>
 
 #include "EasyExif_Exif.h"
 #include "AstroBase.h"
@@ -46,6 +47,33 @@ Protocol *ProtocolView::getSelectedProtocol() const
     return pModel->getProtocol(selIndex);
 }
 
+QString ProtocolView::getSourceDir()
+{
+    constexpr auto settingsKey = "ImageGrabber/LastSourceDirs";
+    auto history = QSettings().value(settingsKey).toStringList();
+
+    QFileDialog fileDialog(this, tr("Grab images from ..."), history.isEmpty() ? QDir::homePath() : history.first());
+    fileDialog.setOption(QFileDialog::Option::ShowDirsOnly, true);
+    fileDialog.setFileMode(QFileDialog::FileMode::DirectoryOnly);
+    fileDialog.setHistory(history);
+
+    if(fileDialog.exec())
+    {
+        if(auto selection = fileDialog.selectedFiles(); !selection.isEmpty())
+        {
+            if(auto srcDir = selection.first(); !srcDir.isEmpty())
+            {
+                history.removeAll(srcDir);
+                history.prepend(srcDir);
+                QSettings().setValue(settingsKey, history);
+                return srcDir;
+            }
+        }
+    }
+
+    return {};
+}
+
 void ProtocolView::contextMenu(const QPoint &pos)
 {
 
@@ -69,75 +97,79 @@ void ProtocolView::contextMenu(const QPoint &pos)
             });
 
             QAction* grabImagesAction = m.addAction(tr("Grab images"));
-            grabImagesAction->setEnabled(false);
 
-            QDir sourceDir("E:/DCIM/100MSDCF");
-
-
-            QDir protocolPath = protocol->getProtocolPath(false);
-            if(!protocolPath.exists())
-                throw AstroBase::DirNotFoundException(protocolPath.absolutePath());
-
-
-
-            if(!sourceDir.exists())
+            connect(grabImagesAction, &QAction::triggered, [this, protocol]()
             {
-                grabImagesAction->setToolTip(tr("Source dir not found: %0").arg(sourceDir.absolutePath()));
-            }
+                QDir protocolPath = protocol->getProtocolPath(false);
+                if(!protocolPath.exists())
+                    throw AstroBase::DirNotFoundException(protocolPath.absolutePath());
 
-            grabImagesAction->setEnabled(true);
-            connect(grabImagesAction, &QAction::triggered, [this, sourceDir, protocolPath, protocol]()
-            {
-                const Protocol::PhotoShotMap& map = protocol->getPhotoShots();
-                QProgressDialog progress(tr("Grabbing images"), tr("Cancel"), 0, map.count(), this);
-                progress.setAutoClose(true);
-                progress.setMinimumDuration(0);
-
-                for(Protocol::PhotoShotMap::const_iterator it=map.begin(); it!=map.end(); ++it)
+                if(QString srcDirStr = getSourceDir(); !srcDirStr.isEmpty())
                 {
-                    PhotoShot::Type type = it.key();
-
-
-                    BatchProcess::RawImageGrabber grabber;
-
-                    grabber.setSourceDir(sourceDir);
-
-                    QString subPath = QString("%0/%1")
-                            .arg(protocol->getObjectName())
-                            .arg(PhotoShot::typeToString(type));
-
-                    protocolPath.mkpath(subPath);
-                    QDir targetDir = protocolPath;
-                    targetDir.cd(subPath);
-
-                    grabber.setTargetDir(targetDir);
-                    grabber.setRawFileSuffix("arw");
-
-                    EasyExif::EXIFInfoList input;
-
-                    for(auto ps : it.value())
+                    QDir sourceDir{srcDirStr};
+                    if(!sourceDir.exists())
                     {
-                        if(ps.exif.isValid())
-                            input << EasyExif::EXIFInfoPtr(new EasyExif::EXIFInfo(ps.exif));
-
+                        //ERRROR
+                        return;
                     }
 
-                    grabber.setInput(input);
-                    connect(&grabber, &BatchProcess::RawImageGrabber::progress, [&progress](int done, int maxCount)
+                    const Protocol::PhotoShotMap& map = protocol->getPhotoShots();
+
+                    int allCount{0};
+                    for(const auto& entry: map)
                     {
-                        Q_UNUSED(maxCount);
-                        progress.setValue(done);
-                    });
-                    grabber.process();
+                        allCount += entry.count();
+                    }
+
+
+                    QProgressDialog progress(tr("Grabbing images"), tr("Cancel"), 0, allCount, this);
+                    progress.setAutoClose(true);
+                    progress.setMinimumDuration(0);
+
+                    int index{0};
+
+                    for(Protocol::PhotoShotMap::const_iterator it=map.begin(); it!=map.end(); ++it)
+                    {
+                        PhotoShot::Type type = it.key();
+
+
+                        BatchProcess::RawImageGrabber grabber;
+
+                        grabber.setSourceDir(sourceDir);
+
+                        QString subPath = QString("%0/%1")
+                                .arg(protocol->getObjectName())
+                                .arg(PhotoShot::typeToString(type));
+
+                        protocolPath.mkpath(subPath);
+                        QDir targetDir = protocolPath;
+                        targetDir.cd(subPath);
+
+                        grabber.setTargetDir(targetDir);
+                        grabber.setRawFileSuffix("arw");
+
+                        EasyExif::EXIFInfoList input;
+
+                        for(auto ps : it.value())
+                        {
+                            if(ps.exif.isValid())
+                                input << EasyExif::EXIFInfoPtr(new EasyExif::EXIFInfo(ps.exif));
+
+                        }
+
+                        grabber.setInput(input);
+                        connect(&grabber, &BatchProcess::RawImageGrabber::progress, [&progress, &index](int, int)
+                        {
+                            progress.setValue(index++);
+                            qApp->processEvents(/*QEventLoop::ProcessEventsFlag::ExcludeUserInputEvents*/);
+                        });
+                        grabber.process();
+                    }
                 }
-
             });
-
-
 
             m.exec(mapToGlobal(pos));
         }
-
     }
     catch(AstroBase::Exception& e)
     {

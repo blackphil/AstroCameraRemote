@@ -20,7 +20,6 @@ class Sender : public QObject
     QJsonObject noReplyError;
     int replyDelay;
     QTimer* timeoutTimer;
-    QNetworkReply* postViewImageReply;
 
     QJsonDocument handleReply(QNetworkReply* reply) const;
 
@@ -49,7 +48,6 @@ Q_SIGNALS :
 private Q_SLOTS :
     void finished(QNetworkReply* reply);
     QNetworkReply *privateSend(const QByteArray& buffer);
-    void handlePostViewImageReply();
 
 public Q_SLOTS :
     void send(Json::Command *cmd);

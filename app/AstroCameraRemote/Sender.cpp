@@ -60,7 +60,6 @@ Sender::Sender(QObject* parent)
     , manager(new QNetworkAccessManager(this))
     , replyDelay(2000)
     , timeoutTimer(nullptr)
-    , postViewImageReply(nullptr)
 {
 //    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
 
@@ -114,20 +113,28 @@ QNetworkReply* Sender::privateSend(const QByteArray &buffer)
 
 }
 
-void Sender::handlePostViewImageReply()
-{
-    QByteArray buffer = postViewImageReply->readAll();
-    Q_EMIT loadedPostViewImage(buffer);
-}
-
 void Sender::loadPostViewImage(QString urlStr)
 {
     QUrl url(urlStr);
     QNetworkRequest postViewImageRequest;//(QUrl(url));
     postViewImageRequest.setUrl(url);
     postViewImageRequest.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
-    postViewImageReply =  manager->get(postViewImageRequest);
-    connect(postViewImageReply, SIGNAL(finished()), this, SLOT(handlePostViewImageReply()));
+
+    auto reply = manager->get(postViewImageRequest);
+    connect(reply, &QNetworkReply::finished, this, [this, reply](){
+        reply->deleteLater();
+        auto data = reply->readAll();
+        Q_ASSERT(!data.isEmpty());
+        if(!data.isEmpty())
+            Q_EMIT loadedPostViewImage(data);
+        else {
+            AB_ERR("no data received after loading post view image");
+        }
+    });
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [](auto code){
+        AB_ERR("reply error during loading post view image:" << code);
+    });
+
 
 }
 

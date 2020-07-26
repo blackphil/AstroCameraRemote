@@ -8,7 +8,7 @@
 #include <QDebug>
 
 #ifdef QT_DEBUG
-#define AB_DBG(X) qDebug() << __FUNCTION__ << ":" << X
+#define AB_DBG(X) qDebug() << ":" << X
 #else
 #define AB_DBG(X) qt_noop()
 #endif

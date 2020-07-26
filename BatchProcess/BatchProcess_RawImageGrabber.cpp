@@ -7,7 +7,7 @@
 #include <QDateTime>
 #include <QFileInfo>
 #include <QFile>
-
+#include <QThread>
 namespace BatchProcess {
 
 
@@ -118,13 +118,24 @@ void RawImageGrabber::process()
         QDateTime dt = info.birthTime();
         if(selection.intersect(dt))
         {
+            QThread::msleep(100);
+
             EasyExif::EXIFInfo exif;
             QFile f(info.absoluteFilePath());
             f.open(QIODevice::ReadOnly);
             QByteArray data = f.readAll();
             const unsigned char* dataP = reinterpret_cast<const unsigned char*>(data.data());
             const unsigned int size = static_cast<unsigned int>(data.size());
-            exif.parseFrom(dataP, size);
+            auto parseResult = exif.parseFrom(dataP, size);
+
+            switch(parseResult)
+            {
+            case PARSE_EXIF_SUCCESS                    : AB_DBG("PARSE_EXIF_SUCCESS                "); break;
+            case PARSE_EXIF_ERROR_NO_JPEG              : AB_WRN("PARSE_EXIF_ERROR_NO_JPEG          "); break;
+            case PARSE_EXIF_ERROR_NO_EXIF              : AB_WRN("PARSE_EXIF_ERROR_NO_EXIF          "); break;
+            case PARSE_EXIF_ERROR_UNKNOWN_BYTEALIGN    : AB_WRN("PARSE_EXIF_ERROR_UNKNOWN_BYTEALIGN"); break;
+            case PARSE_EXIF_ERROR_CORRUPT              : AB_WRN("PARSE_EXIF_ERROR_CORRUPT          "); break;
+            }
 
             for(auto inputExif : input)
             {
