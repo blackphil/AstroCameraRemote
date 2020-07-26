@@ -71,7 +71,7 @@ void ProtocolView::contextMenu(const QPoint &pos)
             QAction* grabImagesAction = m.addAction(tr("Grab images"));
             grabImagesAction->setEnabled(false);
 
-            QDir sourceDir("F:/DCIM/100MSDCF");
+            QDir sourceDir("E:/DCIM/100MSDCF");
 
 
             QDir protocolPath = protocol->getProtocolPath(false);

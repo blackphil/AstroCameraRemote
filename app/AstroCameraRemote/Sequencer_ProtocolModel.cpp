@@ -55,7 +55,7 @@ QVariant ProtocolModel::data(const QModelIndex &index, int role) const
         {
         case 0 : return item->getObjectName();
         case 1 : return item->getStartTime().toString("dd. MM. yyyy hh:mm:ss");
-        case 2 : return QString("%0/%1").arg(item->getNumShotsFinished()).arg(item->getProperties().numShots);
+        case 2 : return QString("%0").arg(item->getNumShotsFinished());
 
         case 3 :
             if(const Properties& p = item->getProperties(); p.shutterSpeed == "BULB")

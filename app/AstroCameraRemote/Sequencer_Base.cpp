@@ -15,8 +15,8 @@ Base::Base(QObject *parent)
   , startIndex(0)
   , numShotsFinished(0)
 {
-    connect(StatusPoller::get(), SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
-    connect(this, SIGNAL(havePostViewUrl(QString, int, int)), this, SLOT(shotFinished()));
+    connect(StatusPoller::get(), &StatusPoller::statusChanged, this, &Base::handleCameraStatus);
+    connect(this, &Base::havePostViewUrl, this, &Base::shotFinished);
 }
 
 Base::~Base()
@@ -62,8 +62,8 @@ void Base::start()
     }
 
     stateMachine = new QStateMachine(this);
-    connect(stateMachine, SIGNAL(stopped()), this, SIGNAL(stopped()));
-    connect(stateMachine, SIGNAL(finished()), this, SIGNAL(stopped()));
+    connect(stateMachine, &QStateMachine::stopped, this, &Base::stopped);
+    connect(stateMachine, &QStateMachine::finished, this, &Base::stopped);
 
     handleStarted();
 
@@ -106,7 +106,7 @@ void Base::handleCameraStatus(QString status)
 void Base::addState(StateBase *s)
 {
     stateMachine->addState(s);
-    connect(s, SIGNAL(updateStatus(QString)), this, SIGNAL(updateStatus(QString)));
+    connect(s, &StateBase::updateStatus, this, &Base::updateStatus);
 }
 
 

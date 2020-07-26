@@ -73,7 +73,8 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
         connect(sequencer, SIGNAL(stopped()), currentProtocol, SLOT(stop()));
         connect(Sender::get(), SIGNAL(loadedPostViewImage(QByteArray)), currentProtocol, SLOT(havePostViewImage(QByteArray)));
 
-        sequencer->setStartIndex(currentProtocol->getNumShotsFinished());
+//        sequencer->setStartIndex(currentProtocol->getNumShotsFinished());
+        sequencer->setStartIndex(0);
         sequencer->setNumShots(currentProtocol->getProperties().numShots);
         sequencer->setShutterSpeed(currentProtocol->getProperties().getShutterSpeedInMilliseconds());
         sequencer->setPauseDelay(currentProtocol->getProperties().pause);

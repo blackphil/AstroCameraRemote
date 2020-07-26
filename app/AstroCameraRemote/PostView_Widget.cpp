@@ -78,6 +78,8 @@ void Widget::updatePostViewImage(const QByteArray &data)
     int l = data.length();
     result.parseFrom(reinterpret_cast<const unsigned char*>(rawData), static_cast<unsigned>(l));
 
+
+
     printf("Camera make          : %s\n", result.Make.c_str());
       printf("Camera model         : %s\n", result.Model.c_str());
       printf("Software             : %s\n", result.Software.c_str());
