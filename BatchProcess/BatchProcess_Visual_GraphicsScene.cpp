@@ -5,7 +5,7 @@
 #include "BatchProcess_Visual_Pin.h"
 #include "BatchProcess_Visual_Connection.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include <QGraphicsSceneMouseEvent>
 

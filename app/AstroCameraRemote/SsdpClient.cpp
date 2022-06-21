@@ -51,8 +51,8 @@ bool SsdpClient::search()
 
     QHostAddress address(SSDP_ADDR);
 
-    QString msg
-    {
+    auto msg =
+    QString(
         "M-SEARCH * HTTP/1.1"
         LF "HOST: %0:%1"
                 LF "MAN: \"ssdp:discover\""
@@ -60,8 +60,7 @@ bool SsdpClient::search()
                 LF "ST: %3"
                 //            LF "USER-AGENT: Window10/0.0.0/0.0.0"
                 LF
-    };
-    msg.arg(SSDP_ADDR).arg(SSDP_PORT).arg(SSDP_MX).arg(SSDP_ST);
+    ).arg(SSDP_ADDR).arg(SSDP_PORT).arg(SSDP_MX).arg(SSDP_ST);
 
     QFile log(QFileInfo(QDir::temp(), "SsdpClient.log").absoluteFilePath());
     log.open(QIODevice::WriteOnly);

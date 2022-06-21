@@ -1,4 +1,4 @@
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include <QDir>
 #include <QFileInfo>

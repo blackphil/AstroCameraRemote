@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>663</width>
+    <width>667</width>
     <height>498</height>
    </rect>
   </property>
@@ -29,27 +29,6 @@
    <property name="spacing">
     <number>2</number>
    </property>
-   <item row="2" column="2">
-    <widget class="QCheckBox" name="debugModeCb">
-     <property name="text">
-      <string>Debug-Mode</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="5">
-    <widget class="ImageView" name="graphicsView">
-     <property name="sizeAdjustPolicy">
-      <enum>QAbstractScrollArea::AdjustToContents</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>FPS:</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0" rowspan="2">
     <widget class="QLabel" name="metaInfo">
      <property name="sizePolicy">
@@ -69,13 +48,27 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QSpinBox" name="fpsSpinBox">
-     <property name="minimum">
-      <number>1</number>
+   <item row="1" column="4" rowspan="3">
+    <widget class="ImageViewZoomControl" name="zoomControl" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="maximum">
-      <number>200</number>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>FPS:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QCheckBox" name="debugModeCb">
+     <property name="text">
+      <string>Debug-Mode</string>
      </property>
     </widget>
    </item>
@@ -86,13 +79,33 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="4" rowspan="3">
-    <widget class="ImageViewZoomControl" name="zoomControl" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="1" column="2">
+    <widget class="QSpinBox" name="fpsSpinBox">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>200</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="5">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0" colspan="6">
+    <widget class="ImageView" name="graphicsView">
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContents</enum>
      </property>
     </widget>
    </item>

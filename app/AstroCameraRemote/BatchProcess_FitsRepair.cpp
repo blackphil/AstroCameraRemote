@@ -3,7 +3,7 @@
 #include <QDir>
 #include <QFileInfo>
 
-#include "Fits_File.h"
+#include <DataFormat/Fits/File>
 
 namespace BatchProcess {
 

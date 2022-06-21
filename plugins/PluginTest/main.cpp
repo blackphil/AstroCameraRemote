@@ -8,7 +8,7 @@
 #include <QFileInfo>
 #include <QDir>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 #include "FitsImagePlugin_ImageIOPlugin.h"
 
 #define xstr(a) str(a)

@@ -7,6 +7,7 @@
 #include "Sequencer_StatePause.h"
 #include "Sequencer_StateFinish.h"
 
+#include <QFinalState>
 
 namespace Sequencer {
 

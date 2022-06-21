@@ -1,6 +1,6 @@
 #include "LiveView_Widget.h"
 #include "ui_LiveView_Widget.h"
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 #include "LiveView_Info.h"
 
 #include <QMutexLocker>

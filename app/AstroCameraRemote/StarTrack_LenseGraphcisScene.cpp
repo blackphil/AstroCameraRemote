@@ -2,7 +2,8 @@
 
 #include "StarTrack_StarInfo.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
+
 #include <QPen>
 #include <QFont>
 

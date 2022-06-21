@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include <QApplication>
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
+
 #include "Sender.h"
 #include "StatusPoller.h"
 

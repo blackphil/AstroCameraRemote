@@ -2,7 +2,7 @@
 #include "BatchProcess_SaveImagesEditDlg.h"
 #include "BatchProcess_Manager.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include <QFileInfo>
 #include <QDir>

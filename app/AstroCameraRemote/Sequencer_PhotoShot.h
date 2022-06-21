@@ -1,7 +1,7 @@
 #ifndef SEQUENCER_PHOTOSHOT_H
 #define SEQUENCER_PHOTOSHOT_H
 
-#include "EasyExif_Exif.h"
+#include <EasyExif/Exif>
 
 #include <QDateTime>
 #include <QDomElement>

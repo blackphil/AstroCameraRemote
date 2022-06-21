@@ -2,7 +2,7 @@
 #define STARTRACK_SETTINGS_H
 
 
-#include <StarTrack_Marker.h>
+#include "StarTrack_Marker.h"
 
 
 namespace StarTrack {

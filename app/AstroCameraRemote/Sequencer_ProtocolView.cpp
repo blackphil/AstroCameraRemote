@@ -10,11 +10,11 @@
 #include <QSettings>
 #include <QFileDialog>
 
-#include "EasyExif_Exif.h"
-#include "AstroBase.h"
-#include "AstroBase_Exception.h"
+#include <EasyExif/Exif>
+#include <AstroBase/AstroBase>
+#include <AstroBase/Exception>
 #include "Sequencer_ProtocolModel.h"
-#include "BatchProcess_RawImageGrabber.h"
+#include <BatchProcess/RawImageGrabber>
 
 namespace Sequencer {
 
@@ -54,7 +54,7 @@ QString ProtocolView::getSourceDir()
 
     QFileDialog fileDialog(this, tr("Grab images from ..."), history.isEmpty() ? QDir::homePath() : history.first());
     fileDialog.setOption(QFileDialog::Option::ShowDirsOnly, true);
-    fileDialog.setFileMode(QFileDialog::FileMode::DirectoryOnly);
+    fileDialog.setFileMode(QFileDialog::FileMode::Directory); //ToDo: Check Qt6 Porting
     fileDialog.setHistory(history);
 
     if(fileDialog.exec())

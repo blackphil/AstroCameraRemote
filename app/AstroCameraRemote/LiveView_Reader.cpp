@@ -3,7 +3,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 namespace LiveView {
 
@@ -48,7 +48,7 @@ void Reader::open(QString urlStr)
         if(connection)
             delete connection;
 
-        AB_INF("LIVE VIEW NETWORK ACCESSIBLE: " << static_cast<int>(manager->networkAccessible()));
+        AB_INF("LIVE VIEW NETWORK ACCESSIBLE: " << "ToDo: port to Qt6");//static_cast<int>(manager->networkAccessible()));
         AB_INF("LIVE VIEW SENDING REQUEST url(" << url.host() << ", port(" << url.port() << ")");
 
         connection = manager->get(request);

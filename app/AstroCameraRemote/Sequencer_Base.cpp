@@ -1,6 +1,6 @@
 #include "Sequencer_Base.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 #include "Settings.h"
 #include "Settings_General.h"
 #include "Sequencer_StateBase.h"

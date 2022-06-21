@@ -1,7 +1,7 @@
-#include "BatchProcess_RawImageGrabber.h"
+#include <BatchProcess/RawImageGrabber>
 
-#include "AstroBase.h"
-#include "AstroBase_Exception.h"
+#include <AstroBase/AstroBase>
+#include <AstroBase/Exception>
 
 #include <QPair>
 #include <QDateTime>

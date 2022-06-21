@@ -3,7 +3,7 @@
 #include <QResizeEvent>
 #include <QtMath>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 ImageView::ImageView(QWidget* parent)
     : QGraphicsView { parent }
@@ -72,7 +72,7 @@ bool ImageView::eventFilter(QObject *object, QEvent *event)
     else if (event->type() == QEvent::Wheel)
     {
         if(QWheelEvent* wheel_event { static_cast<QWheelEvent*>(event) }
-                ; wheel_event->modifiers().testFlag(Qt::ControlModifier) && wheel_event->orientation() == Qt::Vertical)
+                ; wheel_event->modifiers().testFlag(Qt::ControlModifier) && wheel_event->angleDelta().y() != 0) //ToDo: Check Qt6 Porting
         {
             double angle = wheel_event->angleDelta().y();
             double factor = qPow(zoomFactorBbase, angle);

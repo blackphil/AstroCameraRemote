@@ -3,9 +3,9 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include "Helper.h"
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
-#include <share.h>
+//#include <share.h>
 
 namespace Json {
 

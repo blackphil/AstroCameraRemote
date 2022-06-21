@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "Hfd_Calculator.h"
-#include "Helper.h"
-#include "AstroBase.h"
+#include "../Helper.h"
+#include <AstroBase/AstroBase>
 
 #include <math.h>
 
@@ -138,7 +138,7 @@ int Calculator::test(/* int argc, char *argv[]*/)
             ", :/hfd/hfd/focus_test/jpeg/focus_test_630.jpg"
             ;
 
-    QStringList fileList = files.split(", ", QString::SkipEmptyParts);
+    QStringList fileList = files.split(", ", Qt::SkipEmptyParts);
 
     foreach(QString fileName, fileList)
     {

@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QTimer>
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include "Helper.h"
 
@@ -131,7 +131,7 @@ void Sender::loadPostViewImage(QString urlStr)
             AB_ERR("no data received after loading post view image");
         }
     });
-    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), [](auto code){
+    connect(reply, &QNetworkReply::errorOccurred, [](auto code){
         AB_ERR("reply error during loading post view image:" << code);
     });
 

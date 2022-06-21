@@ -1,20 +1,22 @@
 #include "Sequencer_Protocol.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
-#include <QStandardPaths>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QRegularExpression>
-#include <QProcess>
-#include <QStringList>
 #include <QMap>
-#include <Windows.h>
+#include <QProcess>
+#include <QRectF>
+#include <QRegularExpression>
+#include <QStandardPaths>
+#include <QStringList>
+
+//#include <Windows.h>
 
 #include <algorithm>
 
-#include "AstroBase_Exception.h"
+#include <AstroBase/Exception>
 
 namespace Sequencer {
 
@@ -61,7 +63,7 @@ int Protocol::getNumShotsFinished() const
 
 QString Protocol::getProtocolPath(bool createIfNotExists)
 {
-    QString dataPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    QString dataPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation); //ToDo: Check Qt6 Porting
     if(dataPath.isEmpty())
         dataPath = QDir::tempPath();
 
@@ -242,7 +244,7 @@ bool Protocol::deleteFile()
         return false;
     }
 
-    QFileInfo fi = getFilePath();
+    QFileInfo fi{getFilePath()};
     if(!fi.absoluteDir().remove(fi.fileName()))
     {
         AB_DBG(QString("Removing protocol file \"%0\" failed!").arg(fi.absoluteFilePath()));

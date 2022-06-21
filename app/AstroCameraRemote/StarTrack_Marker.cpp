@@ -3,7 +3,8 @@
 #include <QBrush>
 #include <QRect>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
+
 #include "StarTrack_Settings.h"
 #include "StarTrack_GraphicsScene.h"
 

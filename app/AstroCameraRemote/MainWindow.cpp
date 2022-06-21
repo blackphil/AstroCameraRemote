@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include "Helper.h"
 #include "Sender.h"
@@ -10,12 +10,11 @@
 #include "hfd/Hfd_Calculator.h"
 #include "StarTrack_LenseGraphcisScene.h"
 #include "BatchProcess_FitsRepair.h"
-#include "BatchProcess_SelectFilesDialog.h"
+#include <BatchProcess/SelectFilesDialog>
 #include "StarTrack_StarInfo.h"
 #include "MessagePoster.h"
 
 #include <QMessageBox>
-#include <QRegExp>
 #include <QFile>
 #include <QFileInfo>
 #include <QFileDialog>

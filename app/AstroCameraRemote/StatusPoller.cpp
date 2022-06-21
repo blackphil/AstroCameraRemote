@@ -2,7 +2,7 @@
 
 #include <math.h>
 #include "Json_Command.h"
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 #include <QUrl>
 
 StatusPoller* StatusPoller::instance(nullptr);

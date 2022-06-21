@@ -1,6 +1,6 @@
 #include "CamSim_HttpServer.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 #include <QTcpSocket>
 #include <QTextStream>
 #include <QRegularExpression>

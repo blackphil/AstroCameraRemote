@@ -1,8 +1,8 @@
 #include "BatchProcess_Manager.h"
 
-#include "AstroBase_Exception.h"
-#include "AstroBase.h"
-#include "AstroBase_PersistentDirInfo.h"
+#include <AstroBase/Exception>
+#include <AstroBase/AstroBase>
+#include <AstroBase/PersistentDirInfo>
 
 #include "BatchProcess_NumericValueDialog.h"
 

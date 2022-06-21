@@ -2,7 +2,7 @@
 
 #include <QPointer>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 
 Setting::Setting(Setting* parent)

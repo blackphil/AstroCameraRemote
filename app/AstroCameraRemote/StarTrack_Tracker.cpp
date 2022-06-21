@@ -4,7 +4,7 @@
 #include <QSettings>
 
 #include "hfd/Hfd_Calculator.h"
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 namespace StarTrack {
 

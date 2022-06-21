@@ -5,9 +5,9 @@
 #include <QWidget>
 #include <QCoreApplication>
 
-//#include "Exception.h"
+#include <memory>
 
-
+class QFile;
 
 class Helper
 {
@@ -17,8 +17,7 @@ public:
 
     class Log
     {
-        static FILE *logfile;
-        QString message;
+        static std::unique_ptr<QFile> logfile;
     public :
         enum class Level
         {

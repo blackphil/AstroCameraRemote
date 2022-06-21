@@ -5,7 +5,7 @@
 
 #include "BatchProcess_Signal.h"
 
-#include "Fits_File.h"
+#include <DataFormat/Fits/File>
 
 #include <QObject>
 #include <QList>

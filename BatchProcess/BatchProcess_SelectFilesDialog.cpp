@@ -1,4 +1,4 @@
-#include "BatchProcess_SelectFilesDialog.h"
+#include <BatchProcess/SelectFilesDialog>
 #include "ui_BatchProcess_SelectFilesDialog.h"
 
 #include <QFileDialog>
@@ -8,8 +8,8 @@
 #include <QProgressDialog>
 #include <QThreadPool>
 
-#include "AstroBase_PersistentDirInfo.h"
-#include "AstroBase_MessageBox.h"
+#include <AstroBase/PersistentDirInfo>
+#include <AstroBase/MessageBox>
 #include "BatchProcess_Processor.h"
 
 namespace BatchProcess {

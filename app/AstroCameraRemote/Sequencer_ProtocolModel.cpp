@@ -2,7 +2,7 @@
 
 #include <QPointer>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 #include "TimeUnit.h"
 
 namespace Sequencer {

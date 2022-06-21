@@ -1,4 +1,4 @@
-#include "AstroBase_MessageBox.h"
+#include <AstroBase/MessageBox>
 
 #include <QCheckBox>
 

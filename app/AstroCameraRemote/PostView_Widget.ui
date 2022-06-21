@@ -343,7 +343,7 @@
   <customwidget>
    <class>ImageView</class>
    <extends>QGraphicsView</extends>
-   <header>ImageView.h</header>
+   <header location="global">ImageView.h</header>
   </customwidget>
   <customwidget>
    <class>ImageViewZoomControl</class>

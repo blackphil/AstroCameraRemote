@@ -5,7 +5,7 @@
 #include <QDir>
 
 #include "BatchProcess.h"
-#include "EasyExif_Exif.h"
+#include <EasyExif/Exif>
 
 namespace BatchProcess {
 

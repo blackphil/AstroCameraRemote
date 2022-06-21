@@ -1,7 +1,7 @@
 #ifndef BATCHPROCESS_FITSREPAIR_H
 #define BATCHPROCESS_FITSREPAIR_H
 
-#include "BatchProcess_TaskInterface.h"
+#include <BatchProcess/TaskInterface>
 #include <QDir>
 
 namespace BatchProcess {

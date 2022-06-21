@@ -6,7 +6,7 @@
 
 #include "BatchProcess.h"
 #include "BatchProcess_Visual_TaskBox.h"
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 
 

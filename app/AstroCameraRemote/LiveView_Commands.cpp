@@ -1,6 +1,6 @@
 #include "LiveView_Commands.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 namespace LiveView {
 

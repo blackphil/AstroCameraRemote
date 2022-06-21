@@ -1,6 +1,6 @@
 #include "BatchProcess_Visual_TaskBox.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include <QGraphicsScene>
 #include <QBrush>

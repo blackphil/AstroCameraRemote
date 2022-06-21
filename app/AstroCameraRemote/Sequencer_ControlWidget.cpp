@@ -1,7 +1,7 @@
 #include "Sequencer_ControlWidget.h"
 #include "ui_Sequencer_ControlWidget.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include "Settings.h"
 #include "Settings_General.h"

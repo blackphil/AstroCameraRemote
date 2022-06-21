@@ -1,19 +1,20 @@
 #include "StarTrack_GraphicsScene.h"
 
 #include "StarTrack_Marker.h"
-#include "AstroBase.h"
 #include "hfd/Hfd_Calculator.h"
 #include "StarTrack_Settings.h"
 #include "StarTrack_StarInfo.h"
 
+#include <AstroBase/AstroBase>
 
-#include <QGraphicsSceneMouseEvent>
-#include <QFile>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
-#include <QThread>
+#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
+#include <QKeyEvent>
 #include <QMessageBox>
+#include <QThread>
 
 namespace StarTrack {
 

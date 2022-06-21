@@ -1,7 +1,7 @@
 #ifndef FITS_GLOBAL_H
 #define FITS_GLOBAL_H
 
-#include <QtCore/qglobal.h>
+//#include <QtCore/qglobal.h>
 
 #if defined(FITS_LIBRARY)
 #  define FITSSHARED_EXPORT Q_DECL_EXPORT

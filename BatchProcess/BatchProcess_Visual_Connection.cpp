@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QGraphicsScene>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 namespace BatchProcess {
 namespace Visual {

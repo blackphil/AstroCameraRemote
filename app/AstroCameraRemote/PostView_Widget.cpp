@@ -1,14 +1,16 @@
 #include "PostView_Widget.h"
 #include "ui_PostView_Widget.h"
-#include "AstroBase.h"
 #include "StarTrack_GraphicsScene.h"
 
 #include "hfd/Hfd_Calculator.h"
-#include "Fits_File.h"
-#include "AstroBase_PersistentDirInfo.h"
-#include "AstroBase_Exception.h"
-#include "AstroBase_MessageBox.h"
-#include "EasyExif_Exif.h"
+
+#include <DataFormat/Fits/File>
+
+#include <AstroBase/AstroBase>
+#include <AstroBase/PersistentDirInfo>
+#include <AstroBase/Exception>
+#include <AstroBase/MessageBox>
+#include <EasyExif/Exif>
 
 #include <QDir>
 #include <QDirIterator>
@@ -288,7 +290,7 @@ void Widget::loadFiles(const QStringList &files)
             Info dummyInfo;
             dummyInfo.setSubject(tr("test image"));
             dummyInfo.setShutterSpeed(fileInfo.baseName());
-            dummyInfo.setTimestamp(fileInfo.created());
+            dummyInfo.setTimestamp(fileInfo.lastModified());
             dummyInfo.setSeqNr(index++);
             //        AB_INF(fn << " (" << dummyInfo.getTimestamp().toString("HH:mm:ss") << ")");
 

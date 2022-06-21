@@ -1,6 +1,6 @@
 #include "Sequencer_StateWaitForCamReady.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 namespace Sequencer {
 

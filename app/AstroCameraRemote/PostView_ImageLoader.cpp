@@ -4,7 +4,7 @@
 #include <QImage>
 #include <QByteArray>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 namespace PostView {
 

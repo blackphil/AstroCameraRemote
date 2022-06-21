@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QProgressDialog>
 #include "batchprocess_global.h"
-#include "BatchProcess_TaskInterface.h"
+#include <BatchProcess/TaskInterface>
 
 namespace BatchProcess {
 

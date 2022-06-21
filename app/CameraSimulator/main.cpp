@@ -3,7 +3,7 @@
 #include <QHostAddress>
 
 #include "CamSim_HttpServer.h"
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 int main(int argc, char *argv[])
 {

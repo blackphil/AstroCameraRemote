@@ -1,45 +1,39 @@
 #include "Helper.h"
 
 #include <QDateTime>
+#include <QFile>
 #include <QTextStream>
 
-//#include "Exception.h"
-
-
-
-FILE* Helper::Log::logfile { nullptr };
+std::unique_ptr<QFile> Helper::Log::logfile { nullptr };
 
 Helper::Log::Log(Level level, const QString& file, const QString& func, int line)
 {
 
     if(!logfile)
     {
-        if(auto err = fopen_s(&logfile, "log.txt", "w"); err != 0)
+        logfile = std::make_unique<QFile>("log.txt");
+        if(!logfile->open(QIODevice::WriteOnly | QIODevice::Text))
         {
             return;
         }
     }
 
     constexpr const char* levelStr[] = { "INF", "WRN", "ERR" };
-    QString message
-    {
-        QString("%0 [%1 %2(%3):%4]\t")
-            .arg(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz"))
-            .arg(levelStr[qBound(static_cast<int>(Level::Info), static_cast<int>(level), static_cast<int>(Level::Error))])
-            .arg(file)
-            .arg(func)
-            .arg(line)
-    };
-
-    fprintf_s(logfile, message.toStdString().c_str());
-    if (level < Level::Warning)
-        message.clear();
+    QTextStream strm(logfile.get());
+    strm
+            << QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss:zzz")
+            << "[" << levelStr[qBound(static_cast<int>(Level::Info), static_cast<int>(level), static_cast<int>(Level::Error))]
+            << " " << file
+            <<  "(" << func
+             << "):" << line
+             << "]\t"
+                ;
 }
 
 Helper::Log::~Log()
 {
-    fprintf(logfile, "\n");
-    fflush(logfile);
+    logfile->write("\n");
+    logfile->flush();
 }
 
 void Helper::Log::apply(const QString& text)
@@ -49,9 +43,7 @@ void Helper::Log::apply(const QString& text)
 
 void Helper::Log::apply(const char* text)
 {
-    fprintf_s(logfile, text);
-    if (!message.isEmpty())
-        message.append(text);
+    logfile->write(text);
 }
 
 
@@ -59,8 +51,8 @@ void Helper::Log::close()
 {
     if(logfile)
     {
-        fclose(logfile);
-        logfile = nullptr;
+        logfile->close();
+        logfile.release();
     }
 }
 

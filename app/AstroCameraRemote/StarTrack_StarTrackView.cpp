@@ -6,7 +6,7 @@
 #include "StarTrack_Settings.h"
 #include "StarTrack_StarInfo.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include <QKeyEvent>
 

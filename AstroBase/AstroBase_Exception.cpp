@@ -1,4 +1,4 @@
-#include "AstroBase_Exception.h"
+#include <AstroBase/Exception>
 
 namespace AstroBase {
 

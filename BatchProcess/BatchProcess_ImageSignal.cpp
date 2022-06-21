@@ -1,8 +1,8 @@
 #include "BatchProcess_ImageSignal.h"
 
-#include "AstroBase.h"
-#include "AstroBase_Exception.h"
-#include "AstroBase_PersistentDirInfo.h"
+#include <AstroBase/AstroBase>
+#include <AstroBase/Exception>
+#include <AstroBase/PersistentDirInfo>
 #include "BatchProcess_Manager.h"
 
 #include <QFileDialog>
