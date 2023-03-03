@@ -6,23 +6,44 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>784</width>
+    <width>770</width>
     <height>755</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Sony Alpha Remote Control</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">font: 10pt &quot;Ubuntu&quot;;</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <widget class="QSplitter" name="splitter_2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
       <widget class="QSplitter" name="splitter">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -32,7 +53,7 @@
        </property>
        <widget class="QFrame" name="frame">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -83,9 +104,11 @@
            </property>
            <property name="font">
             <font>
-             <pointsize>12</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
+             <family>Ubuntu</family>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
             </font>
            </property>
            <property name="text">
@@ -106,9 +129,11 @@
            </property>
            <property name="font">
             <font>
-             <pointsize>12</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
+             <family>Ubuntu</family>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
             </font>
            </property>
            <property name="text">
@@ -129,9 +154,11 @@
            </property>
            <property name="font">
             <font>
-             <pointsize>12</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
+             <family>Ubuntu</family>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
             </font>
            </property>
            <property name="text">
@@ -155,7 +182,7 @@
          <item row="4" column="0" colspan="2">
           <widget class="QGroupBox" name="groupBox">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -200,6 +227,12 @@
         </layout>
        </widget>
        <widget class="QTabWidget" name="viewsTabWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <widget class="PostView::Widget" name="postViewWidget">
          <attribute name="title">
           <string>Post view</string>
@@ -214,7 +247,7 @@
       </widget>
       <widget class="QTextEdit" name="output">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -247,7 +280,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>784</width>
+     <width>770</width>
      <height>21</height>
     </rect>
    </property>

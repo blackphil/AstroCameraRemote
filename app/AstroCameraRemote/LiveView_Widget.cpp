@@ -95,15 +95,17 @@ void Widget::updateLiveViewImage()
     if(PayloadPtr data { imageQueue->pop() }; data != nullptr)
     {
 
+        //        Q_ASSERT(!pixmap.isNull());
+        if(QPixmap pixmap { QPixmap::fromImage(QImage::fromData(data->payload, "JPG")) }; !pixmap.isNull())
+        {
 
-        Info metaInfo;
-        metaInfo.setFps(calcFps());
-        metaInfo.setFrameCount(frameCount++);
-        ui->metaInfo->setText(metaInfo.toHtml());
+            Info metaInfo;
+            metaInfo.setFps(calcFps());
+            metaInfo.setFrameCount(frameCount++);
+            ui->metaInfo->setText(metaInfo.toHtml());
 
-        QPixmap pixmap { QPixmap::fromImage(QImage::fromData(data->payload, "JPG")) };
-        Q_ASSERT(!pixmap.isNull());
-        starTrackScene->updateBackground(pixmap);
+            starTrackScene->updateBackground(pixmap);
+        }
     }
 }
 
@@ -127,13 +129,17 @@ void Widget::startReaderThread()
         readerThread = new DummyReaderThread(this);
     else if(!url.isEmpty())
         readerThread = new ReaderThread(url, this);
-
-    if(!readerThread)
+    else
         return;
 
-    connect(readerThread, SIGNAL(newPayload(PayloadPtr)), imageQueue, SLOT(push(PayloadPtr)));
-
-    readerThread->start();
+    Q_ASSERT(readerThread);
+    if(readerThread)
+    {
+        connect(readerThread, SIGNAL(newPayload(PayloadPtr)), imageQueue, SLOT(push(PayloadPtr)));
+        readerThread->start();
+    }
+    else
+        return;
 
 
     pollImageTimer->start(1000 / Settings::getFps());

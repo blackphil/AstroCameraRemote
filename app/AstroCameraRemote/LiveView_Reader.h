@@ -7,6 +7,7 @@
 #include <QSharedPointer>
 #include <QNetworkAccessManager>
 #include <QTime>
+#include <QTimer>
 #include "LiveView_ImageQueue.h"
 
 namespace LiveView {
@@ -18,6 +19,9 @@ class Reader : public QObject
 
     QNetworkAccessManager* manager;
     QNetworkReply* connection;
+
+    QTimer readTimeout;
+    QString lastUrl;
 
     bool ready;
     int jpegSize;

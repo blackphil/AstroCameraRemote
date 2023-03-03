@@ -11,51 +11,42 @@ namespace AstroBase
 
 QSharedPointer<Logging> Logging::instance(new Logging());
 
-void Logging::initLogging(QString applicationName)
-{
-    instance->logFile.setFileName(QFileInfo(QDir::temp(), QString("%0.log").arg(applicationName)).absoluteFilePath());
-    instance->logFile.open(QIODevice::WriteOnly | QIODevice::Text);
-    instance->stream.setDevice(&instance->logFile);
 
+
+void Logging::initLogging(QString applicationName, bool logToFile)
+{
+    instance->m_logToFile = logToFile;
+    if(logToFile)
+    {
+        instance->logFile.setFileName(QFileInfo(QDir::temp(), QString("%0.log").arg(applicationName)).absoluteFilePath());
+        instance->logFile.open(QIODevice::WriteOnly | QIODevice::Text);
+        instance->m_stream = std::make_unique<QTextStream>();
+        instance->m_stream->setDevice(&instance->logFile);
+    }
     qInstallMessageHandler(messageOutput);
 }
 
-static QMutex m;
 void Logging::messageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-    QMutexLocker l(&m);
-    Q_UNUSED(l);
-
-    QByteArray localMsg = msg.toLocal8Bit();
-    switch (type) {
-    case QtDebugMsg:
-        instance->stream << "DBG|";
-        break;
-    case QtInfoMsg:
-        instance->stream << "INF|";
-        break;
-    case QtWarningMsg:
-        instance->stream << "WRN|";
-        break;
-    case QtCriticalMsg:
-        instance->stream << "CRT|";
-        break;
-    case QtFatalMsg:
-        instance->stream << "ERR|";
+    if(instance->m_logToFile)
+    {
+        instance->_messageOutput<QTextStream>(type, context, msg);
     }
+    else
+    {
+        instance->_messageOutput<std::ostream>(type, context, msg);
+    }
+}
 
-    instance->stream
-            << QTime::currentTime().toString("HH:mm:ss:zzz")
-            << "[" << QThread::currentThread()->objectName() << "(" << QThread::currentThreadId() << ")]"
-            << "|" << context.file
-            << ":" << context.line
-            << "(" << context.function << ")"
-            << "\t" << localMsg
-            << "\n";
 
-    instance->stream.flush();
-//    if(QtFatalMsg == type)
-//        abort();
+template<> std::ostream& Logging::stream<std::ostream>() const
+{
+    return std::cout;
+}
+
+template<> QTextStream& Logging::stream<QTextStream>() const
+{
+    return *m_stream.get();
 }
 
 } //namespace AstroBase

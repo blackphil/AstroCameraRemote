@@ -497,13 +497,6 @@ void ControlWidget::shutterSpeedChanged(const QString &value)
 
 }
 
-
-void ControlWidget::on_shutterSpeed_activated(const QString &speed)
-{
-    setShutterSpeed->setShutterSpeed(speed);
-    Sender::get()->send(setShutterSpeed);
-}
-
 void ControlWidget::on_takeShotBtn_clicked()
 {
     Sender::get()->send(actTakePicture);
@@ -571,6 +564,14 @@ void ControlWidget::on_newBtn_clicked()
 
         QMessageBox::information(this, tr("New sequence"), tr("New sequence \"%0\" created.").arg(currentProtocol->getObjectName()));
     }
+}
+
+
+void ControlWidget::on_shutterSpeed_textActivated(const QString &speed)
+{
+  AB_DBG(__PRETTY_FUNCTION__);
+  setShutterSpeed->setShutterSpeed(speed);
+  Sender::get()->send(setShutterSpeed);
 }
 
 } // namespace Sequencer

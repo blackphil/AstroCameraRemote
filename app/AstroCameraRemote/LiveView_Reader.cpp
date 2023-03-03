@@ -5,6 +5,9 @@
 
 #include <AstroBase/AstroBase>
 
+#include <chrono>
+using namespace std::chrono_literals;
+
 namespace LiveView {
 
 bool Reader::getReady() const
@@ -33,10 +36,22 @@ Reader::Reader(QObject *parent)
     , status { ReadCommonHeader }
 {
     qRegisterMetaType<PayloadPtr>("PayloadPtr");
+
+    readTimeout.callOnTimeout([this](){
+        AB_WRN("read timeout");
+        close();
+        QThread::msleep(100);
+        open(lastUrl);
+    });
+
+    readTimeout.setSingleShot(true);
+    readTimeout.setInterval(1s);
 }
 
 void Reader::open(QString urlStr)
 {
+    lastUrl = urlStr;
+
     ready = false;
     if(QUrl url { urlStr }; url.isValid())
     {
@@ -80,11 +95,12 @@ void Reader::close()
         delete connection;
     }
     connection = nullptr;
+    status = ReadCommonHeader;
 }
 
 void Reader::readyRead()
 {
-    //    AB_INF("READY READ");
+    //    AB_INF("READY READ" << status);
 
     switch(status)
     {
@@ -98,7 +114,10 @@ void Reader::readyRead()
         break;
     case ReadPayload :
         if(readPayload())
+        {
             status = ReadCommonHeader;
+            readTimeout.start();
+        }
         break;
 
     }
@@ -121,10 +140,10 @@ bool Reader::readCommonHeader()
         return false;
     }
 
-//    if (static_cast<char>(0xff) != commonHeader[0])
+    //    if (static_cast<char>(0xff) != commonHeader[0])
     if(constexpr unsigned char ff { 0xff }; ff != static_cast<unsigned char>(commonHeader[0]))
     {
-        AB_ERR("Unexpected data format. (Start byte)");
+//        AB_ERR("Unexpected data format. (Start byte)");
         return false;
     }
 

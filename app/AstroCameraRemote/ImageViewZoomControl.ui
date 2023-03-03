@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>87</width>
-    <height>63</height>
+    <width>91</width>
+    <height>78</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,6 +18,9 @@
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">font: 10pt &quot;Ubuntu&quot;;</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">

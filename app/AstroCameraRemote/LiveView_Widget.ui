@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">font: 10pt &quot;Ubuntu&quot;;</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>3</number>
@@ -115,7 +118,7 @@
   <customwidget>
    <class>ImageView</class>
    <extends>QGraphicsView</extends>
-   <header>ImageView.h</header>
+   <header location="global">ImageView.h</header>
   </customwidget>
   <customwidget>
    <class>ImageViewZoomControl</class>

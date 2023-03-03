@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     QString organizationName = "AstroPhotoHelpers";
     QString appName = "AstroCameraRemote";
 
-    AstroBase::Logging::initLogging(appName);
+    AstroBase::Logging::initLogging(appName, true);
     QApplication a(argc, argv);
 
     if(QDir pluginDir { PLUGIN_DIR }; pluginDir.exists())

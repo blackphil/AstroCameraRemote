@@ -101,7 +101,6 @@ private Q_SLOTS :
 
     void shutterSpeedChanged(const QString& value);
 
-    void on_shutterSpeed_activated(const QString &speed);
 
     void on_takeShotBtn_clicked();
 
@@ -109,6 +108,7 @@ private Q_SLOTS :
     void handleCameraStatus(const QString&status);
     void on_loadBtn_clicked();
     void on_newBtn_clicked();
+    void on_shutterSpeed_textActivated(const QString &speed);
 };
 
 
