@@ -1,6 +1,6 @@
 #include "BatchProcess_Task.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include <QThreadPool>
 #include <QRunnable>

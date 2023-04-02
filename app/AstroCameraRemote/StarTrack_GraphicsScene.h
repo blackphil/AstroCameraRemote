@@ -2,6 +2,10 @@
 #define STARTRACK_GRAPHICSSCENE_H
 
 #include <QGraphicsScene>
+#include <QList>
+
+#include "StarTrack_Tracker.h"
+#include "StarTrack_StarInfo.h"
 
 namespace StarTrack {
 
@@ -13,15 +17,13 @@ class GraphicsScene : public QGraphicsScene
     Q_OBJECT
 
     QGraphicsPixmapItem* imageLayer;
-    Marker* marker;
+    Marker* selectedMarker;
 
     bool enabled;
     bool publishScaledImage;
 
-    QImage star, scaledStar;
+    QList<Marker*> markers;
 
-    bool grabImages(const QRectF &rect);
-    double calcHfd(const QRectF &rect) const;
 
 public:
     GraphicsScene(QObject* parent);
@@ -35,20 +37,31 @@ public:
 
 Q_SIGNALS :
     void starCentered(const QImage&);
-    void newHfdValue(float);
-    void starTrackingEnabled(bool yes);
+    void newHfdValue(StarInfoPtr);
+    void starTrackingEnabled(bool);
+    void newReferenceMarkers(const QList<QRectF>&);
 
 public Q_SLOTS :
     void updateBackground(const QPixmap& pixmap);
     void updateMarker();
+    void setReference();
+    void unsetReference();
+    void removeSelectedMarker();
+    void cleanUpMarkers();
+    void applyReferenceMarkers(const QList<QRectF>& refMarkers);
+    void selectNextStar();
+    void selectPreviousStar();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void keyPressEvent(QKeyEvent* event);
 
 private Q_SLOTS :
     void newMark();
+    void setSelectedMarker(const QPointF& pos);
+    void setSelectedMarker(Marker* m);
 
 };
 

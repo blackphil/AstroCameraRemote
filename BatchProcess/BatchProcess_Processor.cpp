@@ -1,5 +1,5 @@
 #include "BatchProcess_Processor.h"
-#include "BatchProcess_TaskInterface.h"
+#include <BatchProcess/TaskInterface>
 
 namespace BatchProcess {
 

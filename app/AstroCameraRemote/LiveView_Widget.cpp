@@ -1,6 +1,6 @@
 #include "LiveView_Widget.h"
 #include "ui_LiveView_Widget.h"
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 #include "LiveView_Info.h"
 
 #include <QMutexLocker>
@@ -9,35 +9,33 @@
 #include <QBrush>
 #include <QMouseEvent>
 
-using namespace SonyAlphaRemote;
+
 
 namespace LiveView {
 
 
-void Widget::setSender(SonyAlphaRemote::Sender *value)
-{
-    sender = value;
-}
 
 
 Widget::Widget(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::Widget)
-    , startLiveView(new StartLiveView(this))
-    , stopLiveView(new StopLiveView(this))
-    , sender(Q_NULLPTR)
-    , imageQueue(new ImageQueue(this))
-    , pollImageTimer(new QTimer(this))
-    , readerThread(Q_NULLPTR)
-    , lastTimeStamp(QTime::currentTime())
-    , starTrackScene(new StarTrack::GraphicsScene(this))
-    , frameCount(0)
-
+    : QWidget { parent }
+    , ui { new Ui::Widget }
+    , startLiveView { new StartLiveView { this }  }
+    , stopLiveView { new StopLiveView { this }  }
+    , imageQueue { new ImageQueue { this }  }
+    , pollImageTimer { new QTimer { this }  }
+    , readerThread { nullptr }
+    , lastTimeStamp { QTime::currentTime() }
+    , starTrackScene { new StarTrack::GraphicsScene { this }  }
+    , frameCount { 0 }
+    , debugModeEnabled { false }
 {
     AB_INF("ctor");
     ui->setupUi(this);
 
     ui->graphicsView->setScene(starTrackScene);
+    starTrackScene->setEnabled(false);
+
+    ui->zoomControl->setup(ui->graphicsView);
 
     connect(startLiveView, SIGNAL(newLiveViewUrl(QString)), this, SLOT(startReaderThread(QString)));
     connect(stopLiveView, SIGNAL(liveViewStopped()), this, SLOT(stopReaderThread()));
@@ -53,18 +51,15 @@ Widget::~Widget()
 
 void Widget::start()
 {
-    Q_ASSERT(sender);
-    if(!sender)
-        AB_ERR("no sender available!!!");
-    sender->send(startLiveView);
+    ui->graphicsView->fitToWindow(ui->zoomControl->fitInWindowEnabled());
+    starTrackScene->setEnabled(true);
+    Sender::get()->send(startLiveView);
 }
 
 void Widget::stop()
 {
-    Q_ASSERT(sender);
-    if(!sender)
-        AB_ERR("no sender available!!!");
-    sender->send(stopLiveView);
+    starTrackScene->setEnabled(false);
+    Sender::get()->send(stopLiveView);
     stopReaderThread();
 }
 
@@ -76,32 +71,52 @@ StarTrack::GraphicsScene *Widget::getStarTrackScene() const
 int Widget::calcFps()
 {
 
-    float fps = 0;
-    QTime now = QTime::currentTime();
-    fps = 1000.0f / lastTimeStamp.msecsTo(now);
-    lastTimeStamp = QTime::currentTime();
+    QTime now { QTime::currentTime() };
+    int fps { qRound(1000.0f / lastTimeStamp.msecsTo(now)) };
+    lastTimeStamp = now;
 
-    return qRound(fps);
+    return fps;
+}
+
+void Widget::resizeEvent(QResizeEvent *re)
+{
+    Q_UNUSED(re)
+
+    if(ui->zoomControl->fitInWindowEnabled())
+    {
+        ui->graphicsView->fitToWindow(true);
+    }
+    QWidget::resizeEvent(re);
 }
 
 void Widget::updateLiveViewImage()
 {
 
-    PayloadPtr data = imageQueue->pop();
-    if(!data)
-        return;
+    if(PayloadPtr data { imageQueue->pop() }; data != nullptr)
+    {
 
+        //        Q_ASSERT(!pixmap.isNull());
+        if(QPixmap pixmap { QPixmap::fromImage(QImage::fromData(data->payload, "JPG")) }; !pixmap.isNull())
+        {
 
-    Info metaInfo;
-    metaInfo.setFps(calcFps());
-    metaInfo.setFrameCount(frameCount++);
-    ui->metaInfo->setText(metaInfo.toHtml());
+            Info metaInfo;
+            metaInfo.setFps(calcFps());
+            metaInfo.setFrameCount(frameCount++);
+            ui->metaInfo->setText(metaInfo.toHtml());
 
-    QPixmap pixmap = QPixmap::fromImage(QImage::fromData(data->payload, "JPG"));
-    starTrackScene->updateBackground(pixmap);
+            starTrackScene->updateBackground(pixmap);
+        }
+    }
 }
 
-void Widget::startReaderThread(QString url)
+void Widget::startReaderThread(const QString& url)
+{
+    this->url = url;
+    if(!debugModeEnabled)
+        startReaderThread();
+}
+
+void Widget::startReaderThread()
 {
     if(readerThread)
     {
@@ -110,11 +125,21 @@ void Widget::startReaderThread(QString url)
         delete readerThread;
     }
 
+    if(debugModeEnabled)
+        readerThread = new DummyReaderThread(this);
+    else if(!url.isEmpty())
+        readerThread = new ReaderThread(url, this);
+    else
+        return;
 
-    readerThread = new ReaderThread(url, this);
-    connect(readerThread, SIGNAL(newPayload(PayloadPtr)), imageQueue, SLOT(push(PayloadPtr)));
-
-    readerThread->start();
+    Q_ASSERT(readerThread);
+    if(readerThread)
+    {
+        connect(readerThread, SIGNAL(newPayload(PayloadPtr)), imageQueue, SLOT(push(PayloadPtr)));
+        readerThread->start();
+    }
+    else
+        return;
 
 
     pollImageTimer->start(1000 / Settings::getFps());
@@ -146,12 +171,26 @@ void Widget::stopReaderThread()
 
 }
 
-void LiveView::Widget::on_fpsSpinBox_valueChanged(int fps)
+void Widget::on_fpsSpinBox_valueChanged(int fps)
 {
     pollImageTimer->setInterval(1000 / fps);
     Settings::setFps(fps);
 }
 
+void Widget::on_debugModeCb_toggled(bool checked)
+{
+    debugModeEnabled = checked;
+    stopReaderThread();
+    startReaderThread();
+}
+
+void Widget::on_setRefBtn_clicked()
+{
+    starTrackScene->setReference();
+}
+
 } // namespace LiveView
+
+
 
 

@@ -11,7 +11,7 @@
 
 #include "LiveView_Commands.h"
 #include "LiveView_Reader.h"
-#include "SonyAlphaRemote_Sender.h"
+#include "Sender.h"
 #include "LiveView_ImageQueue.h"
 #include "LiveView_ReaderThread.h"
 #include "LiveView_Settings.h"
@@ -33,25 +33,26 @@ class Widget : public QWidget
 
     StartLiveView* startLiveView;
     StopLiveView* stopLiveView;
-    SonyAlphaRemote::Sender* sender;
 
     ImageQueue* imageQueue;
     QTimer* pollImageTimer;
 
-    ReaderThread* readerThread;
+    ReaderThreadBase* readerThread;
     QTime lastTimeStamp;
     StarTrack::GraphicsScene* starTrackScene;
 
     int frameCount;
 
+    bool debugModeEnabled;
+    QString url;
+
     int calcFps();
 
+    void resizeEvent(QResizeEvent* re);
+
 public:
-    explicit Widget(QWidget *parent = 0);
+    explicit Widget(QWidget *parent = nullptr);
     ~Widget();
-
-    void setSender(SonyAlphaRemote::Sender *value);
-
 
     StarTrack::GraphicsScene *getStarTrackScene() const;
 
@@ -63,10 +64,13 @@ public Q_SLOTS :
 
 
 private Q_SLOTS :
-    void startReaderThread(QString url);
+    void startReaderThread(const QString &url);
+    void startReaderThread();
     void stopReaderThread();
 
     void on_fpsSpinBox_valueChanged(int fps);
+    void on_debugModeCb_toggled(bool checked);
+    void on_setRefBtn_clicked();
 };
 
 

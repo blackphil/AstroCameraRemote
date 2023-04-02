@@ -6,13 +6,10 @@
 #include <QTimer>
 #include <QList>
 
-#include "SonyAlphaRemote_Sender.h"
-#include "SonyAlphaRemote_StatusPoller.h"
-#include "SonyAlphaRemote_Sequencer_BulbShootSequencer.h"
-#include "SonyAlphaRemote_Sequencer_NormalShootSequencer.h"
-#include "SonyAlphaRemote_BatteryInfo.h"
-#include "SonyAlphaRemote_Settings.h"
-#include "SonyAlphaRemote_Sequencer_SettingsManager.h"
+#include "Sender.h"
+#include "StatusPoller.h"
+#include "BatteryInfo.h"
+#include "Settings.h"
 #include "PostView_Info.h"
 #include "Settings_General.h"
 #include "LiveView_Settings.h"
@@ -28,6 +25,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class TextEditMessageHandler;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -42,21 +41,12 @@ class MainWindow : public QMainWindow
         , State_Completed = 0x07
     };
 
-    SonyAlphaRemote::Json::StartRecMode* startRecMode;
-    SonyAlphaRemote::Json::StopRecMode* stopRecMode;
-    SonyAlphaRemote::Json::SetShutterSpeed* setShutterSpeed;
-    SonyAlphaRemote::Json::SetIsoSpeedRate* setIsoSpeedRate;
-    SonyAlphaRemote::Json::ActTakePicture* actTakePicture;
-    SonyAlphaRemote::Json::StartBulbShooting* startBulbShooting;
-    SonyAlphaRemote::Json::StopBulbShooting* stopBulbShooting;
+    TextEditMessageHandler* messageHandler;
 
-    SonyAlphaRemote::Sender* sender;
-    SonyAlphaRemote::StatusPoller* statusPoller;
-    SonyAlphaRemote::Sequencer::BulbShootSequencer* bulbShootSequencer;
-    SonyAlphaRemote::Sequencer::NormalShootSequencer* normalShootSequencer;
+    Settings* settings;
 
-    SonyAlphaRemote::Settings* settings;
-    SonyAlphaRemote::Sequencer::SettingsManager* sequencerSettingsManager;
+    Json::StartRecMode* startRecMode;
+    Json::StopRecMode* stopRecMode;
 
     StarTrack::StarTrackView* fullScreenStarTrackView;
 
@@ -76,7 +66,6 @@ class MainWindow : public QMainWindow
 
 
 Q_SIGNALS :
-    void newPostViewInfo(PostView::Info);
     void connectedToCamera();
     void disconnectedFromCamera();
 
@@ -85,6 +74,9 @@ public:
     ~MainWindow();
 
 private Q_SLOTS:
+
+    void isoSpeedRatesChanged(const QStringList& candidates, const QString& current);
+    void shutterSpeedsChanged(const QStringList& candidates, const QString& current);
 
     void toggleStarTrackViewFullScreen(bool yes);
 
@@ -98,50 +90,15 @@ private Q_SLOTS:
 
     void error(QString);
 
-    void isoSpeedRatesChanged(const QStringList& candidates, const QString&);
-    void shutterSpeedsChanged(const QStringList& candidates, const QString&);
-    void shutterSpeedChanged(const QString& value);
-
-    void on_shutterSpeed_activated(const QString &speed);
-
-    void on_takeShotBtn_clicked();
-
-    void onPostView(const QString &url);
-    void onPostView(const QString &url, int i, int numShots);
-
-    void on_startBulbSequence_clicked();
-
     void appendOutputMessage(QString msg);
 
-    void on_simCamReadyBtn_clicked();
-
     void handleCameraStatus(QString status);
-
-    void on_isoSpeedRate_activated(const QString &isoSpeedRate);
 
     void updateCurrentTimeDisplay();
 
     void updateBatteryStatus();
 
-    void shootSequencerStarted();
-    void shootSequencerStopped();
-    void recalcSequenceDuration();
-
-    void addCurrentSequencerSettings();
-    void applySequencerSettings(const QString& name, const QStringList& availableSettings);
-    void removeSequencerSettings(const QString& name);
-
-    bool stopRunningSequence();
-
-    void updateSequencerStatus(const QString& status);
-
     void on_actionSettings_triggered();
-
-    void on_actionDebug_triggered();
-
-    void viewsTabChanged(int index);
-
-    void on_testHfdBtn_clicked();
 
     void on_lenrCheckbox_clicked(bool checked);
 
@@ -150,6 +107,8 @@ private Q_SLOTS:
     void on_scaledImageCheckbox_toggled(bool checked);
 
     void on_actionFits_repair_triggered();
+
+    void on_actionAbout_triggered();
 
 private:
     Ui::MainWindow *ui;

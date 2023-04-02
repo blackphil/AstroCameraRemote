@@ -12,7 +12,7 @@ public:
     GraphicsView(QWidget* parent = nullptr);
 
 protected :
-    void resizeEvent(QResizeEvent* re);
+    void resizeEvent(QResizeEvent*);
 };
 
 } // namespace StarTrack

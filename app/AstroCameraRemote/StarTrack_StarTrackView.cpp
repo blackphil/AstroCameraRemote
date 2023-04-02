@@ -4,8 +4,9 @@
 #include "StarTrack_Marker.h"
 #include "StarTrack_LenseGraphcisScene.h"
 #include "StarTrack_Settings.h"
+#include "StarTrack_StarInfo.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include <QKeyEvent>
 
@@ -48,9 +49,9 @@ StarTrackView::~StarTrackView()
     delete ui;
 }
 
-float StarTrackView::getHfdValue() const
+StarInfoPtr StarTrackView::getStarInfo() const
 {
-    return lense->getHfd();
+    return lense->getStarInfo();
 }
 
 QImage StarTrackView::getStar() const
@@ -63,7 +64,7 @@ void StarTrackView::updateStar(const QImage& img)
     lense->updateStar(img);
 }
 
-void StarTrackView::updateHfdValue(float hfd)
+void StarTrackView::updateHfdValue(StarInfoPtr hfd)
 {
     lense->updateHfd(hfd);
 }
@@ -77,7 +78,7 @@ void StarTrackView::fullScreenToggled(bool yes)
 
 void StarTrackView::applyStatusFrom(StarTrackView *other)
 {
-    updateHfdValue(other->getHfdValue());
+    updateHfdValue(other->getStarInfo());
     updateStar(other->getStar());
 
     lense->changeHfdFontPointSize(Settings::getHfdDisplayFontSize());
@@ -124,6 +125,14 @@ void StarTrackView::on_hfdFontPointSize_valueChanged(int v)
     Settings::setHfdDisplayFontSize(v);
 }
 
+void StarTrackView::on_prev_clicked()
+{
+    Q_EMIT selectPreviousStar();
+}
+
+void StarTrackView::on_next_clicked()
+{
+    Q_EMIT selectNextStar();
+}
+
 } // namespace StarTrack
-
-

@@ -1,15 +1,20 @@
 #include "StarTrack_GraphicsScene.h"
 
 #include "StarTrack_Marker.h"
-#include "AstroBase.h"
 #include "hfd/Hfd_Calculator.h"
 #include "StarTrack_Settings.h"
+#include "StarTrack_StarInfo.h"
 
+#include <AstroBase/AstroBase>
 
-#include <QGraphicsSceneMouseEvent>
-#include <QFile>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsView>
+#include <QKeyEvent>
+#include <QMessageBox>
+#include <QThread>
 
 namespace StarTrack {
 
@@ -35,49 +40,25 @@ void GraphicsScene::setPublishScaledImage(bool value)
         return;
     publishScaledImage = value;
 
-    if(!enabled)
+    if(!enabled || selectedMarker == nullptr)
         return;
 
     if(publishScaledImage)
-        Q_EMIT starCentered(scaledStar);
+        Q_EMIT starCentered(selectedMarker->getTracker().getScaledStar());
     else
-        Q_EMIT starCentered(star);
+        Q_EMIT starCentered(selectedMarker->getTracker().getCurrentStar());
 
 }
 
-bool GraphicsScene::grabImages(const QRectF& rect)
-{
-    QPixmap pixmap = imageLayer->pixmap();
-    if(pixmap.isNull())
-        return false;
-
-    Hfd::Calculator hfd;
-    star = pixmap.copy(rect.toRect()).toImage();
-    double mean = hfd.meanValue(star);
-    scaledStar = hfd.scaledImage(star, mean);
-
-    return true;
-}
-
-double GraphicsScene::calcHfd(const QRectF& rect) const
-{
-    Hfd::Calculator hfd;
-    double outerDiameter = qMin(rect.width(), rect.height());
-    double hfdValue = hfd.calcHfd(scaledStar, qRound(outerDiameter));
-    hfdValue = outerDiameter / hfdValue;
-    return hfdValue;
-}
 
 GraphicsScene::GraphicsScene(QObject* parent)
     : QGraphicsScene(parent)
-    , marker(new Marker(this, this))
+    , imageLayer(nullptr)
+    , selectedMarker(nullptr)
     , enabled(true)
     , publishScaledImage(Settings::getPublishScaledImage())
 {
 
-
-    connect(marker, SIGNAL(newMark()), this, SLOT(newMark()));
-    connect(this, SIGNAL(starTrackingEnabled(bool)), marker, SLOT(setTracking(bool)));
 
     QRect defaultRect(0, 0, 808, 540);
 
@@ -87,51 +68,190 @@ GraphicsScene::GraphicsScene(QObject* parent)
     defaultImage.open(QIODevice::ReadOnly);
     QByteArray imageData = defaultImage.readAll();
 
-    imageLayer = addPixmap(QPixmap::fromImage(QImage::fromData(imageData, "JPG").scaled(defaultRect.size())));
-    imageLayer->setZValue(0);
+    if(QImage img { QImage::fromData(imageData, "JPG") }; !img.isNull())
+    {
+        imageLayer = addPixmap(QPixmap::fromImage(img.scaled(defaultRect.size())));
+        imageLayer->setZValue(0);
+    }
 
 }
 
 GraphicsScene::~GraphicsScene()
 {
+    qDeleteAll(markers);
 }
 
 void GraphicsScene::updateBackground(const QPixmap &pixmap)
 {
-    if(!enabled)
+//    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
+    if(!enabled || pixmap.isNull())
         return;
 
-    imageLayer->setPixmap(pixmap);
+    imageLayer->setPixmap(pixmap.scaledToHeight(sceneRect().toRect().height()));
     newMark();
 }
 
 void GraphicsScene::updateMarker()
 {
+    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
     if(!enabled)
         return;
-    marker->update();
+
+    QPixmap pm = imageLayer->pixmap();
+
+    for(auto marker : markers)
+        marker->update(pm);
+}
+
+void GraphicsScene::setReference()
+{
+    QList<QRectF> refRects;
+    for(auto marker : markers)
+    {
+        marker->setReferencePos();
+        refRects << marker->getRect();
+    }
+
+    Q_EMIT newReferenceMarkers(refRects);
+}
+
+void GraphicsScene::unsetReference()
+{
+    for(auto marker : markers)
+        marker->unsetReferencePos();
+}
+
+void GraphicsScene::removeSelectedMarker()
+{
+    if(!selectedMarker)
+        return;
+
+    QWidget* mainWidget = views().first();
+    do
+    {
+        if(mainWidget->parentWidget())
+            mainWidget = mainWidget->parentWidget();
+        else
+            break;
+    }
+    while(mainWidget);
+
+    Q_ASSERT(mainWidget);
+    if(!mainWidget)
+        return;
+
+    if(QMessageBox::Yes == QMessageBox::question(mainWidget, tr("Remote star tracker"), tr("Remove star tracker?")))
+    {
+        markers.removeAll(selectedMarker);
+        selectedMarker->deleteLater();
+        if(!markers.isEmpty())
+            setSelectedMarker(markers.last());
+        else
+            setSelectedMarker(nullptr);
+
+    }
+}
+
+void GraphicsScene::cleanUpMarkers()
+{
+    setSelectedMarker(nullptr);
+    qDeleteAll(markers);
+    markers.clear();
+}
+
+void GraphicsScene::applyReferenceMarkers(const QList<QRectF> &refMarkers)
+{
+    cleanUpMarkers();
+    for(auto m : refMarkers)
+    {
+        Marker* marker = new Marker(this, this);
+        marker->forceRect(m);
+        marker->setReferencePos();
+        markers << marker;
+    }
+}
+
+void GraphicsScene::selectNextStar()
+{
+    if(markers.isEmpty())
+        return;
+
+//    Q_ASSERT(selectedMarker);
+    if(!selectedMarker)
+        return;
+
+    int index = markers.indexOf(selectedMarker);
+    Q_ASSERT(0 <= index && index < markers.count());
+    if(0 > index || index >= markers.count())
+        return;
+
+    index++;
+    if(markers.count() == index)
+        index = 0;
+    setSelectedMarker(markers[index]);
+}
+
+void GraphicsScene::selectPreviousStar()
+{
+    if(markers.isEmpty())
+        return;
+
+//    Q_ASSERT(selectedMarker);
+    if(!selectedMarker)
+        return;
+
+    int index = markers.indexOf(selectedMarker);
+    Q_ASSERT(0 <= index && index < markers.count());
+    if(0 > index || index >= markers.count())
+        return;
+
+    index--;
+    if(0 > index)
+        index = markers.count()-1;
+    setSelectedMarker(markers[index]);
 }
 
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(!enabled)
         return;
-    marker->start(event->scenePos());
+
+    if(markers.isEmpty() || event->modifiers().testFlag(Qt::ControlModifier))
+    {
+        Marker* m = new Marker(this, this);
+        markers << m;
+        setSelectedMarker(m);
+    }
+    else
+        setSelectedMarker(event->scenePos());
+
+    if(selectedMarker)
+        selectedMarker->start(event->scenePos());
 }
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(!enabled)
+    if(!enabled || selectedMarker == nullptr)
         return;
-    marker->mouseMoved(event->scenePos());
+    if(event->buttons().testFlag(Qt::LeftButton) && event->modifiers() == 0)
+        selectedMarker->mouseMoved(event->scenePos());
 }
 
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(!enabled)
-        return;
-    marker->finish(event->scenePos());
+    Q_UNUSED(event);
 
+    if(!enabled || selectedMarker == nullptr)
+        return;
+    selectedMarker->finish();
+}
+
+void GraphicsScene::keyPressEvent(QKeyEvent *event)
+{
+    if(Qt::Key_Delete == event->key())
+        removeSelectedMarker();
+
+    QGraphicsScene::keyPressEvent(event);
 }
 
 namespace helper
@@ -146,31 +266,76 @@ void debugSaveImage(const QImage& img, const QString& prefix)
 
 void GraphicsScene::newMark()
 {
+//    AB_DBG("VISIT (thread:" << QThread::currentThread()->objectName() << "[" << QThread::currentThreadId() << "]");
     if(!enabled)
         return;
 
-    QRectF rect = marker->getRect();
-
-    if(!grabImages(rect))
+    QPixmap pixmap = imageLayer->pixmap();
+    if(pixmap.isNull())
         return;
 
-    rect = marker->centerStar(scaledStar);
+    for(auto m : markers)
+        m->update(pixmap);
 
-    if(!grabImages(rect))
+    if(selectedMarker == nullptr)
+    {
+//        AB_DBG("No selected marker");
         return;
+    }
+
+    if(selectedMarker->getTracker().getRect().isNull())
+    {
+        AB_DBG("Selected marker doesn't track any star for now");
+        return;
+    }
+
+    AB_DBG("Handle selected marker's star tracked ...");
+
+    StarInfoPtr info(new StarInfo());
+
+    QRectF rect = selectedMarker->getRect();
+    info->window = rect.size();
+    info->centerPosition = rect.center();
 
     if(publishScaledImage)
-        Q_EMIT starCentered(scaledStar);
+        Q_EMIT starCentered(selectedMarker->getTracker().getScaledStar());
     else
-        Q_EMIT starCentered(star);
+        Q_EMIT starCentered(selectedMarker->getTracker().getCurrentStar());
 
 
-    double hfdValue = calcHfd(marker->getRect());
-    marker->setInfo(QString("hfd(%0)").arg(hfdValue));
-    Q_EMIT newHfdValue(hfdValue);
+    info->hfd = selectedMarker->getTracker().getHfd();
 
-    AB_INF("END");
+    Q_EMIT newHfdValue(info);
+
 
 }
+
+void GraphicsScene::setSelectedMarker(const QPointF &pos)
+{
+
+    for(auto m : markers)
+    {
+        if(m->getRect().contains(pos))
+        {
+            setSelectedMarker(m);
+            return;
+        }
+    }
+
+    setSelectedMarker(nullptr);
+
+}
+
+void GraphicsScene::setSelectedMarker(Marker *m)
+{
+    if(selectedMarker)
+        selectedMarker->setIsSelected(false);
+
+    selectedMarker = m;
+
+    if(selectedMarker)
+        selectedMarker->setIsSelected(true);
+}
+
 
 } // namespace StarTrack

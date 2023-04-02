@@ -6,27 +6,54 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>784</width>
+    <width>770</width>
     <height>755</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Sony Alpha Remote Control</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">font: 10pt &quot;Ubuntu&quot;;</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout_5">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <widget class="QSplitter" name="splitter_2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
       <widget class="QSplitter" name="splitter">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <widget class="QFrame" name="frame">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -38,355 +65,6 @@
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <property name="leftMargin">
-          <number>2</number>
-         </property>
-         <property name="topMargin">
-          <number>2</number>
-         </property>
-         <property name="rightMargin">
-          <number>2</number>
-         </property>
-         <property name="bottomMargin">
-          <number>2</number>
-         </property>
-         <property name="spacing">
-          <number>1</number>
-         </property>
-         <item row="3" column="0" colspan="3">
-          <widget class="QGroupBox" name="bulbShootingGroupBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="title">
-            <string>Settings</string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_2">
-            <property name="leftMargin">
-             <number>9</number>
-            </property>
-            <property name="topMargin">
-             <number>15</number>
-            </property>
-            <property name="rightMargin">
-             <number>9</number>
-            </property>
-            <property name="bottomMargin">
-             <number>15</number>
-            </property>
-            <property name="spacing">
-             <number>6</number>
-            </property>
-            <item row="6" column="2">
-             <widget class="SonyAlphaRemote::TimeUnitButton" name="pauseTuBtn">
-              <property name="maximumSize">
-               <size>
-                <width>30</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>7</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>tu</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>Num shots:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>ISO:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Estimated duration:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="3" rowspan="3" colspan="2">
-             <widget class="QPushButton" name="takeShotBtn">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Take single shot</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3" colspan="2">
-             <widget class="QComboBox" name="isoSpeedRate"/>
-            </item>
-            <item row="10" column="0" colspan="5">
-             <widget class="QLabel" name="sequencerStatus">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>&lt;center&gt;blub&lt;/center&gt;</string>
-              </property>
-              <property name="textFormat">
-               <enum>Qt::RichText</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="3" colspan="2">
-             <widget class="QPushButton" name="testHfdBtn">
-              <property name="text">
-               <string>Test HFD</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="1">
-             <widget class="QDoubleSpinBox" name="pause">
-              <property name="showGroupSeparator" stdset="0">
-               <bool>true</bool>
-              </property>
-              <property name="decimals">
-               <number>6</number>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="3" colspan="2">
-             <widget class="QPushButton" name="simCamReadyBtn">
-              <property name="text">
-               <string>SIM CAM READY</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Start delay:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="2">
-             <widget class="SonyAlphaRemote::TimeUnitButton" name="startDelayTuBtn">
-              <property name="maximumSize">
-               <size>
-                <width>30</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>7</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>tu</string>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>8</width>
-                <height>8</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Shutter speed:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Shutter speed (BULB):</string>
-              </property>
-              <property name="textFormat">
-               <enum>Qt::PlainText</enum>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="4">
-             <widget class="QPushButton" name="removeSettingsBtn">
-              <property name="maximumSize">
-               <size>
-                <width>50</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Remove</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QPushButton" name="addSettingsBtn">
-              <property name="maximumSize">
-               <size>
-                <width>50</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Add</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="1">
-             <widget class="QSpinBox" name="numShots">
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>10000</number>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="3" rowspan="2" colspan="2">
-             <widget class="QPushButton" name="startBulbSequence">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Start sequence</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="1">
-             <widget class="QDoubleSpinBox" name="startDelay">
-              <property name="showGroupSeparator" stdset="0">
-               <bool>true</bool>
-              </property>
-              <property name="decimals">
-               <number>6</number>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="shutterSpeed"/>
-            </item>
-            <item row="0" column="0" colspan="3">
-             <widget class="QComboBox" name="settingsNameCBox">
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="editable">
-               <bool>true</bool>
-              </property>
-              <property name="currentText">
-               <string/>
-              </property>
-              <property name="frame">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="1">
-             <widget class="QLineEdit" name="estimatedDuration">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="frame">
-               <bool>false</bool>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>Pause:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="2">
-             <widget class="SonyAlphaRemote::TimeUnitButton" name="shutterSpeedTuBtn">
-              <property name="maximumSize">
-               <size>
-                <width>30</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>7</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>tu</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QDoubleSpinBox" name="shutterSpeedBulb">
-              <property name="showGroupSeparator" stdset="0">
-               <bool>true</bool>
-              </property>
-              <property name="decimals">
-               <number>6</number>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="1">
-             <widget class="QCheckBox" name="lenrCheckbox">
-              <property name="text">
-               <string>Long exp. noise red.</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_10">
            <property name="text">
@@ -397,7 +75,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1" colspan="2">
+         <item row="0" column="1">
           <widget class="QProgressBar" name="batteryStatus">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -416,30 +94,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="2">
-          <widget class="QLabel" name="currentTime">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>&lt;current time&gt;</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
+         <item row="1" column="1">
           <widget class="QLabel" name="cameraStatus">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -449,9 +104,11 @@
            </property>
            <property name="font">
             <font>
-             <pointsize>12</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
+             <family>Ubuntu</family>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
             </font>
            </property>
            <property name="text">
@@ -472,9 +129,11 @@
            </property>
            <property name="font">
             <font>
-             <pointsize>12</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
+             <family>Ubuntu</family>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
             </font>
            </property>
            <property name="text">
@@ -485,7 +144,42 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="0" colspan="3">
+         <item row="2" column="1">
+          <widget class="QLabel" name="currentTime">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>Ubuntu</family>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>&lt;current time&gt;</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="Sequencer::ControlWidget" name="sequencerControl" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0" colspan="2">
           <widget class="QGroupBox" name="groupBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -539,20 +233,15 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
         <widget class="PostView::Widget" name="postViewWidget">
          <attribute name="title">
           <string>Post view</string>
          </attribute>
-         <layout class="QGridLayout" name="gridLayout_4"/>
         </widget>
         <widget class="LiveView::Widget" name="liveViewWidget">
          <attribute name="title">
           <string>Live view</string>
          </attribute>
-         <layout class="QGridLayout" name="gridLayout_6"/>
         </widget>
        </widget>
       </widget>
@@ -591,7 +280,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>784</width>
+     <width>770</width>
      <height>21</height>
     </rect>
    </property>
@@ -601,7 +290,14 @@
     </property>
     <addaction name="actionFits_repair"/>
    </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuBatch_processing"/>
+   <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="ToolBar" name="toolBar_2">
@@ -637,7 +333,6 @@
    </attribute>
    <addaction name="actionSettings"/>
    <addaction name="separator"/>
-   <addaction name="actionDebug"/>
    <addaction name="actionToggleRecordMode"/>
   </widget>
   <widget class="ToolBar" name="toolBar">
@@ -687,15 +382,6 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionDebug">
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/images/Bug.svg</normaloff>:/images/Bug.svg</iconset>
-   </property>
-   <property name="text">
-    <string>debug</string>
-   </property>
-  </action>
   <action name="actionToggleRecordMode">
    <property name="checkable">
     <bool>true</bool>
@@ -717,14 +403,14 @@
     <string>Fits repair</string>
    </property>
   </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>SonyAlphaRemote::TimeUnitButton</class>
-   <extends>QPushButton</extends>
-   <header>SonyAlphaRemote_TimeUnitButton.h</header>
-  </customwidget>
   <customwidget>
    <class>ToolBar</class>
    <extends>QToolBar</extends>
@@ -746,6 +432,12 @@
    <class>StarTrack::StarTrackView</class>
    <extends>QWidget</extends>
    <header>StarTrack_StarTrackView.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Sequencer::ControlWidget</class>
+   <extends>QWidget</extends>
+   <header>Sequencer_ControlWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

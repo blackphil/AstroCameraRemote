@@ -1,25 +1,19 @@
 #include "LiveView_Commands.h"
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 namespace LiveView {
 
 
 
 StartLiveView::StartLiveView(QObject* parent)
-    : SonyAlphaRemote::Json::Command(parent)
+    : Json::Command { parent }
 {
     setObjectName("StartLiveView");
+    json["method"] = "startLiveview";
+    json["params"] = QJsonArray{};
 }
 
-QJsonDocument StartLiveView::getJson() const
-{
-    QJsonObject command = getBase();
-    command["method"] = "startLiveview";
-    command["params"] = QJsonArray();
-
-    return QJsonDocument(command);
-}
 
 void StartLiveView::handleReply(const QJsonDocument& replyJson)
 {
@@ -49,20 +43,13 @@ StopLiveView::StopLiveView(QObject* parent)
     : Command(parent)
 {
     setObjectName("StopLiveView");
-}
-
-QJsonDocument StopLiveView::getJson() const
-{
-    QJsonObject command = getBase();
-    command["method"] = "stopLiveview";
-    command["params"] = QJsonArray();
-
-    return QJsonDocument(command);
+    json["method"] = "stopLiveview";
+    json["params"] = QJsonArray {};
 }
 
 void StopLiveView::handleReply(const QJsonDocument &replyJson)
 {
-    SonyAlphaRemote::Json::Command::handleReply(replyJson);
+    Json::Command::handleReply(replyJson);
     Q_EMIT liveViewStopped();
 }
 

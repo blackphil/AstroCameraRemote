@@ -3,8 +3,10 @@
 #include <QBrush>
 #include <QRect>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
+
 #include "StarTrack_Settings.h"
+#include "StarTrack_GraphicsScene.h"
 
 namespace StarTrack {
 
@@ -14,24 +16,44 @@ Marker::Marker(GraphicsScene *scene, QObject *parent)
     , scene(scene)
     , rectItem(Q_NULLPTR)
     , info(Q_NULLPTR)
-    , rectPen(QPen(QBrush(Qt::green), 1))
-    , crosshairPen(QPen(QBrush(Qt::green), 1))
+    , pen(QPen(QBrush(Qt::green), 1))
     , tracking(true )
     , status(Status_Idle)
+    , isSelected(false)
+    , haveStar(false)
 {
 
-    rectItem = scene->addRect(QRectF(), rectPen);
+    connect(this, SIGNAL(newMark()), scene, SLOT(newMark()));
+    connect(scene, SIGNAL(starTrackingEnabled(bool)), this, SLOT(setTracking(bool)));
+
+    rectItem = scene->addRect(QRectF(), pen);
     rectItem->setZValue(2);
 
     for(int i=0; i<2; i++)
     {
-        crosshair[i] = scene->addLine(QLineF(), crosshairPen);
+        crosshair[i] = scene->addLine(QLineF(), pen);
         crosshair[i]->setZValue(2);
     }
 
     info = scene->addSimpleText("");
     info->setBrush(QBrush(Qt::green));
     info->setZValue(2);
+
+    lineFromRef = scene->addLine(QLineF(), QPen(QBrush(Qt::red), 2));
+    lineFromRef->setZValue(3);
+}
+
+Marker::~Marker()
+{
+    if(scene)
+    {
+        scene->removeItem(lineFromRef);
+        scene->removeItem(lineFromRef);
+        scene->removeItem(rectItem);
+        scene->removeItem(crosshair[0]);
+        scene->removeItem(crosshair[1]);
+        scene->removeItem(info);
+    }
 }
 
 QRectF Marker::getRect() const
@@ -50,13 +72,24 @@ void logRect(const QRectF& r, const QString& context)
     AB_INF(
                 context <<
                 ": center(" << r.center().x() << ", " << r.center().y() << ")"
-                ", size(" << r.width() << ", " << r.height() << ")");
+                                                                           ", size(" << r.width() << ", " << r.height() << ")");
 }
 }
 
 bool Marker::getTracking() const
 {
     return tracking;
+}
+
+const Tracker &Marker::getTracker() const
+{
+    return tracker;
+}
+
+void Marker::forceRect(const QRectF &r)
+{
+    update(r);
+    tracker.setRect(r);
 }
 
 void Marker::setTracking(bool value)
@@ -66,9 +99,29 @@ void Marker::setTracking(bool value)
 
 bool Marker::update(const QRectF& r)
 {
+
+
+    static const QPen unSelectedPen(Qt::green, 1);
+    static const QPen selectedPen(Qt::yellow, 1);
+    static const QPen errorPen(Qt::magenta, 1);
+
+    if(isSelected)
+    {
+        rectItem->setPen(selectedPen);
+        crosshair[0]->setPen(haveStar ? selectedPen : errorPen);
+        crosshair[1]->setPen(haveStar ? selectedPen : errorPen);
+        info->setPen(selectedPen);
+    }
+    else
+    {
+        rectItem->setPen(unSelectedPen);
+        crosshair[0]->setPen(haveStar ? unSelectedPen : errorPen);
+        crosshair[1]->setPen(haveStar ? unSelectedPen : errorPen);
+        info->setPen(unSelectedPen);
+    }
+
     if(r == rectItem->rect())
         return false;
-
     rectItem->setRect(r);
 
     helper::logRect(r, "bounding");
@@ -82,6 +135,12 @@ bool Marker::update(const QRectF& r)
     crosshair[0]->setLine(QLineF(chr.center().x(), chr.top(), chr.center().x(), chr.bottom()));
     crosshair[1]->setLine(QLineF(chr.left(), chr.center().y(), chr.right(), chr.center().y()));
 
+    if(!referencePos.isNull())
+    {
+        QPointF currentCenter = r.center();
+        lineFromRef->setLine(QLineF(referencePos.x(), referencePos.y(), currentCenter.x(), currentCenter.y()));
+    }
+
     info->setPos(rectItem->rect().topLeft() + QPointF(0, -info->boundingRect().height()));
 
     return true;
@@ -89,6 +148,7 @@ bool Marker::update(const QRectF& r)
 
 void Marker::start(const QPointF &pos)
 {
+    AB_DBG("VISIT");
 
     QRectF r;
     switch(Settings::getMarkerModus())
@@ -111,16 +171,21 @@ void Marker::start(const QPointF &pos)
     status = Status_Moving;
 }
 
-void Marker::finish(const QPointF &pos)
+void Marker::finish()
 {
-    Q_UNUSED(pos)
+    AB_DBG("VISIT");
+
+    status = Status_Finished;
+    tracker.setRect(getRect());
     Q_EMIT newMark();
+
 }
 
 void Marker::mouseMoved(const QPointF &pos)
 {
     if(Status_Moving != status)
         return;
+    AB_DBG("VISIT");
 
     QRectF r = rectItem->rect();
 
@@ -151,76 +216,41 @@ void Marker::setInfo(const QString &text)
     info->setText(text);
 }
 
-namespace helper
+QPointF Marker::getReferencePos() const
 {
-bool checkSize(const QSize& a, const QSize& b)
-{
-    return a.width() == b.width() && a.height() == b.height();
+    return referencePos;
 }
-}
-QRectF Marker::centerStar(const QImage &scaledStar)
+
+void Marker::setReferencePos()
 {
-    if(scaledStar.isNull())
-        return QRectF();
+    referencePos = tracker.getRect().center();
+}
 
-    QRectF rect = rectItem->rect();
-    if(!tracking)
-        return rect;
+void Marker::unsetReferencePos()
+{
+    referencePos = QPointF();
+}
 
-    if(!helper::checkSize(rect.size().toSize(), scaledStar.size()))
-    {
-        AB_WRN("centering star failed! Sizes of start image and marker rect are different: "
-                << "image(" << scaledStar.width() << ", " << scaledStar.height() << ")"
-                << "marker(" << rect.width() << ", " << rect.height() << ")");
-        return QRectF();
-    }
+bool Marker::getIsSelected() const
+{
+    return isSelected;
+}
 
-    QPointF currentCenter(rect.center());
+void Marker::setIsSelected(bool value)
+{
+    if(isSelected == value)
+        return;
 
-    QPointF newCenterLocal = currentCenter - rect.topLeft();
+    isSelected = value;
 
-    qreal c = 0;
-    qreal x = 0, y = 0;
-    for(auto i=0.; i<rect.height(); i+=0.1)
-    {
-        for(auto j=0.; j<rect.width(); j+=0.1)
-        {
-            auto pixel = qGray(scaledStar.pixel(static_cast<int>(j), static_cast<int>(i))) / 255.;
-            c += pixel;
-            x += j * pixel;
-            y += i * pixel;
-        }
-    }
-    if(c>0)
-        newCenterLocal = QPointF(x/c, y/c);
+    update(getRect());
 
-    AB_INF("count-black: " << c);
-
-
-    QPointF newCenter = rect.topLeft() + newCenterLocal;
-
-    AB_INF("topLeft(" << rect.topLeft().x() << ", " << rect.topLeft().y() << ")");
-    AB_INF("bottomRight(" << rect.bottomRight().x() << ", " << rect.bottomRight().y() << ")");
-    AB_INF("center(" << rect.center().x() << ", " << rect.center().y() << ")");
-    AB_INF("newcenterLocal(" << newCenterLocal.x() << ", " << newCenterLocal.y() << ")");
-    AB_INF("newcenter(" << newCenter.x() << ", " << newCenter.y() << ")");
-
-    QPointF toMove = newCenter - currentCenter;
-    Q_UNUSED(toMove)
-    AB_INF("toMove(" << toMove.x() << ", " << toMove.y() << ")");
-
-    QRectF newRect(newCenter.x() - (rect.width()/2.), newCenter.y() - (rect.height()/2.), rect.width(), rect.height());
-    update(newRect);
-
-    AB_INF("END");
-
-    return newRect;
 }
 
 void Marker::update()
 {
     QRectF r = getRect();
-
+    
     switch(Settings::getMarkerModus())
     {
     case Marker::Modus_Rubberband :
@@ -238,6 +268,30 @@ void Marker::update()
 
     if(update(r))
         Q_EMIT newMark();
+}
+
+void Marker::update(const QPixmap& image)
+{
+    if(Status_Moving == status)
+        return;
+
+    Q_ASSERT(!image.isNull());
+
+    if(tracking)
+    {
+        if(!tracker.update(image))
+        {
+            AB_WRN("star lost");
+            haveStar = false;
+        }
+        else
+        {
+            haveStar = true;
+        }
+    }
+
+    update(tracker.getRect());
+    setInfo(QString("hfd(%0)").arg(tracker.getHfd()));
 }
 
 

@@ -5,11 +5,16 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSimpleTextItem>
 
+#include "StarTrack_StarInfo.h"
+
 namespace StarTrack {
+
 
 class LenseGraphcisScene : public QGraphicsScene
 {
     Q_OBJECT
+
+    StarInfoPtr starInfo;
 
     QGraphicsPixmapItem* star;
     QGraphicsSimpleTextItem* hfd;
@@ -18,12 +23,12 @@ public:
     LenseGraphcisScene(QObject* parent);
 
     QImage getStar() const;
-    float getHfd() const;
+    StarInfoPtr getStarInfo() const;
 
 
 public Q_SLOTS :
     void updateStar(const QImage& image);
-    void updateHfd(const float& hfd);
+    void updateHfd(StarInfoPtr starInfo);
     void changeHfdFontPointSize(int size);
 
 };

@@ -1,8 +1,8 @@
-#include "AstroBase_PersistentDirInfo.h"
+#include <AstroBase/PersistentDirInfo>
 
 #include <QSettings>
 
-#include "AstroBase_Exception.h"
+#include <AstroBase/Exception>
 
 namespace AstroBase {
 

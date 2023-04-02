@@ -1,6 +1,6 @@
-#include "Fits_File.h"
+#include <DataFormat/Fits/File>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
 
 #include <QFileInfo>
 #include <QIODevice>
@@ -11,7 +11,7 @@
 #include <QRegularExpression>
 #include <QSettings>
 
-#include "AstroBase_Exception.h"
+#include <AstroBase/Exception>
 
 namespace Fits {
 

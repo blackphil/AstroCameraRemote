@@ -2,6 +2,7 @@
 #define StarTrack_STARTRACKVIEW_H
 
 #include <QWidget>
+#include "StarTrack_StarInfo.h"
 
 namespace StarTrack {
 
@@ -21,18 +22,20 @@ public:
     explicit StarTrackView(QWidget *parent = nullptr, bool fullScreen = false);
     ~StarTrackView();
 
-    float getHfdValue() const;
+    StarInfoPtr getStarInfo() const;
     QImage getStar() const;
 
 Q_SIGNALS :
     void trackingEnabledStatusToggled(bool);
     void updateMarker();
     void toggleFullScreen(bool);
+    void selectNextStar();
+    void selectPreviousStar();
 
 public Q_SLOTS :
 
     void updateStar(const QImage &img);
-    void updateHfdValue(float hfd);
+    void updateHfdValue(StarInfoPtr hfd);
     void fullScreenToggled(bool yes);
     void applyStatusFrom(StarTrackView* other);
 
@@ -42,6 +45,10 @@ private slots:
     void on_markerFixedRectSpinbox_editingFinished();
 
     void on_hfdFontPointSize_valueChanged(int arg1);
+
+    void on_prev_clicked();
+
+    void on_next_clicked();
 
 private:
     Ui::StarTrackView *ui;

@@ -12,6 +12,7 @@ class ASTROBASESHARED_EXPORT MessageBox : public QMessageBox
 
 public :
     MessageBox(QWidget* parent = Q_NULLPTR);
+    ~MessageBox() = default;
 
 public:
     static MessageBox* createCritical(

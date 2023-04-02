@@ -8,7 +8,7 @@ GraphicsView::GraphicsView(QWidget *parent)
 
 }
 
-void GraphicsView::resizeEvent(QResizeEvent *re)
+void GraphicsView::resizeEvent(QResizeEvent*)
 {
     fitInView(0, 0, 200, 200, Qt::KeepAspectRatio);
 }

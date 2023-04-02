@@ -3,7 +3,7 @@
 #include <QDir>
 #include <QFileInfo>
 
-#include "Fits_File.h"
+#include <DataFormat/Fits/File>
 
 namespace BatchProcess {
 
@@ -24,14 +24,11 @@ void FitsRepair::setOutputFile(const QString& file)
 
 bool FitsRepair::process()
 {
-    QFileInfo inFile(input);
-    if(!inFile.isReadable())
+    if(QFileInfo inFile { input }; !inFile.isReadable())
         return false;
 
-    Fits::FilePtr f = Fits::File::fromFile(input);
-
-    QFileInfo outFile(output);
-    f->save(output);
+    if(auto f { Fits::File::fromFile(input) })
+        f->save(output);
 
     return true;
 

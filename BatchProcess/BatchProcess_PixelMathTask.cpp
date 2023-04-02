@@ -1,8 +1,8 @@
 #include "BatchProcess_PixelMathTask.h"
 #include "BatchProcess_Manager.h"
 
-#include "AstroBase.h"
-#include "AstroBase_Exception.h"
+#include <AstroBase/AstroBase>
+#include <AstroBase/Exception>
 
 namespace BatchProcess {
 

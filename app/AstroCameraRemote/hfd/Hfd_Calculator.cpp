@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "Hfd_Calculator.h"
-#include "SonyAlphaRemote_Helper.h"
-#include "AstroBase.h"
+#include "../Helper.h"
+#include <AstroBase/AstroBase>
 
 #include <math.h>
 
@@ -60,7 +60,7 @@ bool Calculator::insideCircle(qreal inX /*pos of x*/, qreal inY /*pos of y*/, qr
  *       system and also on the seeing conditions. The HFD value calculated depends on this
  *       outer diameter value.
  */
-qreal Calculator::calcHfd(const QImage& inImage, unsigned int inOuterDiameter)
+qreal Calculator::calcHfd(const QImage& inImage, qreal inOuterDiameter)
 {
     // Sum up all pixel values in whole circle
     qreal outerRadius = inOuterDiameter / 2.;
@@ -138,7 +138,7 @@ int Calculator::test(/* int argc, char *argv[]*/)
             ", :/hfd/hfd/focus_test/jpeg/focus_test_630.jpg"
             ;
 
-    QStringList fileList = files.split(", ", QString::SkipEmptyParts);
+    QStringList fileList = files.split(", ", Qt::SkipEmptyParts);
 
     foreach(QString fileName, fileList)
     {

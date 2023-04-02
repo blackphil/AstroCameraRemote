@@ -1,7 +1,7 @@
 #include "FitsImagePlugin_ImageIOHandler.h"
-#include "AstroBase.h"
-#include "AstroBase_Exception.h"
-#include "Fits_File.h"
+#include <AstroBase/AstroBase>
+#include <AstroBase/Exception>
+#include <DataFormat/Fits/File>
 
 #include <QDataStream>
 

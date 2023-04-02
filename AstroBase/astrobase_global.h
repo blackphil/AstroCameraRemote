@@ -9,4 +9,8 @@
 #  define ASTROBASESHARED_EXPORT Q_DECL_IMPORT
 #endif
 
+#ifndef __PRETTY_FUNCTION__
+	#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
 #endif // ASTROBASE_GLOBAL_H

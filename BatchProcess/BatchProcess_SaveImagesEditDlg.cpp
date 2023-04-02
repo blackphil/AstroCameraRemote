@@ -4,7 +4,7 @@
 #include <QFileDialog>
 
 #include "BatchProcess_SaveImagesTask.h"
-#include "AstroBase_PersistentDirInfo.h"
+#include <AstroBase/PersistentDirInfo>
 
 namespace BatchProcess {
 

@@ -1,9 +1,9 @@
 #include "FitsImagePlugin_ImageIOPlugin.h"
 
 #include <QStringList>
-#include "AstroBase_Exception.h"
+#include <AstroBase/Exception>
 #include "FitsImagePlugin_ImageIOHandler.h"
-#include "Fits_File.h"
+#include <DataFormat/Fits/File>
 
 namespace Fits {
 

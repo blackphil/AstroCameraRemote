@@ -1,6 +1,6 @@
 #include "BatchProcess_StackImagesTask.h"
 
-#include "AstroBase_Exception.h"
+#include <AstroBase/Exception>
 
 namespace BatchProcess {
 #if 0

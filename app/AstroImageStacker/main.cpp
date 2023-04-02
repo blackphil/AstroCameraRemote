@@ -1,8 +1,8 @@
 #include "MainWindow.h"
 #include <QApplication>
 
-#include "AstroBase.h"
-#include "AstroBase_Exception.h"
+#include <AstroBase/AstroBase>
+#include <AstroBase/Exception>
 
 int main(int argc, char *argv[])
 {

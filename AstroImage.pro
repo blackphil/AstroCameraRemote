@@ -6,13 +6,14 @@ SUBDIRS += app \
     AstroBase \
     BatchProcess \
     Setup \
-    DataFormat
+    DataFormat \
+    EasyExif
 SUBDIRS += plugins
 
-app.depends += AstroBase BatchProcess DataFormat
+app.depends += AstroBase BatchProcess DataFormat EasyExif
 app.depends += plugins
 
-BatchProcess.depends += AstroBase plugins DataFormat
+BatchProcess.depends += AstroBase plugins DataFormat EasyExif
 
 plugins.depends += AstroBase DataFormat
 

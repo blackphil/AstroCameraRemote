@@ -25,6 +25,13 @@ public :
     FileNotFoundException(const QString& filePath) : Exception(tr("File not found: %0").arg(filePath)) {}
 };
 
+class ASTROBASESHARED_EXPORT DirNotFoundException : public Exception
+{
+    Q_DECLARE_TR_FUNCTIONS(DirNotFoundException)
+public :
+    DirNotFoundException(const QString& path) : Exception(tr("Directory now found: %0").arg(path)) {}
+};
+
 class ASTROBASESHARED_EXPORT IndexOutOfBoundsException : public Exception
 {
     Q_DECLARE_TR_FUNCTIONS(IndexOutOfBoundsException)

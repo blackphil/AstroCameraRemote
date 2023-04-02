@@ -15,9 +15,9 @@ struct Payload
     QByteArray payload;
     QByteArray paddingData;
 
-    Payload(QByteArray payload, QByteArray paddingData)
-        : payload(payload)
-        , paddingData(paddingData)
+    Payload(const QByteArray& payload, const QByteArray& paddingData)
+        : payload { payload }
+        , paddingData { paddingData }
     {
 
     }
@@ -29,7 +29,7 @@ class ImageQueue : public QObject
     Q_OBJECT
 
 public :
-    ImageQueue(QObject* parent = 0);
+    ImageQueue(QObject* parent = nullptr);
 
 private :
 

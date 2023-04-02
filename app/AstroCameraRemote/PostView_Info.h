@@ -1,14 +1,18 @@
-#ifndef SONYALPHAREMOTE_POSTVIEW_INFO_H
-#define SONYALPHAREMOTE_POSTVIEW_INFO_H
+#ifndef POSTVIEW_INFO_H
+#define POSTVIEW_INFO_H
 
 #include <QDateTime>
 #include <QUrl>
 #include <QPixmap>
+#include <QList>
+
+#include "StarTrack_StarInfo.h"
 
 namespace PostView {
 
 class Info
 {
+    QString subject;
     QString shutterSpeed;
     int shutterSpeedBulbMs;
     int iso;
@@ -20,11 +24,14 @@ class Info
 
     static QString htmlPattern;
 
+    QList<StarTrack::StarInfoPtr> starInfos;
+
 
 public:
     Info();
     Info(
-            QString shutterSpeed, int shutterSpeedBulbMs, int iso
+            QString subject
+            , QString shutterSpeed, int shutterSpeedBulbMs, int iso
             , const QDateTime &ts, const QUrl &url, int seqNr, int numShots
             , const QPixmap& image = QPixmap());
     int getIso() const;
@@ -45,8 +52,12 @@ public:
     void setShutterSpeed(const QString &value);
     int getShutterSpeedBulbMs() const;
     void setShutterSpeedBulbMs(int value);
+
+    void setStarInfo(StarTrack::StarInfoPtr info);
+    QString getSubject() const;
+    void setSubject(const QString &value);
 };
 
 } // namespace PostView
 
-#endif // SONYALPHAREMOTE_POSTVIEW_INFO_H
+#endif // POSTVIEW_INFO_H

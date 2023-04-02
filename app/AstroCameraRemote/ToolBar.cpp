@@ -14,14 +14,14 @@ ToolBar::ToolBar(QMainWindow* mw)
 void ToolBar::mousePressEvent(QMouseEvent *event)
 {
     init = true;
-    lastPos = event->globalPos();
+    lastPos = event->globalPosition().toPoint();
 }
 
 void ToolBar::mouseMoveEvent(QMouseEvent *event)
 {
-    QPoint nextWindowPos = mw->pos() + event->globalPos() - lastPos;
+    QPoint nextWindowPos = mw->pos() + event->globalPosition().toPoint() - lastPos;
     mw->move(nextWindowPos.x(), nextWindowPos.y());
     init = false;
-    lastPos = event->globalPos();
+    lastPos = event->globalPosition().toPoint();
     mw->showNormal();
 }

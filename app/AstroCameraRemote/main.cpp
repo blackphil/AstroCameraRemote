@@ -1,6 +1,9 @@
 #include "MainWindow.h"
 #include <QApplication>
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
+
+#include "Sender.h"
+#include "StatusPoller.h"
 
 #define xstr(a) str(a)
 #define str(a) #a
@@ -9,18 +12,51 @@
 
 int main(int argc, char *argv[])
 {
+    QTime now = QTime::currentTime();
+    QString nowStr = now.toString("HH:mm:ss:zzz");
+    std::string nowStdStr = nowStr.toStdString();
+    const char* nowCStr = nowStdStr.c_str();
+
+
+
+
+    QString host { "192.168.122.1" };
+    int port { 8080 };
+    int i = 1;
+    while(i<argc)
+    {
+        QString arg { argv[i] };
+        if(arg == "--host")
+        {
+            i++;
+            host = argv[i];
+        }
+        else if(arg == "--port")
+        {
+            i++;
+            port = atoi(argv[i]);
+        }
+
+        i++;
+    }
+
+
     QString organizationName = "AstroPhotoHelpers";
     QString appName = "AstroCameraRemote";
 
-    AstroBase::Logging::initLogging(appName);
+    AstroBase::Logging::initLogging(appName, true);
     QApplication a(argc, argv);
 
-    QString pluginDir = PLUGIN_DIR;
-    if(QDir(pluginDir).exists())
-        a.addLibraryPath(pluginDir);
+    if(QDir pluginDir { PLUGIN_DIR }; pluginDir.exists())
+        a.addLibraryPath(pluginDir.path());
 
     a.setOrganizationName(organizationName);
     a.setApplicationName(appName);
+
+    StatusPoller::create(&a);
+    Sender* sender { Sender::create(&a) };
+    sender->setHost(host);
+    sender->setPort(port);
 
     MainWindow w;
     w.show();

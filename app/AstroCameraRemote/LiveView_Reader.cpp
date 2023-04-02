@@ -3,71 +3,88 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-#include "AstroBase.h"
+#include <AstroBase/AstroBase>
+
+#include <chrono>
+using namespace std::chrono_literals;
 
 namespace LiveView {
 
 bool Reader::getReady() const
 {
-//    return ready;
     if(!connection)
         AB_ERR("NO REPLY");
     else
     {
         AB_INF("reply status"
-                << ": isFinished(" << connection->isFinished() << ")"
-                << ", isRunning(" << connection->isRunning() << ")"
-                << ", url(" << connection->url().toString() << ")"
-                << ", rawHeaderList.size(" << connection->rawHeaderList().size() << ")");
+               << ": isFinished(" << connection->isFinished() << ")"
+               << ", isRunning(" << connection->isRunning() << ")"
+               << ", url(" << connection->url().toString() << ")"
+               << ", rawHeaderList.size(" << connection->rawHeaderList().size() << ")");
     }
     return connection && connection->isFinished();
 }
 
 
 Reader::Reader(QObject *parent)
-    : QObject(parent)
-    , manager(new QNetworkAccessManager(this))
-    , connection(nullptr)
-    , ready(false)
-    , jpegSize(0)
-    , paddingSize(0)
-    , status(ReadCommonHeader)
+    : QObject { parent }
+    , manager { new QNetworkAccessManager { this }  }
+    , connection { nullptr }
+    , ready { false }
+    , jpegSize { 0 }
+    , paddingSize { 0 }
+    , status { ReadCommonHeader }
 {
     qRegisterMetaType<PayloadPtr>("PayloadPtr");
+
+    readTimeout.callOnTimeout([this](){
+        AB_WRN("read timeout");
+        close();
+        QThread::msleep(100);
+        open(lastUrl);
+    });
+
+    readTimeout.setSingleShot(true);
+    readTimeout.setInterval(1s);
 }
 
 void Reader::open(QString urlStr)
 {
+    lastUrl = urlStr;
 
     ready = false;
-    QUrl url(urlStr);
-    if(!url.isValid())
-        AB_ERR("INVALID URL (" << urlStr << ")");
+    if(QUrl url { urlStr }; url.isValid())
+    {
+
+        QNetworkRequest request { url };
+        request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
 
 
-    QNetworkRequest request;
-    request.setUrl(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
+        if(connection)
+            delete connection;
 
+        AB_INF("LIVE VIEW NETWORK ACCESSIBLE: " << "ToDo: port to Qt6");//static_cast<int>(manager->networkAccessible()));
+        AB_INF("LIVE VIEW SENDING REQUEST url(" << url.host() << ", port(" << url.port() << ")");
 
-    if(connection)
-        delete connection;
+        connection = manager->get(request);
+        if(!connection)
+            AB_ERR("NO REPLY");
+        else
+        {
+            AB_INF("reply status"
+                   << ": isFinished(" << connection->isFinished() << ")"
+                   << ", isRunning(" << connection->isRunning() << ")"
+                   << ", url(" << connection->url().toString() << ")"
+                   << ", rawHeaderList.size(" << connection->rawHeaderList().size() << ")");
+        }
+        connect(connection, SIGNAL(readyRead()), this, SLOT(readyRead()));
 
-    AB_INF("LIVE VIEW NETWORK ACCESSIBLE: " << static_cast<int>(manager->networkAccessible()));
-    AB_INF("LIVE VIEW SENDING REQUEST url(" << url.host() << ", port(" << url.port() << ")");
-
-    connection = manager->get(request);
-    if(!connection)
-        AB_ERR("NO REPLY");
+    }
     else
     {
-        AB_INF("reply status"
-                << ": isFinished(" << connection->isFinished() << ")"
-                << ", isRunning(" << connection->isRunning() << ")"
-                << ", url(" << connection->url().toString() << ")"
-                << ", rawHeaderList.size(" << connection->rawHeaderList().size() << ")");
+        AB_ERR("INVALID URL (" << urlStr << ")");
     }
-    connect(connection, SIGNAL(readyRead()), this, SLOT(readyRead()));
+
 }
 
 void Reader::close()
@@ -78,11 +95,12 @@ void Reader::close()
         delete connection;
     }
     connection = nullptr;
+    status = ReadCommonHeader;
 }
 
 void Reader::readyRead()
 {
-//    AB_INF("READY READ");
+    //    AB_INF("READY READ" << status);
 
     switch(status)
     {
@@ -96,7 +114,10 @@ void Reader::readyRead()
         break;
     case ReadPayload :
         if(readPayload())
+        {
             status = ReadCommonHeader;
+            readTimeout.start();
+        }
         break;
 
     }
@@ -105,43 +126,44 @@ void Reader::readyRead()
 
 bool Reader::readCommonHeader()
 {
-    int readLength = 1 + 1 + 2 + 4;
+    constexpr int readLength { 1 + 1 + 2 + 4 };
 
-//    AB_INF("bytes available: " << connection->bytesAvailable());
+    //    AB_INF("bytes available: " << connection->bytesAvailable());
 
     if(readLength > connection->bytesAvailable())
         return false;
 
-    QByteArray commonHeader = readBytes(readLength);
+    QByteArray commonHeader { readBytes(readLength) };
     if(commonHeader.size() != readLength)
     {
         AB_ERR("Cannot read stream for common header.");
         return false;
     }
 
-    static const char firstByte(0xff);
-
-    if (commonHeader[0] != firstByte)
+    //    if (static_cast<char>(0xff) != commonHeader[0])
+    if(constexpr unsigned char ff { 0xff }; ff != static_cast<unsigned char>(commonHeader[0]))
     {
-        AB_ERR("Unexpected data format. (Start byte)");
+//        AB_ERR("Unexpected data format. (Start byte)");
         return false;
     }
 
     switch(commonHeader[1])
     {
-        case 0x12:
-            readLength = 4 + 3 + 1 + 2 + 118 + 4 + 4 + 24;
-            AB_INF("skipping " << readLength << " bytes ...");
-            // This is information header for streaming.
-            // skip this packet.
-            commonHeader.clear();
-            readBytes(readLength);
-            break;
-        case 0x01:
-        case 0x11:
-            return true; //can continue reading payload header ...
-        default:
-            break;
+    case 0x12:
+    {
+        constexpr int skipLength { 4 + 3 + 1 + 2 + 118 + 4 + 4 + 24 };
+        AB_INF("skipping " << readLength << " bytes ...");
+        // This is information header for streaming.
+        // skip this packet.
+        commonHeader.clear();
+        readBytes(skipLength);
+        break;
+    }
+    case 0x01:
+    case 0x11:
+        return true; //can continue reading payload header ...
+    default:
+        break;
     }
 
     return false;
@@ -150,12 +172,12 @@ bool Reader::readCommonHeader()
 
 bool Reader::readPayloadHeader()
 {
-    static const int readLength = 4 + 3 + 1 + 4 + 1 + 115;
+    constexpr int readLength = 4 + 3 + 1 + 4 + 1 + 115;
 
     if(readLength > connection->bytesAvailable())
         return false;
 
-    QByteArray payloadHeader = readBytes(readLength);
+    QByteArray payloadHeader { readBytes(readLength) };
 
     if (payloadHeader.size() != readLength)
     {
@@ -178,16 +200,10 @@ bool Reader::readPayloadHeader()
 
 bool Reader::readPayload()
 {
-    int readLength = jpegSize + paddingSize;
-    if(readLength > connection->bytesAvailable())
+    if(int readLength { jpegSize + paddingSize }; readLength > connection->bytesAvailable())
         return false;
 
-    // Payload Data
-    QByteArray jpegData = readBytes(jpegSize);
-    QByteArray paddingData = readBytes(paddingSize);
-
-
-    Q_EMIT newPayload(PayloadPtr(new Payload(jpegData, paddingData)));
+    Q_EMIT newPayload(PayloadPtr(new Payload(readBytes(jpegSize), readBytes(paddingSize))));
 
     return true;
 
@@ -195,8 +211,8 @@ bool Reader::readPayload()
 
 int Reader::bytesToInt(const QByteArray& byteData, int startIndex, int count) const
 {
-    int ret = 0;
-    for (int i = startIndex; i < startIndex + count; i++)
+    int ret { 0 };
+    for (int i { startIndex }; i < startIndex + count; i++)
     {
         ret = (ret << 8) | (byteData[i] & 0xff);
     }
@@ -209,8 +225,8 @@ QByteArray Reader::readBytes(int length)
     while(true)
     {
 
-        qint64 trialReadLength = qMin(static_cast<qint64>(length), connection->bytesAvailable());
-        QByteArray segment = connection->read(trialReadLength);
+        qint64 trialReadLength { qMin(static_cast<qint64>(length), connection->bytesAvailable()) };
+        QByteArray segment { connection->read(trialReadLength) };
         if(segment.size() == 0)
             break;
         buffer.append(segment);

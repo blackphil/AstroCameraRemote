@@ -1,43 +1,43 @@
-#ifndef SONYALPHAREMOTE_LIVEVIEW_COMMAND_H
-#define SONYALPHAREMOTE_LIVEVIEW_COMMAND_H
+#ifndef LIVEVIEW_COMMAND_H
+#define LIVEVIEW_COMMAND_H
 
-#include <SonyAlphaRemote_Json_Command.h>
+#include "Json_Command.h"
 
 
 namespace LiveView {
 
-class StartLiveView : public SonyAlphaRemote::Json::Command
+class StartLiveView : public Json::Command
 {
     Q_OBJECT
 
-    void handleReply(const QJsonDocument& replyJson);
+    void handleReply(const QJsonDocument& replyJson) override;
 Q_SIGNALS:
     void newLiveViewUrl(QString);
 
 public :
-    StartLiveView(QObject* parent = NULL);
-    QJsonDocument getJson() const;
+    StartLiveView(QObject* parent = nullptr);
+
 };
 
 
 
 
-class StopLiveView : public SonyAlphaRemote::Json::Command
+class StopLiveView : public Json::Command
 {
     Q_OBJECT
 
-    void handleReply(const QJsonDocument& replyJson);
+    void handleReply(const QJsonDocument& replyJson) override;
 
 Q_SIGNALS:
     void liveViewStopped();
 
 public :
-    StopLiveView(QObject* parent = NULL);
-    QJsonDocument getJson() const;
+    StopLiveView(QObject* parent = nullptr);
+
 };
 
 
 
 } // namespace LiveView
 
-#endif // SONYALPHAREMOTE_LIVEVIEW_COMMAND_H
+#endif // LIVEVIEW_COMMAND_H
