@@ -2,13 +2,8 @@ cmake_minimum_required(VERSION 3.20.0)
 
 project(BatchProcess VERSION 1.0.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
+include(Qt)
+include(msvc)
 
 add_definitions(-DBATCHPROCESS_LIBRARY)
 
@@ -63,4 +58,10 @@ set(forms
 )
 
 add_library(${PROJECT_NAME} SHARED ${sources} ${headers} ${forms})
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt::Widgets AstroBase EasyExif Fits)
+target_link_libraries(${PROJECT_NAME} 
+	PRIVATE 
+		${QT6_LIBRARIES}
+		AstroBase 
+		EasyExif 
+		Fits
+)

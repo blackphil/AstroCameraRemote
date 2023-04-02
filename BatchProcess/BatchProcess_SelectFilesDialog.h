@@ -32,11 +32,11 @@ public:
     void setTaskPrototype(TaskInterface *value);
 
 private Q_SLOTS :
-    void on_selectInputFilesBtn_clicked();
+    void onSelectInputFiles();
 
-    void on_pushButton_clicked();
+    void onStartBatchProcess();
 
-    void on_selectOutputDirBtn_clicked();
+    void onSelectOutputDir();
 
     void incProgress();
 

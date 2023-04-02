@@ -39,7 +39,7 @@ SelectFilesDialog::~SelectFilesDialog()
     delete ui;
 }
 
-void SelectFilesDialog::on_selectInputFilesBtn_clicked()
+void SelectFilesDialog::onSelectInputFiles()
 {
     AstroBase::PersistentDirInfo inputDir("BatchProcess?LastInputDir");
 
@@ -78,7 +78,7 @@ void SelectFilesDialog::incProgress()
     }
 }
 
-void SelectFilesDialog::on_pushButton_clicked()
+void SelectFilesDialog::onStartBatchProcess()
 {
     if(progressDlg)
         delete  progressDlg;
@@ -108,7 +108,7 @@ void SelectFilesDialog::on_pushButton_clicked()
     }
 }
 
-void SelectFilesDialog::on_selectOutputDirBtn_clicked()
+void SelectFilesDialog::onSelectOutputDir()
 {
     AstroBase::PersistentDirInfo outputDir("BatchProcess?LastOutputDir");
     QString outPath = outputDir;

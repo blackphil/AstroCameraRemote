@@ -75,14 +75,19 @@ void Logging::_messageOutput(QtMsgType type, const QMessageLogContext &context, 
         stream<STRM>() << "ERR|";
     }
 
-    stream<STRM>()
-            << QTime::currentTime().toString("HH:mm:ss:zzz").toStdString().c_str()
-            << "[" << QThread::currentThread()->objectName().toStdString().c_str() << "(" << QThread::currentThreadId() << ")]"
-            << "|" << context.file
-            << ":" << context.line
-            << "(" << context.function << ")"
-            << "\t" << msg.toStdString().c_str()
-            << "\n";
+    QTime now = QTime::currentTime();
+    QString nowStr = now.toString("HH:mm:ss:zzz");
+    std::string nowStdStr = nowStr.toStdString();
+    const char* nowCStr = nowStdStr.c_str();
+
+    
+    stream<STRM>() << QTime::currentTime().toString("HH:mm:ss:zzz").toStdString().c_str();
+    stream<STRM>() << "[" << QThread::currentThread()->objectName().toStdString().c_str() << "(" << QThread::currentThreadId() << ")]";
+    stream<STRM>() << "|" << (context.file ? context.file : "");
+    stream<STRM>() << ":" << context.line;
+    stream<STRM>() << "(" << (context.function ? context.function : "") << ")";
+    stream<STRM>() << "\t" << msg.toStdString().c_str();
+    stream<STRM>() << "\n";
 
     stream<STRM>().flush();
 }

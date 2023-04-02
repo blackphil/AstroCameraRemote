@@ -12,6 +12,13 @@
 
 int main(int argc, char *argv[])
 {
+    QTime now = QTime::currentTime();
+    QString nowStr = now.toString("HH:mm:ss:zzz");
+    std::string nowStdStr = nowStr.toStdString();
+    const char* nowCStr = nowStdStr.c_str();
+
+
+
 
     QString host { "192.168.122.1" };
     int port { 8080 };

@@ -109,14 +109,67 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>44</x>
-     <y>409</y>
+     <x>165</x>
+     <y>30</y>
     </hint>
     <hint type="destinationlabel">
-     <x>328</x>
-     <y>11</y>
+     <x>337</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>selectInputFilesBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>BatchProcess::SelectFilesDialog</receiver>
+   <slot>onSelectInputFiles()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>75</x>
+     <y>-3</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>selectOutputDirBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>BatchProcess::SelectFilesDialog</receiver>
+   <slot>onSelectOutputDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>541</x>
+     <y>359</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>574</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>BatchProcess::SelectFilesDialog</receiver>
+   <slot>onStartBatchProcess()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>267</x>
+     <y>410</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>439</y>
     </hint>
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>onSelectInputFiles()</slot>
+  <slot>onSelectOutputDir()</slot>
+  <slot>onStartBatchProcess()</slot>
+ </slots>
 </ui>

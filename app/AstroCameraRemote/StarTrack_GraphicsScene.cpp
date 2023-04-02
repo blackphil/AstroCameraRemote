@@ -176,7 +176,7 @@ void GraphicsScene::selectNextStar()
     if(markers.isEmpty())
         return;
 
-    Q_ASSERT(selectedMarker);
+//    Q_ASSERT(selectedMarker);
     if(!selectedMarker)
         return;
 
@@ -196,7 +196,7 @@ void GraphicsScene::selectPreviousStar()
     if(markers.isEmpty())
         return;
 
-    Q_ASSERT(selectedMarker);
+//    Q_ASSERT(selectedMarker);
     if(!selectedMarker)
         return;
 

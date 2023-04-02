@@ -150,7 +150,7 @@ void ProtocolView::contextMenu(const QPoint &pos)
 
                         EasyExif::EXIFInfoList input;
 
-                        for(auto ps : it.value())
+                        for(const auto &ps : it.value())
                         {
                             if(ps.exif.isValid())
                                 input << EasyExif::EXIFInfoPtr(new EasyExif::EXIFInfo(ps.exif));

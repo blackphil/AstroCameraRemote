@@ -97,7 +97,8 @@ QString Protocol::getFilePath() const
 
 
     QString fileName = QString("%0.xml").arg(objectName.trimmed());
-    fileName.replace(QRegularExpression("[/\\\\:\\*\\?<>\\\"]"), "_");
+    static QRegularExpression s_rx  ("[/\\\\:\\*\\?<>\\\"]");
+    fileName.replace(s_rx, "_");
     QFileInfo protocolFileInfo(QDir(dataPath), fileName);
 
     return protocolFileInfo.absoluteFilePath();
@@ -279,9 +280,9 @@ void Protocol::serializeXml(QXmlStreamWriter &writer) const
 
     properties.serializeXml(writer);
 
-    for(auto shots : photoShots)
+    for(const auto &shots : photoShots)
     {
-        for(auto s : shots)
+        for(const auto &s : shots)
         {
             writer.writeStartElement(PhotoShot::typeToString(s.type));
             s.serializeXml(writer);
