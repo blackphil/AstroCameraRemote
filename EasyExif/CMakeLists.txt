@@ -13,12 +13,12 @@ set(sources
 )
 
 set(headers
-	EasyExif_Exif.h
-	easyexif_global.h 
+    EasyExif_Exif.h
+    easyexif_global.h
 )
 
 add_library(${PROJECT_NAME} SHARED ${sources} ${headers})
 target_link_libraries(${PROJECT_NAME} 
-	PRIVATE 
-		${QT6_LIBRARIES}
+    PRIVATE
+    ${QT6_LIBRARIES}
 )

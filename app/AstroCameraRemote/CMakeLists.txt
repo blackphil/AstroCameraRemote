@@ -133,7 +133,6 @@ set(forms
     ImageViewZoomControl.ui
     Sequencer_CreateNewDialog.ui
     )
-source_group("Forms" ${forms})
 
 set(resources
     resources.qrc
@@ -143,7 +142,6 @@ set(resources
     testdata_4.qrc
     testdata_5.qrc
 )
-source_group("Resources" ${resources})
 
 qt_add_executable(${PROJECT_NAME} ${sources} ${headers} ${forms} ${resources})
 
@@ -171,18 +169,3 @@ install(
     "${WINDEPLOYQT_DIR}/"
     DESTINATION bin
 )
-
-#custom_qt_deploy(${PROJECT_NAME})
-
-#get_target_property(_target_bin_dir ${PROJECT_NAME} BINARY_DIR)
-
-#foreach(own_lib_file IN ITEMS ${OWN_LIBRARIES})
-#    list(APPEND own_lib_files "$<TARGET_FILE:${own_lib_file}>")
-#endforeach()
-
-#add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-#	COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#		${own_lib_files}
-#		"${_target_bin_dir}/$<CONFIG>"
-#	COMMENT "Deploying own libraries for target '${target}' ..."
-#)
