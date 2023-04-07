@@ -3,7 +3,6 @@
 
 #include <AstroBase/AstroBase>
 
-#include "Settings.h"
 #include "Settings_General.h"
 #include "Sender.h"
 #include "Sequencer_BulbShootSequencer.h"
@@ -68,10 +67,10 @@ void ControlWidget::setCurrentProtocol(Protocol *p)
         AB_DBG("protocol to sequencer: " << currentProtocol->getObjectName());
 
 
-        connect(sequencer, SIGNAL(started()), currentProtocol, SLOT(start()));
-        connect(sequencer, SIGNAL(havePostViewUrl(QString, int, int)), currentProtocol, SLOT(havePostViewUrl(QString, int, int)));
-        connect(sequencer, SIGNAL(stopped()), currentProtocol, SLOT(stop()));
-        connect(Sender::get(), SIGNAL(loadedPostViewImage(QByteArray)), currentProtocol, SLOT(havePostViewImage(QByteArray)));
+        connect(sequencer, &Base::started, currentProtocol, &Protocol::start);
+        connect(sequencer, &Base::havePostViewUrl, currentProtocol, &Protocol::havePostViewUrl);
+        connect(sequencer, &Base::stopped, currentProtocol, &Protocol::stop);
+        connect(Sender::get(), &Sender::loadedPostViewImage, currentProtocol, &Protocol::havePostViewImage);
 
 //        sequencer->setStartIndex(currentProtocol->getNumShotsFinished());
         sequencer->setStartIndex(0);
@@ -120,48 +119,39 @@ ControlWidget::ControlWidget(QWidget *parent) :
     ui->startDelayTuBtn->setCurrentUnit(TimeUnit::Unit::Seconds);
     ui->pauseTuBtn->setCurrentUnit(TimeUnit::Unit::Seconds);
 
-    connect(StatusPoller::get(), SIGNAL(statusChanged(QString)), this, SLOT(handleCameraStatus(QString)));
+    connect(StatusPoller::get(), &StatusPoller::statusChanged, this, &ControlWidget::handleCameraStatus);
 
     ui->stashedShootings->setModel(protocolModel);
-    connect(ui->stashedShootings, SIGNAL(activateSelectedProtocol()), this, SLOT(on_loadBtn_clicked()));
+    connect(ui->stashedShootings, &ProtocolView::activateSelectedProtocol, this, &ControlWidget::loadBtnClicked);
 
 
-    connect(setShutterSpeed, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));
-    connect(setIsoSpeedRate, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));
+    connect(setShutterSpeed, &Json::SetShutterSpeed::error, msgPoster, &MessagePoster::error);
+    connect(setIsoSpeedRate, &Json::SetIsoSpeedRate::error, msgPoster, &MessagePoster::error);
 
-    connect(actTakePicture, SIGNAL(havePostViewUrl(QString)), this, SLOT(onPostView(QString)));
-    connect(actTakePicture, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));
+    connect(actTakePicture, &Json::ActTakePicture::havePostViewUrl, this, &ControlWidget::onPostView);
+    connect(actTakePicture, &Json::ActTakePicture::error, msgPoster, &MessagePoster::error);
 
-    connect(startBulbShooting, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));
-    connect(stopBulbShooting, SIGNAL(error(QString)), msgPoster, SIGNAL(error(QString)));
+    connect(startBulbShooting, &Json::StartBulbShooting::error, msgPoster, &MessagePoster::error);
+    connect(stopBulbShooting, &Json::StopBulbShooting::error, msgPoster, &MessagePoster::error);
 
-    connect(bulbShootSequencer, SIGNAL(statusMessage(QString)), msgPoster, SIGNAL(info(QString)));
-    connect(bulbShootSequencer, SIGNAL(havePostViewUrl(QString, int, int)), this, SLOT(onPostView(QString, int, int)));
-    connect(bulbShootSequencer, SIGNAL(started()), this, SLOT(shootSequencerStarted()));
-    connect(bulbShootSequencer, SIGNAL(stopped()), this, SLOT(shootSequencerStopped()));
-    connect(bulbShootSequencer, SIGNAL(updateStatus(QString)), ui->status, SLOT(setText(QString)));
+    connect(bulbShootSequencer, &BulbShootSequencer::statusMessage, msgPoster, &MessagePoster::info);
+    connect(bulbShootSequencer, &BulbShootSequencer::havePostViewUrl, this, &ControlWidget::onPostView);
+    connect(bulbShootSequencer, &BulbShootSequencer::started, this, &ControlWidget::shootSequencerStarted);
+    connect(bulbShootSequencer, &BulbShootSequencer::stopped, this, &ControlWidget::shootSequencerStopped);
+    connect(bulbShootSequencer, &BulbShootSequencer::updateStatus, ui->status, &QLabel::setText);
 
-    connect(normalShootSequencer, SIGNAL(statusMessage(QString)), msgPoster, SIGNAL(info(QString)));
-    connect(normalShootSequencer, SIGNAL(havePostViewUrl(QString,int,int)), this, SLOT(onPostView(QString,int,int)));
-    connect(normalShootSequencer, SIGNAL(started()), this, SLOT(shootSequencerStarted()));
-    connect(normalShootSequencer, SIGNAL(stopped()), this, SLOT(shootSequencerStopped()));
-    connect(normalShootSequencer, SIGNAL(updateStatus(QString)), ui->status, SLOT(setText(QString)));
+    connect(normalShootSequencer, &NormalShootSequencer::statusMessage, msgPoster, &MessagePoster::info);
+    connect(normalShootSequencer, &NormalShootSequencer::havePostViewUrl, this, &ControlWidget::onPostView);
+    connect(normalShootSequencer, &NormalShootSequencer::started, this, &ControlWidget::shootSequencerStarted);
+    connect(normalShootSequencer, &NormalShootSequencer::stopped, this, &ControlWidget::shootSequencerStopped);
+    connect(normalShootSequencer, &NormalShootSequencer::updateStatus, ui->status, &QLabel::setText);
 
 
-
-    connect(ui->lenrCheckbox, SIGNAL(toggled(bool)), this, SLOT(recalcSequenceDuration()));
     ui->lenrCheckbox->setChecked(GeneralSettings::getLenrEnabled());
-
-    connect(ui->shutterSpeed, SIGNAL(currentTextChanged(QString)), this, SLOT(shutterSpeedChanged(QString)));
 
     ui->startDelayTuBtn->connectToSpinbox(ui->startDelay);
     ui->shutterSpeedTuBtn->connectToSpinbox(ui->shutterSpeedBulb);
     ui->pauseTuBtn->connectToSpinbox(ui->pause);
-
-    connect(ui->startDelay, SIGNAL(valueChanged(double)), this, SLOT(recalcSequenceDuration()));
-    connect(ui->shutterSpeedBulb, SIGNAL(valueChanged(double)), this, SLOT(recalcSequenceDuration()));
-    connect(ui->pause, SIGNAL(valueChanged(double)), this, SLOT(recalcSequenceDuration()));
-    connect(ui->numShots, SIGNAL(valueChanged(int)), this, SLOT(recalcSequenceDuration()));
 
     recalcSequenceDuration();
 
@@ -174,30 +164,10 @@ ControlWidget::~ControlWidget()
 }
 
 
-void ControlWidget::on_isoSpeedRate_activated(const QString &isoSpeedRate)
+void ControlWidget::isoSpeedRateActivated(const QString &isoSpeedRate)
 {
     setIsoSpeedRate->setIsoSpeedRate(isoSpeedRate);
     Sender::get()->send(setIsoSpeedRate);
-}
-
-void ControlWidget::onPostView(const QString &url)
-{
-    bool ok = false;
-
-    PostView::Info newInfo;
-    newInfo.setSubject(ui->objectLineEdit->text());
-    newInfo.setShutterSpeed(ui->shutterSpeed->currentText());
-    newInfo.setShutterSpeedBulbMs(ui->shutterSpeedTuBtn->getValueInMilliseconds());
-    newInfo.setIso(ui->isoSpeedRate->currentText().toInt(&ok));
-    QDateTime ts = QDateTime::currentDateTime();
-    newInfo.setTimestamp(ts);
-    newInfo.setUrl(url);
-
-    Q_EMIT newPostViewInfo(newInfo);
-
-    Q_EMIT msgPoster->info(tr("have new image: %0").arg(url));
-    //    ui->imageSubTitle->setText(ts.toString("yyyy-MM-ddTHH:mm:ss:zzz"));
-    Sender::get()->loadPostViewImage(url);
 }
 
 void ControlWidget::onPostView(const QString& url, int i, int numShots)
@@ -430,7 +400,7 @@ bool ControlWidget::stopRunningSequence()
 
 }
 
-void ControlWidget::on_startBulbSequence_clicked()
+void ControlWidget::startBulbSequenceClicked()
 {
     if(stopRunningSequence())
         return;
@@ -497,14 +467,14 @@ void ControlWidget::shutterSpeedChanged(const QString &value)
 
 }
 
-void ControlWidget::on_takeShotBtn_clicked()
+void ControlWidget::takeShotBtnClicked()
 {
     Sender::get()->send(actTakePicture);
 }
 
 
 
-void ControlWidget::on_loadBtn_clicked()
+void ControlWidget::loadBtnClicked()
 {
 
     Protocol* selProtocol = ui->stashedShootings->getSelectedProtocol();
@@ -536,7 +506,7 @@ void ControlWidget::handleCameraStatus(const QString & status)
     }
 }
 
-void ControlWidget::on_newBtn_clicked()
+void ControlWidget::newBtnClicked()
 {
 
     Q_ASSERT(currentProtocol == nullptr || !currentProtocol->isRecording());
@@ -567,7 +537,7 @@ void ControlWidget::on_newBtn_clicked()
 }
 
 
-void ControlWidget::on_shutterSpeed_textActivated(const QString &speed)
+void ControlWidget::shutterSpeedActivated(const QString &speed)
 {
   AB_DBG(__PRETTY_FUNCTION__);
   setShutterSpeed->setShutterSpeed(speed);

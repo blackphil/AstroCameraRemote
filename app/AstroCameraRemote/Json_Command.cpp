@@ -295,7 +295,7 @@ void PostViewProviderCommand::handleReply(const QJsonDocument &replyJson)
 
     postViewUrl = postView[0].toString();
 
-    Q_EMIT havePostViewUrl(postViewUrl);
+    Q_EMIT havePostViewUrl(postViewUrl, 0, 0);
 
     Q_EMIT confirmed();
 

@@ -124,7 +124,7 @@ void Sender::loadPostViewImage(QString urlStr)
     connect(reply, &QNetworkReply::finished, this, [this, reply](){
         reply->deleteLater();
         auto data = reply->readAll();
-        Q_ASSERT(!data.isEmpty());
+//        Q_ASSERT(!data.isEmpty());
         if(!data.isEmpty())
             Q_EMIT loadedPostViewImage(data);
         else {

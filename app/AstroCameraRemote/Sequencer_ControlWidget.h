@@ -78,9 +78,7 @@ public Q_SLOTS :
 
 private Q_SLOTS :
 
-    void on_isoSpeedRate_activated(const QString &isoSpeedRate);
-
-    void onPostView(const QString &url);
+    void isoSpeedRateActivated(const QString &isoSpeedRate);
 
     void onPostView(const QString& url, int i, int numShots);
 
@@ -95,20 +93,20 @@ private Q_SLOTS :
     void shootSequencerStopped();
     void recalcSequenceDuration();
 
-    void on_startBulbSequence_clicked();
+    void startBulbSequenceClicked();
 
     void startSequence();
 
     void shutterSpeedChanged(const QString& value);
 
 
-    void on_takeShotBtn_clicked();
+    void takeShotBtnClicked();
 
 
     void handleCameraStatus(const QString&status);
-    void on_loadBtn_clicked();
-    void on_newBtn_clicked();
-    void on_shutterSpeed_textActivated(const QString &speed);
+    void loadBtnClicked();
+    void newBtnClicked();
+    void shutterSpeedActivated(const QString &speed);
 };
 
 

@@ -94,7 +94,6 @@
           <font>
            <family>Ubuntu</family>
            <pointsize>10</pointsize>
-           <weight>50</weight>
            <italic>false</italic>
            <bold>false</bold>
           </font>
@@ -184,7 +183,6 @@
              <font>
               <family>Ubuntu</family>
               <pointsize>10</pointsize>
-              <weight>50</weight>
               <italic>false</italic>
               <bold>false</bold>
              </font>
@@ -235,7 +233,6 @@
              <font>
               <family>Ubuntu</family>
               <pointsize>10</pointsize>
-              <weight>50</weight>
               <italic>false</italic>
               <bold>false</bold>
              </font>
@@ -350,7 +347,6 @@
              <font>
               <family>Ubuntu</family>
               <pointsize>10</pointsize>
-              <weight>50</weight>
               <italic>false</italic>
               <bold>false</bold>
              </font>
@@ -535,5 +531,174 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>lenrCheckbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Sequencer::ControlWidget</receiver>
+   <slot>recalcSequenceDuration()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>220</x>
+     <y>256</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>634</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>shutterSpeed</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>Sequencer::ControlWidget</receiver>
+   <slot>shutterSpeedActivated(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>275</x>
+     <y>-5</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>isoSpeedRate</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>Sequencer::ControlWidget</receiver>
+   <slot>isoSpeedRateActivated(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>402</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>712</x>
+     <y>180</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>startDelay</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>Sequencer::ControlWidget</receiver>
+   <slot>recalcSequenceDuration()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>181</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>516</x>
+     <y>175</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>shutterSpeedBulb</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>Sequencer::ControlWidget</receiver>
+   <slot>recalcSequenceDuration()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>178</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>621</x>
+     <y>152</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pause</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>Sequencer::ControlWidget</receiver>
+   <slot>recalcSequenceDuration()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>263</x>
+     <y>197</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>591</x>
+     <y>250</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>numShots</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Sequencer::ControlWidget</receiver>
+   <slot>recalcSequenceDuration()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>306</x>
+     <y>217</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>559</x>
+     <y>291</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>startBulbSequence</sender>
+   <signal>clicked()</signal>
+   <receiver>Sequencer::ControlWidget</receiver>
+   <slot>startBulbSequenceClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>433</x>
+     <y>206</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>594</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>takeShotBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>Sequencer::ControlWidget</receiver>
+   <slot>takeShotBtnClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>436</x>
+     <y>157</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>527</x>
+     <y>205</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>newBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>Sequencer::ControlWidget</receiver>
+   <slot>newBtnClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>454</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>576</x>
+     <y>70</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>recalcSequenceDuration()</slot>
+  <slot>shutterSpeedActivated(QString)</slot>
+  <slot>isoSpeedRateActivated(QString)</slot>
+  <slot>startBulbSequenceClicked()</slot>
+  <slot>takeShotBtnClicked()</slot>
+  <slot>newBtnClicked()</slot>
+ </slots>
 </ui>

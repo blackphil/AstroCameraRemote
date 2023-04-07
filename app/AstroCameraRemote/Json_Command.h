@@ -138,7 +138,7 @@ class PostViewProviderCommand : public Command
     void handleReply(const QJsonDocument &replyJson);
 
 Q_SIGNALS :
-    void havePostViewUrl(QString);
+    void havePostViewUrl(QString, int, int);
 
 public :
     PostViewProviderCommand(QObject* parent = nullptr);
